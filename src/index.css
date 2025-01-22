@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* this is admin dashboard */
 :root{
   background-color: #F1EFFB;
 }
