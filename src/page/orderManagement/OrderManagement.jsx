@@ -32,7 +32,7 @@ export const OrderManagement = () => {
             <button className="text-[#EF4849]">
               <FaArrowLeft />
             </button>
-            <span className="text-lg font-semibold">Manage Ticket</span>
+            <span className="text-lg font-semibold">Order Management</span>
           </h1>
           <Input placeholder="Search here..." style={{ width: 300 }} />
         </div>
@@ -84,7 +84,7 @@ export const OrderManagement = () => {
             style={{
               padding: "10px 20px",
               borderRadius: "5px 5px 0px 0px",
-              cursor: "production",
+              cursor: "pointer",
               backgroundColor:
                 selectedTab === "production" ? "#F5ECF2" : "white",
               color: selectedTab === "production" ? "#9B3C7B" : "black",

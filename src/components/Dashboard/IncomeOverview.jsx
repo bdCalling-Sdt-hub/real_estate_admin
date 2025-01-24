@@ -1,86 +1,73 @@
-import React from 'react';
-import { Select } from 'antd';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Dot } from 'recharts';
-
-
-const items = [
-  { value: '2024', label: '2024' },
-  { value: '2023', label: '2023' },
-  { value: '2022', label: '2022' },
-];
-
-
-const data = [
-  { name: 'Jan', uv: 400 },
-  { name: 'Feb', uv: 300 },
-  { name: 'Mar', uv: 500 },
-  { name: 'Apr', uv: 200 },
-  { name: 'May', uv: 800 }, 
-  { name: 'Jun', uv: 450 },
-  { name: 'Jul', uv: 600 },
-  { name: 'Aug', uv: 700 },
-  { name: 'Sep', uv: 500 },
-  { name: 'Oct', uv: 400 },
-  { name: 'Nov', uv: 450 },
-  { name: 'Dec', uv: 500 },
-];
-
-
-const handleChange = (value) => {
-  console.log(`Selected year: ${value}`);
-};
+import React from "react";
+import { Table, Tag } from "antd";
 
 export const IncomeOverview = () => {
+  const columns = [
+    {
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Services",
+      dataIndex: "services",
+      key: "services",
+    },
+    {
+      title: "Appointments",
+      dataIndex: "appointments",
+      key: "appointments",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color="pink" key={status}>
+          {status}
+        </Tag>
+      ),
+    },
+  ];
+
+  const data = [
+    {
+      key: "1",
+      orderId: "#12333",
+      address: "Royal Ln. Mesa, New Jersey",
+      services: 2,
+      appointments: "12/04/24 at 3:00 pm",
+      status: "Submitted",
+    },
+    {
+      key: "2",
+      orderId: "#12333",
+      address: "W. Gray Utica, Pennsylvania",
+      services: 6,
+      appointments: "08/04/24 at 5:00 pm",
+      status: "Submitted",
+    },
+    {
+      key: "3",
+      orderId: "#12333",
+      address: "Ash San Jose, South Dakota",
+      services: 3,
+      appointments: "02/04/24 at 4:00 pm",
+      status: "Submitted",
+    },
+  ];
+
   return (
     <div>
-      <div className='flex justify-between p-3 px-7'>
-        <p className='text-xl font-medium'>Income Overview</p>
-        <Select
-          defaultValue="2024"
-          style={{ width: 120 }}
-          onChange={handleChange}
-          options={items}
-        />
-      </div>
-      <div className='w-full h-[400px]'>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="uv"
-              stroke="#2A216D" 
-              strokeWidth={7} 
-              fillOpacity={0.2} 
-              fill="#FEFEFE"
-            />
-           
-            {data.map((entry, index) =>
-              entry.name === "May" ? (
-                <Dot
-                  key={index}
-                  cx="50%"
-                  cy="50%"
-                  r={6}
-                  fill="#2A216D" 
-                  stroke="#2A216D"
-                />
-              ) : null
-            )}
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+      <h1 className="text-xl font-semibold mb-4 px-6 pt-3">Need to Deliver Today</h1>
+      <Table columns={columns} dataSource={data} pagination={false} />
     </div>
   );
 };
+
+export default IncomeOverview;

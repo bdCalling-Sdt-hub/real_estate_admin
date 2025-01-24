@@ -18,6 +18,11 @@ select option {
 
 }
 
+:where(.css-dev-only-do-not-override-49qm).ant-select-single {
+  font-size: 14px;
+  height: 47px;
+}
+
 
 /* Remove all borders from the Ant Design Table */
 .ant-table {

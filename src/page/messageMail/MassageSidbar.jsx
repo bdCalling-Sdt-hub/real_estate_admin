@@ -12,14 +12,17 @@ import { TbMessageDots } from "react-icons/tb";
 import { FaRegStar } from "react-icons/fa";
 import { ContactCreate } from "./ContactCreate";
 import { UserDetailsPage } from "./UserDetailsPage";
+import { ComposeModal } from "./ComposeModal";
 export const MassageSidbar = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [modal2Open, setModal2Open] = useState(false);
+  const [modal2Open1, setModal2Open1] = useState(false);
   return (
     <div className="flex gap-4">
       <div className="bg-white h-screen p-4 w-[20%]">
         {/* Compose Button */}
         <Button
+          onClick={() => setModal2Open1(true)}
           type="primary"
           icon={<EditOutlined />}
           block
@@ -73,7 +76,10 @@ export const MassageSidbar = () => {
         <div>
           <div className="flex justify-between items-center mb-4">
             <span className="font-medium text-gray-700">Contacts</span>
-            <PlusOutlined onClick={() => setModal2Open(true)} style={{ fontSize: "16px", color: "" }} />
+            <PlusOutlined
+              onClick={() => setModal2Open(true)}
+              style={{ fontSize: "16px", color: "" }}
+            />
           </div>
           <div className="space-y-4">
             <div className="flex items-center">
@@ -119,17 +125,18 @@ export const MassageSidbar = () => {
         )}
         {selectedTab === "submitted" && (
           <div>
-            
-           
-       
-        <UserDetailsPage></UserDetailsPage>
-     
+            <FavouriteMassage></FavouriteMassage>
           </div>
         )}
-        
       </div>
-      <ContactCreate  setModal2Open={setModal2Open}
-        modal2Open={modal2Open}></ContactCreate>
+      <ContactCreate
+        setModal2Open={setModal2Open}
+        modal2Open={modal2Open}
+      ></ContactCreate>
+      <ComposeModal
+        setModal2Open1={setModal2Open1}
+        modal2Open1={modal2Open1}
+      ></ComposeModal>
     </div>
   );
 };

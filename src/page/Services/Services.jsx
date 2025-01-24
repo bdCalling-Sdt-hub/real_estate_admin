@@ -4,8 +4,11 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Photo } from "./Photo";
 import { Videos } from "./Videos";
+import { AddServices } from "./AddServices";
+import { EditServiceMOdal } from "./EditServiceMOdal";
 
 export const Services = () => {
+  const [openAddModal, setOpenAddModal] = useState(false);
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("all");
 
@@ -23,7 +26,7 @@ export const Services = () => {
           <button className="text-[#EF4849]">
             <FaArrowLeft />
           </button>
-          <span className="text-lg font-semibold">Manage Ticket</span>
+          <span className="text-lg font-semibold">Services</span>
         </h1>
         <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>
@@ -52,11 +55,16 @@ export const Services = () => {
           </div>
         </div>
         <div>
-          <button className="bg-[#2A216D] text-[white] rounded px-11 py-2.5">
+          <button onClick={() => setOpenAddModal(true)} className="bg-[#2A216D] text-[white] rounded px-11 py-2.5">
             + New Services
           </button>
         </div>
       </div>
+
+      <AddServices openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}></AddServices>
+        <EditServiceMOdal openAddModal1={openAddModal}
+        setOpenAddModal1={setOpenAddModal}></EditServiceMOdal>
 
       {selectedTab === "all" && (
         <div>

@@ -60,26 +60,28 @@ export const ServicesCategories = () => {
       width: "70%",
     },
     {
-      title: "Action",
-      key: "action",
-      render: () => (
-        <div>
-          <Button
-          onClick={() => setOpenAddModal1(true)}
-            shape="circle"
-            icon={<EditOutlined />}
-            style={{ marginRight: "8px", color: "#1E3F66" }}
-          />
-          <Button
-            shape="circle"
-            icon={<DeleteOutlined />}
-            style={{ color: "#FF4D4F" }}
-          />
-        </div>
-      ),
-      align: "right",
-      width: "20%",
-    },
+              title: "Action",
+              key: "action",
+              render: () => (
+                <div>
+                  <button
+                  onClick={() => setOpenAddModal1(true)}
+                    shape="circle"
+                    className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+                  >
+                    <EditOutlined />
+                  </button>
+                  <button
+                    shape="circle"
+                    className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
+                  >
+                    <DeleteOutlined />
+                  </button>
+                </div>
+              ),
+              align: "end",
+              width: "20%",
+            },
   ];
 
   const navigate = useNavigate();

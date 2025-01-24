@@ -4,9 +4,29 @@ import img1 from "../../assets/header/22.png";
 import img2 from "../../assets/header/33.png";
 import img3 from "../../assets/header/44.png";
 import img4 from "../../assets/header/55.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { EditServicesCard } from "./EditServicesCard";
+import { EditServicesPhotoSection } from "./EditServicesPhotoSection";
+import { EditServicesVideo } from "./EditServicesVideo";
+import { Button, Dropdown, Menu } from "antd";
+import { FaArrowLeft } from "react-icons/fa";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 export const EditServices = () => {
+  const navigate = useNavigate()
+  const menu = (
+      <Menu>
+    
+          <Menu.Item key="1"><Link to={"/dashboard/order-management/order-details/edit-order"}>Edit Order</Link></Menu.Item>
+    
+        <Menu.Item key="2"><Link to={'/dashboard/order-management/order-details/edit-services'} >Edit Services</Link></Menu.Item>
+        <Menu.Item key="3">Edit Schedule</Menu.Item>
+              <Menu.Item key="4">Set Order On Hold</Menu.Item>
+              <Menu.Item key="5">Remove Order</Menu.Item>
+              <Menu.Item key="6">Cancel Order</Menu.Item>
+        
+      </Menu>
+    );
   // Data for packages, photos, and videos
   const packageData = [
     {
@@ -15,67 +35,47 @@ export const EditServices = () => {
         "Our most popular package including our most popular service:",
       features: ["Photos", "Videos", "Floor Plan"],
       price: 25,
-      image: img,
+      images: [img1, img2, img3],
     },
     {
       title: "Standard Packages",
       description: "Includes essential services for your property:",
       features: ["Photos", "Floor Plan"],
       price: 15,
-      image: img1,
+     images: [img1, img2, img3],
     },
   ];
 
-  const photosData = [
-    {
-      title: "Drone Photo",
-      description:
-        "Help clients visualize your listing and its surroundings by capturing shots from the sky.",
-      price: 25,
-      image: img1,
-    },
-    {
-      title: "Drone Photo",
-      description:
-        "Help clients visualize your listing and its surroundings by capturing shots from the sky.",
-      price: 25,
-      image: img2,
-    },
-    {
-        title: "Drone Photo",
-        description:
-          "Help clients visualize your listing and its surroundings by capturing shots from the sky.",
-        price: 25,
-        image: img2,
-      },
-  ];
+  
 
-  const videosData = [
-    {
-      title: "Highlight Video (1-2 minutes)",
-      description:
-        "Highlight the main space and features of your listing with a 30-45 seconds video.",
-      price: 25,
-      image: img3,
-    },
-    {
-      title: "Cinematic Video (30 seconds)",
-      description:
-        "Draw your audience in with a 1-2 minutes movie that flows beautifully through your listing.",
-      price: 25,
-      image: img4,
-    },
-    {
-        title: "Cinematic Video (30 seconds)",
-        description:
-          "Draw your audience in with a 1-2 minutes movie that flows beautifully through your listing.",
-        price: 25,
-        image: img4,
-      },
-  ];
+  
+  
 
   return (
-    <div className="bg-white">
+    <div className="bg-white p-4">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <h1 onClick={() => navigate(-1)} className="flex gap-4 cursor-pointer">
+          <button className="text-[#EF4849]">
+            <FaArrowLeft />
+          </button>
+          <span className="text-lg font-semibold">Edit Services</span>
+        </h1>
+        <Dropdown overlay={menu} trigger={["click"]}>
+          <Button
+            className="border border-black rounded-full text-black flex items-center"
+            onClick={(e) => e.preventDefault()}
+          >
+            Actions <HiOutlineDotsVertical className="ml-2" />
+          </Button>
+        </Dropdown>
+      </div>
       <div className="p-8 max-w-5xl mx-auto">
         <h2 className="text-2xl font-semibold text-center mb-6">
           Edit Services
@@ -83,52 +83,26 @@ export const EditServices = () => {
 
         {/* Add Services Button */}
         <div className="flex justify-end mb-6">
-          <Link to={'/dashboard/order-management/order-details/add-services'}><button className="bg-purple-700 text-white px-6 py-2 rounded-lg shadow-md hover:bg-purple-800">
-            + Add Services
-          </button></Link>
+          <Link to={"/dashboard/order-management/order-details/add-services"}>
+            <button className="bg-[#2A216D] text-white px-6 py-2 rounded shadow-md hover:bg-purple-800">
+              + Add Services
+            </button>
+          </Link>
         </div>
 
         {/* Package Section */}
         <div className="mb-8">
           <h3 className="text-lg font-semibold mb-4">Package</h3>
           <div className="grid grid-cols-3 gap-4">
-          {packageData.map((pkg, index) => (
-            <div
-              key={index}
-              className="border rounded-lg shadow-md overflow-hidden mb-4"
-            >
-              <img
-                src={pkg.image}
-                alt={pkg.title}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-4">
-                <h4 className="text-xl font-semibold">{pkg.title}</h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  {pkg.description}
-                  <br />
-                  {pkg.features.map((feature, idx) => (
-                    <span key={idx}>
-                      • {feature} <br />
-                    </span>
-                  ))}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-red-500">
-                    Price: ${pkg.price}
-                  </span>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            {packageData.map((pkg, index) => (
+             
+              <EditServicesCard pkg={pkg} key={index}></EditServicesCard>
+            ))}
           </div>
         </div>
 
         {/* Photos Section */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <h3 className="text-lg font-semibold mb-4">Photos</h3>
           <div className="grid grid-cols-3 gap-6">
             {photosData.map((photo, index) => (
@@ -150,7 +124,7 @@ export const EditServices = () => {
                     <span className="text-lg font-semibold text-red-500">
                       Price: ${photo.price}
                     </span>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600">
+                    <button className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600">
                       Remove
                     </button>
                   </div>
@@ -158,40 +132,11 @@ export const EditServices = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
+        <EditServicesPhotoSection></EditServicesPhotoSection>
 
         {/* Videos Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-4">Videos</h3>
-          <div className="grid grid-cols-3 gap-6">
-            {videosData.map((video, index) => (
-              <div
-                key={index}
-                className="border rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={video.image}
-                  alt={video.title}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-xl font-semibold">{video.title}</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {video.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-red-500">
-                      Price: ${video.price}
-                    </span>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600">
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <EditServicesVideo></EditServicesVideo>
 
         {/* Total Amount */}
         <div className="flex justify-between items-center text-lg font-semibold mb-6">
@@ -200,11 +145,11 @@ export const EditServices = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-4">
-          <button className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
+        <div className="flex justify-center gap-4">
+          <button className="px-6 py-2 w-[200px] rounded border border-gray-300 text-gray-700 hover:bg-gray-100">
             Cancel
           </button>
-          <button className="px-6 py-2 rounded-lg bg-purple-700 text-white hover:bg-purple-800">
+          <button className="px-6 py-2 w-[200px] rounded bg-[#2A216D] text-white hover:bg-purple-800">
             Update
           </button>
         </div>

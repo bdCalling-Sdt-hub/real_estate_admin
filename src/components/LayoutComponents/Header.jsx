@@ -260,7 +260,7 @@ const Header = () => {
             </span>
           </div>
 
-          <Link to={"/dashboard/Settings/profile"}>
+          <Link to={"/dashboard/settings"}>
             <div className="flex gap-3">
               <div>
                 <img

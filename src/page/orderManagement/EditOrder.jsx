@@ -44,10 +44,8 @@ export const EditOrder = () => {
 
   const menu = (
     <Menu>
-      <Link to={"/dashboard/order-management/order-details/edit-order"}>
-        <Menu.Item key="1">Edit Order</Menu.Item>
-      </Link>
-      <Menu.Item key="2">Edit Services</Menu.Item>
+      <Menu.Item key="1"><Link to={"/dashboard/order-management/order-details/edit-order"}>Edit Order</Link></Menu.Item>
+      <Menu.Item key="2"><Link to={'/dashboard/order-management/order-details/edit-services'}>Edit Services</Link></Menu.Item>
       <Menu.Item key="3">Edit Schedule</Menu.Item>
       <Menu.Item key="4">Set Order On Hold</Menu.Item>
       <Menu.Item key="5">Remove Order</Menu.Item>
@@ -71,8 +69,9 @@ export const EditOrder = () => {
             <button className="text-[#EF4849]">
               <FaArrowLeft />
             </button>
-            <span className="text-lg font-semibold">Manage Ticket</span>
+            <span className="text-lg font-semibold">Edit Order</span>
           </h1>
+          
           <Dropdown overlay={menu} trigger={["click"]}>
             <Button
               className="border border-black rounded-full text-black flex items-center"
@@ -82,6 +81,9 @@ export const EditOrder = () => {
             </Button>
           </Dropdown>
         </div>
+        <div className="text-2xl font-semibold mt-11 text-center">
+            Edit Order
+          </div>
       <div className="p-8 max-w-4xl mx-auto  rounded-lg">
         
         {/* Client/Company Section */}

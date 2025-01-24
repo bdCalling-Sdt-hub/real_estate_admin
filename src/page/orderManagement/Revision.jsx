@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Avatar, Tag, Button } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 
 export const Revision = () => {
@@ -138,12 +139,16 @@ export const Revision = () => {
           width: '10%',
         },
         {
-          title: 'Details',
-          key: 'details',
+          title: "Details",
+          key: "details",
           render: () => (
-            <Button shape="circle" icon={<EyeOutlined />} style={{ color: '#1E3F66' }} />
+           <Link to={'/dashboard/order-management/order-details'}> <button
+           
+           
+           className="w-10 h-10 text-white bg-[#2A216D] rounded text-xl"
+         ><EyeOutlined /></button></Link>
           ),
-          width: '5%',
+          width: "5%",
         },
       ];
     

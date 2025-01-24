@@ -5,17 +5,18 @@ import { PurchasedPackageSection } from "./PurchasedPackageSection";
 import { MassageBox } from "./MassageBox";
 import { DetailsNote } from "./DetailsNote";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EditShedualModal } from "./EditShedualModal";
 
 export const OrderDetailsPage = () => {
+  const navigate = useNavigate()
   const [modal2Open, setModal2Open] = useState(false);
   const menu = (
     <Menu>
-      <Link to={"/dashboard/order-management/order-details/edit-order"}>
-        <Menu.Item key="1">Edit Order</Menu.Item>
-      </Link>
-      <Link to={'/dashboard/order-management/order-details/edit-services'}><Menu.Item key="2">Edit Services</Menu.Item></Link>
+      
+        <Menu.Item key="1"><Link to={"/dashboard/order-management/order-details/edit-order"}>Edit Order</Link></Menu.Item>
+      
+      <Menu.Item key="2"><Link to={'/dashboard/order-management/order-details/edit-services'}>Edit Services</Link></Menu.Item>
       <Menu.Item onClick={() => setModal2Open(true)} key="3">Edit Schedule</Menu.Item>
       <Menu.Item key="4">Set Order On Hold</Menu.Item>
       <Menu.Item key="5">Remove Order</Menu.Item>
@@ -36,7 +37,7 @@ export const OrderDetailsPage = () => {
           <button className="text-[#EF4849]">
             <FaArrowLeft />
           </button>
-          <span className="text-lg font-semibold">Manage Ticket</span>
+          <span className="text-lg font-semibold">Order Details</span>
         </h1>
         <Dropdown overlay={menu} trigger={["click"]}>
           <Button
@@ -66,7 +67,7 @@ export const OrderDetailsPage = () => {
 
             <div className="border flex justify-between p-3 rounded-md items-center">
               <p className="font-semibold">Appointment</p>
-              <button className="border border-[#F38E0A] text-[#F38E0A] py-2 px-4 rounded-md ">
+              <button  onClick={() => setModal2Open(true)} className="border border-[#F38E0A] text-[#F38E0A] py-2 px-4 rounded-md ">
                 Schedule An Appointment
               </button>
             </div>

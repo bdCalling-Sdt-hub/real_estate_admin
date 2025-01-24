@@ -1,12 +1,16 @@
 import { Input } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import { Table, Button } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { AddTeamMember } from './AddTeamMember';
+import { EditTeamMember } from './EditTeamMember';
 
 export const TeamMember = () => {
+  const [openAddModal, setOpenAddModal] = useState(false);
+    const [openAddModal1, setOpenAddModal1] = useState(false);
   const data = [
     {
       key: "1",
@@ -111,22 +115,27 @@ export const TeamMember = () => {
       key: "action",
       render: () => (
         <div>
-          <Button
+          <button
+          onClick={() => setOpenAddModal1(true)}
             shape="circle"
-            icon={<EditOutlined />}
-            style={{ marginRight: "8px", color: "#1E3F66" }}
-          />
-          <Button
+            className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+          >
+            <EditOutlined />
+          </button>
+          <button
             shape="circle"
-            icon={<DeleteOutlined />}
-            style={{ color: "#FF4D4F" }}
-          />
+            className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
       align: "end",
       width: "20%",
     },
   ];
+
+   
 
   const navigate = useNavigate();
   return (
@@ -147,6 +156,13 @@ export const TeamMember = () => {
         </h1>
         <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>
+      <div className="">
+        <div>
+          <button onClick={() => setOpenAddModal(true)} className="bg-[#2A216D] mb-4 text-[white] rounded px-11 py-2.5">
+            + New Company/client
+          </button>
+        </div>
+      </div>
 
       <div className="">
         <Table
@@ -161,6 +177,10 @@ export const TeamMember = () => {
           style={{ marginTop: "20px" }}
         />
       </div>
+      <AddTeamMember openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}></AddTeamMember>
+        <EditTeamMember openAddModal={openAddModal1}
+        setOpenAddModal={setOpenAddModal1}></EditTeamMember>
     </div>
   );
 };

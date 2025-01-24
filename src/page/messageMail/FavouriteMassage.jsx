@@ -93,11 +93,10 @@ export const FavouriteMassage = () => {
       title: 'Action',
       key: 'action',
       render: () => (
-        <Button
-          shape="circle"
-          icon={<DeleteOutlined />}
-          style={{ color: '#FF4D4F' }}
-        />
+        <button
+          
+          className=''
+        ><DeleteOutlined /></button>
       ),
       width: '5%',
     },
@@ -105,7 +104,7 @@ export const FavouriteMassage = () => {
 
   return (
     <div className='bg-white p-4 h-screen'>
-      <h1 className='text-lg font-semibold mb-4'>favourite</h1>
+      <h1 className='text-lg font-semibold mb-4'>Favourite</h1>
       <div style={{ overflowX: 'auto', maxHeight: '75vh', overflowY: 'auto' }}>
         <Table
           dataSource={data}

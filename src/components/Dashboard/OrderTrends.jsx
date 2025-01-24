@@ -27,7 +27,7 @@ export const OrderTrends = () => {
   return (
     <div>
     <div className="flex justify-between p-3 px-7">
-      <p className="text-xl font-medium">User Growth</p>
+      <p className="text-xl font-medium">Order Trends</p>
       <Select
         defaultValue="2024"
         style={{ width: 120 }}

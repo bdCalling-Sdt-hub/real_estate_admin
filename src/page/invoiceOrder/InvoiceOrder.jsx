@@ -143,7 +143,7 @@ export const InvoiceOrder = () => {
         <Button
         onClick={() => setOpendetails(true)}
           type="primary"
-          style={{ backgroundColor: "#1E3F66", border: "none" }}
+          style={{ backgroundColor: "#2A216D", border: "none" }}
         >
           Invoice
         </Button>
@@ -209,7 +209,7 @@ export const InvoiceOrder = () => {
         <Button
           type="primary"
           block
-          className="bg-purple-700 text-white rounded-md"
+          className="bg-[#2A216D] text-white rounded-md"
         >
           Create Invoice
         </Button>

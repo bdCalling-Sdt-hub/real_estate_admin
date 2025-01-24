@@ -88,39 +88,41 @@ export const Packeges = () => {
       width: "40%",
     },
     {
-      title: "Details",
-      key: "details",
-      render: () => (
-        <Button
-        onClick={() => setOpendetails(true)}
-          shape="circle"
-          icon={<EyeOutlined />}
-          style={{ color: "#1E3F66" }}
-        />
-      ),
-      width: "10%",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => (
-        <div>
-          <Button
-          onClick={() => setOpenAddModal1(true)}
-            shape="circle"
-            icon={<EditOutlined />}
-            style={{ marginRight: "8px", color: "#1E3F66" }}
-          />
-          <Button
-            shape="circle"
-            icon={<DeleteOutlined />}
-            style={{ color: "#FF4D4F" }}
-          />
-        </div>
-      ),
-      align: "end",
-      width: "20%",
-    },
+          title: "Details",
+          key: "details",
+          render: () => (
+            <button
+              onClick={() => setModal2Open1(true)}
+              shape="circle"
+              className="bg-[#2A216D] h-10 w-10 rounded text-white text-xl"
+            >
+              <EyeOutlined />
+            </button>
+          ),
+          width: "10%",
+        },
+        {
+          title: "Action",
+          key: "action",
+          render: () => (
+            <div>
+              <button
+                shape="circle"
+                className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+              >
+                <EditOutlined />
+              </button>
+              <button
+                shape="circle"
+                className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
+              >
+                <DeleteOutlined />
+              </button>
+            </div>
+          ),
+          align: "end",
+          width: "20%",
+        },
   ];
 
   const navigate = useNavigate();

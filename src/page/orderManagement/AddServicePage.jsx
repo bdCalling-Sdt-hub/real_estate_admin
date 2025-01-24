@@ -15,7 +15,7 @@ export const AddServicePage = () => {
         <button className="text-[#EF4849]">
           <FaArrowLeft />
         </button>
-        <span className="text-lg font-semibold">Manage Pricing Groups</span>
+        <span className="text-lg font-semibold">Add Services</span>
       </h1>
       <div className="flex justify-between mt-7">
         <div className="flex gap-3">

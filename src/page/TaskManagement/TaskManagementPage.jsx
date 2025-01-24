@@ -1,15 +1,34 @@
-import React from "react";
-import { CheckOutlined, EyeOutlined, DeleteOutlined, UploadOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import {
+  CheckOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { RejectTask } from "./RejectTask";
+import { AssignModal } from "./AssignModal";
+import { ToDoAdd } from "./ToDoAdd";
+import { LiaFileExcel } from "react-icons/lia";
+import { FaArrowRight } from "react-icons/fa";
 
 export const TaskManagementPage = () => {
+  const [modal2Open1, setModal2Open1] = useState(false);
+  const [modal2Open, setModal2Open] = useState(false);
+  const [modal2Open3, setModal2Open3] = useState(false);
   const tasks = [
     {
       date: "Sunday, 18 January, 2025",
       tasks: [
-        { type: "Photography", location: "Westheimer Rd. Santa Ana, Illinois 85" },
+        {
+          type: "Photography",
+          location: "Westheimer Rd. Santa Ana, Illinois 85",
+        },
         { type: "Video", location: "Gray St. Utica, Pennsylvania 57867" },
-        { type: "Floorplans", location: "Westheimer Rd. Santa Ana, Illinois 85" },
+        {
+          type: "Floorplans",
+          location: "Westheimer Rd. Santa Ana, Illinois 85",
+        },
         { type: "Photography", location: "Elgin St. Celina, Delaware 10299" },
       ],
     },
@@ -18,7 +37,10 @@ export const TaskManagementPage = () => {
       tasks: [
         { type: "Video", location: "Elgin St. Celina, Delaware 10299" },
         { type: "Floorplans", location: "Gray St. Utica, Pennsylvania 57867" },
-        { type: "Photography", location: "Westheimer Rd. Santa Ana, Illinois 85" },
+        {
+          type: "Photography",
+          location: "Westheimer Rd. Santa Ana, Illinois 85",
+        },
       ],
     },
   ];
@@ -55,19 +77,28 @@ export const TaskManagementPage = () => {
                         <p className="text-sm text-gray-600">{item.location}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="bg-green-500 text-white p-2 rounded-full">
+                        <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
                           <CheckOutlined />
                         </button>
-                        <Link to={'/dashboard/task-management'}><button className="bg-blue-500 text-white p-2 rounded-full">
-                          <EyeOutlined />
-                        </button></Link>
-                        <button className="bg-red-500 text-white p-2 rounded-full">
-                          <DeleteOutlined />
+                        <Link to={"/dashboard/task-management/all-Services/project-file"}>
+                          <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
+                            <EyeOutlined />
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => setModal2Open1(true)}
+                          className="bg-[#D80027] text-white text-2xl p-2 w-10 h-10 rounded"
+                        >
+                          <LiaFileExcel />
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
+                <RejectTask
+                  setModal2Open1={setModal2Open1}
+                  modal2Open1={modal2Open1}
+                ></RejectTask>
               </div>
             ))}
           </div>
@@ -95,14 +126,14 @@ export const TaskManagementPage = () => {
                         <p className="text-sm text-gray-600">{item.location}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="bg-purple-500 text-white px-4 py-1 rounded-lg">
+                        <button className="bg-[#9B3C7B] text-white px-4 py-2 rounded">
                           Take
                         </button>
-                        <button className="bg-blue-500 text-white p-2 rounded-full">
+                        <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
                           <EyeOutlined />
                         </button>
-                        <button className="bg-orange-500 text-white p-2 rounded-full">
-                          <DeleteOutlined />
+                        <button  onClick={() => setModal2Open(true)} className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl">
+                          <FaArrowRight />
                         </button>
                       </div>
                     </div>
@@ -111,6 +142,8 @@ export const TaskManagementPage = () => {
               </div>
             ))}
           </div>
+          <AssignModal setModal2Open={setModal2Open}
+        modal2Open={modal2Open}></AssignModal>
         </div>
       </div>
 
@@ -118,10 +151,13 @@ export const TaskManagementPage = () => {
       <div className="grid grid-cols-2 gap-6 mt-6">
         {/* To Do List Section */}
         <div className="p-4  rounded-lg bg-white">
-          <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
-            To Do List <button className="text-orange-500">+</button>
+          <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 ">
+            To Do List <button onClick={() => setModal2Open3(true)} className="bg-[#F38E0A] w-8 h-8 rounded text-lg text-white ">+</button>
           </h3>
-          <div className="overflow-y-auto border py-5" style={{ maxHeight: "300px" }}>
+          <div
+            className="overflow-y-auto border py-5"
+            style={{ maxHeight: "300px" }}
+          >
             {toDoList.map((item, index) => (
               <div
                 key={index}
@@ -130,10 +166,10 @@ export const TaskManagementPage = () => {
                 <p>{item.date}</p>
                 <p className="flex-1 text-center">{item.description}</p>
                 <div className="flex items-center gap-2">
-                  <button className="bg-green-500 text-white p-2 rounded-full">
+                  <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
                     <CheckOutlined />
                   </button>
-                  <button className="bg-blue-500 text-white p-2 rounded-full">
+                  <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
                     <EyeOutlined />
                   </button>
                 </div>
@@ -141,6 +177,9 @@ export const TaskManagementPage = () => {
             ))}
           </div>
         </div>
+
+        <ToDoAdd setModal2Open3={setModal2Open3}
+        modal2Open3={modal2Open3}></ToDoAdd>
 
         {/* Upload Source Files Section */}
         <div className="p-4  bg-white ">
@@ -164,10 +203,10 @@ export const TaskManagementPage = () => {
                         <p className="text-sm text-gray-600">{item.location}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="bg-green-500 text-white p-2 rounded-full">
+                        <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
                           <CheckOutlined />
                         </button>
-                        <button className="bg-orange-500 text-white p-2 rounded-full">
+                        <button className="bg-[#F38E0A] text-white p-2 w-10 h-10 text-2xl rounded">
                           <UploadOutlined />
                         </button>
                       </div>

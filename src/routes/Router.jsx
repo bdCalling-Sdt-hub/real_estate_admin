@@ -6,7 +6,7 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import ForgetPass from "../Auth/ForgetPass";
 import Verify from "../Auth/Verify";
 import ResetPass from "../Auth/ResetPass";
-// import Notification from "../page/Notification/Notification";
+import Notification from "../page/Notification/Notification";
 
 import Login from "../Auth/Login";
 import { MessageMail } from "../page/messageMail/MessageMail";
@@ -33,6 +33,7 @@ import { AddPricingPage } from "../page/pricingGroup/AddPricingPage";
 import { EditPricingPage } from "../page/pricingGroup/EditPricingPage";
 import { Report } from "../page/Report/Report";
 import { TaskManagementPage } from "../page/TaskManagement/TaskManagementPage";
+import Settings from "../page/Settings/Settings";
 
 
 export const router = createBrowserRouter([
@@ -144,6 +145,14 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/task-management/all-Services/project-file",
         element: <ProjectFile></ProjectFile>
+      },
+      {
+        path: "/dashboard/settings",
+        element: <Settings></Settings>
+      },
+      {
+        path: "/dashboard/Settings/notification",
+        element: <Notification></Notification>
       },
       
     ],

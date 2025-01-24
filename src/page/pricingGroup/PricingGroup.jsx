@@ -79,21 +79,22 @@ export const PricingGroup = () => {
       key: "action",
       render: () => (
         <div>
-          <Link to={'/dashboard/pricing-group/edit-pricing-group'}>
-          <Button
+          <Link to={'/dashboard/pricing-group/edit-pricing-group'}><button
             shape="circle"
-            icon={<EditOutlined />}
-            style={{ marginRight: "8px", color: "#1E3F66" }}
-          /></Link>
-          <Button
+            className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+          >
+            <EditOutlined />
+          </button></Link>
+          <button
             shape="circle"
-            icon={<DeleteOutlined />}
-            style={{ color: "#FF4D4F" }}
-          />
+            className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
-      align: "right",
-      width: "15%",
+      align: "end",
+      width: "20%",
     },
   ];
 

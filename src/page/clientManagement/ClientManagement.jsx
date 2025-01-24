@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Avatar, Button, Input } from "antd";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
-import { ArrowRightOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { AddClientModal } from "./AddClientModal";
 import { EditClientModal } from "./EditClientModal";
 import { Link, useNavigate } from "react-router-dom";
@@ -97,28 +97,24 @@ export const ClientManagement = () => {
       title: "Action",
       key: "action",
       render: () => (
-        <div style={{ display: "flex", gap: "10px", justifyContent: "end" }}>
-          <Button
+        <div>
+          <button
           onClick={() => setOpenAddModal1(true)}
-            icon={<FaEdit />}
-            style={{
-              backgroundColor: "#2A216D",
-              color: "#fff",
-              border: "none",
-            }}
-          />
-          <Button
-            icon={<FaTrash />}
-            style={{
-              backgroundColor: "#D80027",
-              color: "#fff",
-              border: "none",
-            }}
-          />
+            shape="circle"
+            className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+          >
+            <EditOutlined />
+          </button>
+          <button
+            shape="circle"
+            className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
       align: "end",
-      width: "10%",
+      width: "20%",
     },
   ];
 

@@ -96,11 +96,10 @@ export const MainMassage = () => {
       title: 'Action',
       key: 'action',
       render: () => (
-        <Button
-          shape="circle"
-          icon={<DeleteOutlined />}
-          style={{ color: '#FF4D4F' }}
-        />
+        <button
+          
+          className=''
+        ><DeleteOutlined /></button>
       ),
       width: '5%',
     },

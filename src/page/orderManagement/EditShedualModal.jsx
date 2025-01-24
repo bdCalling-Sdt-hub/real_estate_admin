@@ -40,7 +40,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
                 key={i}
                 className={`py-2 px-3 rounded-lg border cursor-pointer ${
                   i === 25
-                    ? "bg-purple-700 text-white"
+                    ? "bg-[#2A216D] text-white"
                     : "hover:border-purple-500 text-gray-700"
                 }`}
               >
@@ -64,7 +64,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
           <h3 className="text-lg font-semibold mb-2">Team Member</h3>
           <div className="flex items-center gap-2">
             <Input placeholder="Search Team Member" />
-            <Button type="primary">Add</Button>
+            <Button className="bg-[#2A216D]" type="primary">Add</Button>
           </div>
           <div className="mt-4">
             <div className="flex justify-between items-center">
@@ -81,7 +81,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
           <Button className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" className="px-6 py-2 rounded-lg bg-purple-700 text-white hover:bg-purple-800">
+          <Button type="primary" htmlType="submit" className="px-6 py-2 rounded-lg bg-[#2A216D] text-white hover:bg-purple-800">
             Confirm Reschedule
           </Button>
         </div>
