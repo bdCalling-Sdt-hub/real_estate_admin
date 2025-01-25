@@ -1,10 +1,10 @@
 import { LuBell } from "react-icons/lu";
 import profilee from "../../../src/assets/header/profileLogo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 
 import { useRef, useState } from "react";
-import { Drawer, Radio, Space } from "antd";
+import { Drawer, Input, Radio, Space } from "antd";
 
 import dashboard from "../../assets/routerImg/dashboard.png";
 import categorie from "../../assets/routerImg/categorie.png";
@@ -95,7 +95,7 @@ const Header = () => {
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [expandedKeys, setExpandedKeys] = useState([]);
   const navigate = useNavigate();
- 
+  const location = useLocation();
 
   const contentRef = useRef({});
   
@@ -127,7 +127,21 @@ const Header = () => {
   };
   return (
     <div className="bg-[#FEFEFE] text-white pt-[24px]">
-      <div className="flex justify-between">
+      <div className="flex justify-between ">
+      {location.pathname === "/" && (
+          <div className="mt-1 flex gap-6 ml-7">
+            <div>
+            <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center "><span className="px-3">Submitted</span> <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">05</div><div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">24</div></div>
+            </div>
+            <div>
+            <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center "><span className="px-3">In Production</span> <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">05</div><div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">24</div></div>
+            </div>
+            <div>
+            <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center "><span className="px-3">Revision Needed</span> <div className="bg-[#D80027] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">05</div></div>
+            </div>
+            
+          </div>
+          )}
         <div className="lg:hidden ">
           <div className="py-3 pl-4">
             <div onClick={showDrawer} className="text-3xl ">
@@ -137,12 +151,18 @@ const Header = () => {
         </div>
         <div></div>
         <div className="flex gap-8 p-1 px-6">
+        {location.pathname === "/" && (
+          <div>
+          <Input className="py-2 rounded-full" placeholder="Search here..." style={{ width: 400 }} />
+          </div>
+          )}
           <div className="relative">
             <Link to={"/dashboard/Settings/notification"}>
-              <div className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-white text-black ">
+              <div className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-slate-100 text-black ">
                 <span>
                   <LuBell />
                 </span>
+               
               </div>
             </Link>
 
