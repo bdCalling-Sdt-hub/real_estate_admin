@@ -5,6 +5,8 @@ import { ArrowRightOutlined, DeleteOutlined, EditOutlined } from "@ant-design/ic
 import { AddClientModal } from "./AddClientModal";
 import { EditClientModal } from "./EditClientModal";
 import { Link, useNavigate } from "react-router-dom";
+import { AddAgentModal } from "./AddAgentModal";
+import { EditAgent } from "./EditAgent";
 
 export const Agent = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -127,7 +129,7 @@ export const Agent = () => {
       <div className="">
         <div>
           <button onClick={() => setOpenAddModal(true)} className="bg-[#2A216D] mb-8 text-[white] rounded px-11 py-2.5">
-            + New Company/client
+            + New Agent
           </button>
         </div>
       </div>
@@ -142,10 +144,14 @@ export const Agent = () => {
         bordered
       />
 
-      <AddClientModal openAddModal={openAddModal}
+      {/* <AddClientModal openAddModal={openAddModal}
         setOpenAddModal={setOpenAddModal}></AddClientModal>
         <EditClientModal openAddModal={openAddModal1}
-        setOpenAddModal={setOpenAddModal1}></EditClientModal>
+        setOpenAddModal={setOpenAddModal1}></EditClientModal> */}
+        <AddAgentModal openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}></AddAgentModal>
+        <EditAgent openAddModal={openAddModal1}
+        setOpenAddModal={setOpenAddModal1}></EditAgent>
     </div>
   );
 };

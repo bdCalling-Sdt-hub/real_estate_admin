@@ -32,6 +32,12 @@ const items = [
     link: "/dashboard/message-mail",
   },
   {
+    key: "TaskManagement",
+    label: "Task Management",
+    icon: <IoBagOutline />,
+    link: "/dashboard/task-managementPage",
+  },
+  {
     key: "orderManagement",
     label: "Order Management",
     icon: <FaJediOrder />,
@@ -55,12 +61,7 @@ const items = [
   //     },
   //   ],
   // },
-  {
-    key: "clientManagement",
-    label: "Client Management",
-    icon: <PiClockUserLight />,
-    link: "/dashboard/client-management",
-  },
+  
   {
     key: "Services",
     label: "Services",
@@ -86,6 +87,19 @@ const items = [
     icon: <RiMoneyDollarBoxLine /> ,
     link: "/dashboard/pricing-group",
   },
+  
+  {
+    key: "clientManagement",
+    label: "Client Management",
+    icon: <PiClockUserLight />,
+    link: "/dashboard/client-management",
+  },
+  {
+    key: "Team-Member",
+    label: "Team-Member",
+    icon: <LiaUsersSolid />,
+    link: "/dashboard/team-member",
+  },
   {
     key: "report",
     label: "Report",
@@ -97,18 +111,6 @@ const items = [
     label: "Invoice Order",
     icon: <PiInvoice />,
     link: "/dashboard/invoice-order",
-  },
-  {
-    key: "Team-Member",
-    label: "Team-Member",
-    icon: <LiaUsersSolid />,
-    link: "/dashboard/team-member",
-  },
-  {
-    key: "TaskManagement",
-    label: "Task Management",
-    icon: <IoBagOutline />,
-    link: "/dashboard/task-managementPage",
   },
   {
     key: "Settings",
@@ -163,19 +165,40 @@ const SidBar = () => {
   };
 
   return (
-    <div className="custom-sidebar h-full bg-[#FEFEFE] shadow-sm">
+    <div className="custom-sidebar h-auto  bg-[#FEFEFE] shadow-sm">
       {/* Logo */}
       <div className="custom-sidebar-logo flex justify-center mt-5 mb-8">
         <img src={logo} alt="Logo" className="w-[160px]" />
       </div>
       <div className="mx-5 mb-6">
-      <Link to={'/dashboard/create-new-order'}><button className="bg-[#2A216D] text-white py-2 w-full rounded">+ Create Order</button></Link>
+        <Link to={'/dashboard/create-new-order'}>
+          <button className="bg-[#2A216D] text-white py-2 w-full rounded">
+            + Create Order
+          </button>
+        </Link>
       </div>
 
       {/* Sidebar Menu */}
       <div className="menu-items">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div key={item.key}>
+            {/* Add Section Titles */}
+            {index === 4 && (
+              <div className="section-title px-9 py-2 text-gray-500 font-bold">
+                Catalogue
+              </div>
+            )}
+            {index === 8 && (
+              <div className="section-title px-9 py-2 text-gray-500 font-bold">
+                Accounts
+              </div>
+            )}
+            {index === 10 && (
+              <div className="section-title px-9 py-2 text-gray-500 font-bold">
+                Business
+              </div>
+            )}
+
             <Link
               to={item.link}
               className={`menu-item my-1 mr-5 py-3 px-3 pl-9 flex items-center cursor-pointer ${
@@ -192,9 +215,8 @@ const SidBar = () => {
                 }
               }}
             >
-              <span  className="w-4 h-4 mr-3" >{item.icon}  </span>
+              <span className="w-4 h-4 mr-3">{item.icon}</span>
               <span className="block w-full text-black">{item.label}</span>
-
 
               {item.children && (
                 <FaChevronRight
@@ -205,10 +227,9 @@ const SidBar = () => {
               )}
             </Link>
 
-        
             {item.children && (
               <div
-                className={`children-menu bg-white -my-2 mx-5  text-black transition-all duration-300 ${
+                className={`children-menu bg-white -my-2 mx-5 text-black transition-all duration-300 ${
                   expandedKeys.includes(item.key) ? "expanded" : ""
                 }`}
                 style={{
@@ -228,8 +249,8 @@ const SidBar = () => {
                         : "hover:bg-gray-200"
                     }`}
                     onClick={() => {
-                      setSelectedKey(child.key); 
-                      setExpandedKeys([]); 
+                      setSelectedKey(child.key);
+                      setExpandedKeys([]);
                     }}
                   >
                     <span className="block w-full text-black">
@@ -244,7 +265,7 @@ const SidBar = () => {
       </div>
 
       {/* Logout Button */}
-      <div className="  w-full p-4">
+      <div className="w-full p-4">
         <button
           onClick={handleLogout}
           className="w-full flex bg-white text-start rounded-md text-black p-3"

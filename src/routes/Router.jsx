@@ -53,10 +53,10 @@ export const router = createBrowserRouter([
         path: "/dashboard/message-mail",
         element: <MessageMail></MessageMail>
       },
-      // {
-      //   path: "/dashboard/message-mail/user-details",
-      //   element: <UserDetailsPage></UserDetailsPage>
-      // },
+      {
+        path: "/dashboard/message-mail/user-details",
+        element: <UserDetailsPage></UserDetailsPage>
+      },
       {
         path: "/dashboard/create-new-order",
         element: <CreateANewOrder></CreateANewOrder>
