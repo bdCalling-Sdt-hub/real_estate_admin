@@ -20,7 +20,7 @@ export const ComposeModal = ({ modal2Open1, setModal2Open1 }) => {
         <Button key="discard" onClick={() => setModal2Open1(false)}>
           Discard
         </Button>,
-        <Button key="send" type="primary" form="emailForm" htmlType="submit">
+        <Button className="bg-[#2A216D]" key="send" type="primary" form="emailForm" htmlType="submit">
           Send Mail
         </Button>,
       ]}

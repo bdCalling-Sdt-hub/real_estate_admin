@@ -17,7 +17,6 @@ import { GoPackage } from "react-icons/go";
 import { LiaUsersSolid } from "react-icons/lia";
 import { IoBagOutline, IoSettingsOutline } from "react-icons/io5";
 
-
 const items = [
   {
     key: "dashboard",
@@ -61,14 +60,14 @@ const items = [
   //     },
   //   ],
   // },
-  
+
   {
     key: "Services",
     label: "Services",
     icon: <RiImageEditLine />,
     link: "/dashboard/services",
   },
-  
+
   {
     key: "Packages",
     label: "Packages",
@@ -84,10 +83,10 @@ const items = [
   {
     key: "PricingGroup",
     label: "Pricing Group",
-    icon: <RiMoneyDollarBoxLine /> ,
+    icon: <RiMoneyDollarBoxLine />,
     link: "/dashboard/pricing-group",
   },
-  
+
   {
     key: "clientManagement",
     label: "Client Management",
@@ -118,7 +117,6 @@ const items = [
     icon: <IoSettingsOutline />,
     link: "/dashboard/settings",
   },
-  
 ];
 
 const SidBar = () => {
@@ -167,19 +165,26 @@ const SidBar = () => {
   return (
     <div className="custom-sidebar h-auto  bg-[#FEFEFE] shadow-sm">
       {/* Logo */}
-      <div className="custom-sidebar-logo flex justify-center mt-5 mb-8">
-        <img src={logo} alt="Logo" className="w-[160px]" />
-      </div>
-      <div className="mx-5 mb-6">
-        <Link to={'/dashboard/create-new-order'}>
-          <button className="bg-[#2A216D] text-white py-2 w-full rounded">
-            + Create Order
-          </button>
-        </Link>
+      <div className="">
+        <div className="flex justify-center">
+          <div className="custom-sidebar-logo fixed z-30 top-0  mt-5 mb-8">
+            <img src={logo} alt="Logo" className="w-[160px]" />
+          </div>
+        </div>
+        <div className="mx-5 mb-6 fixed z-40 top-[100px] w-[280px] ">
+          <Link to={"/dashboard/create-new-order"}>
+            <button className="bg-[#2A216D] text-white py-2 w-full rounded">
+              + Create Order
+            </button>
+          </Link>
+        </div>
+        <div className="bg-white h-[152px] fixed w-[320px]">
+         
+        </div>
       </div>
 
       {/* Sidebar Menu */}
-      <div className="menu-items">
+      <div className="menu-items mt-40">
         {items.map((item, index) => (
           <div key={item.key}>
             {/* Add Section Titles */}
@@ -208,10 +213,10 @@ const SidBar = () => {
               }`}
               onClick={(e) => {
                 if (item.children) {
-                  e.preventDefault(); 
-                  onParentClick(item.key); 
+                  e.preventDefault();
+                  onParentClick(item.key);
                 } else {
-                  setSelectedKey(item.key); 
+                  setSelectedKey(item.key);
                 }
               }}
             >

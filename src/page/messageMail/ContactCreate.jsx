@@ -20,7 +20,7 @@ export const ContactCreate = ({ modal2Open, setModal2Open }) => {
         <Button key="cancel" onClick={() => setModal2Open(false)}>
           Cancel
         </Button>,
-        <Button key="save" type="primary" form="contactForm" htmlType="submit">
+        <Button className="bg-[#2A216D]" key="save" type="primary" form="contactForm" htmlType="submit">
           Save
         </Button>,
       ]}

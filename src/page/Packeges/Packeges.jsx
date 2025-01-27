@@ -140,7 +140,7 @@ export const Packeges = () => {
           <button className="text-[#EF4849]">
             <FaArrowLeft />
           </button>
-          <span className="text-lg font-semibold">Manage Ticket</span>
+          <span className="text-lg font-semibold">Packages</span>
         </h1>
         <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>
