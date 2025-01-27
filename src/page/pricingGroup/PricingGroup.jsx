@@ -113,7 +113,7 @@ export const PricingGroup = () => {
           <button className="text-[#EF4849]">
             <FaArrowLeft />
           </button>
-          <span className="text-lg font-semibold">Manage Pricing Groups</span>
+          <span className="text-lg font-semibold">Pricing Groups</span>
         </h1>
         <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>

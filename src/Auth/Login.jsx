@@ -70,13 +70,14 @@ const Login = () => {
                 <Checkbox className="text-gray-700">Remember me</Checkbox>
               </Form.Item>
               <Link
-                to={""}
+                to={"/forgetpassword"}
                 className="text-sm text-[#2F799E] hover:underline focus:outline-none"
               >
                 Forget password?
               </Link>
             </div>
 
+            <Link to={'/'}>
             <Form.Item>
               <button
                 type="submit"
@@ -84,7 +85,7 @@ const Login = () => {
               >
                 Submit
               </button>
-            </Form.Item>
+            </Form.Item></Link>
           </Form>
         </div>
         </div>

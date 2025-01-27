@@ -99,7 +99,7 @@ export const ServicesCategories = () => {
           <button className="text-[#EF4849]">
             <FaArrowLeft />
           </button>
-          <span className="text-lg font-semibold">Manage Categories</span>
+          <span className="text-lg font-semibold">Services Categories</span>
         </h1>
         <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>

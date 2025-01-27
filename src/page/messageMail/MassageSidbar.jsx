@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Button, Avatar } from "antd";
+import { Button, Avatar, Modal, Form, Input } from "antd";
 import {
   EditOutlined,
   MailOutlined,
   StarOutlined,
   PlusOutlined,
+  PhoneOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { MainMassage } from "./MainMassage";
 import { FavouriteMassage } from "./FavouriteMassage";
@@ -16,6 +18,7 @@ import { ComposeModal } from "./ComposeModal";
 export const MassageSidbar = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [modal2Open, setModal2Open] = useState(false);
+  const [modal2Open2, setModal2Open2] = useState(false);
   const [modal2Open1, setModal2Open1] = useState(false);
   return (
     <div className="flex gap-4">
@@ -88,7 +91,12 @@ export const MassageSidbar = () => {
                 size={40}
                 className="mr-4"
               />
-              <span className="text-gray-700">Dianne Russell</span>
+              <span
+                onClick={() => setModal2Open2(true)}
+                className="text-gray-700 cursor-pointer"
+              >
+                Dianne Russell
+              </span>
             </div>
             <div className="flex items-center">
               <Avatar
@@ -129,6 +137,60 @@ export const MassageSidbar = () => {
           </div>
         )}
       </div>
+      <Modal
+        centered
+        open={modal2Open2}
+        onCancel={() => setModal2Open2(false)}
+        bodyStyle={{
+          maxHeight: "50vh",
+          overflowY: "auto",
+        }}
+        footer={[
+          <Button key="cancel" onClick={() => setModal2Open2(false)}>
+            Cancel
+          </Button>,
+          <Button
+            className="bg-[#2A216D]"
+            key="save"
+            type="primary"
+            form="contactForm"
+            htmlType="submit"
+          >
+            Save
+          </Button>,
+        ]}
+      >
+        <div className="">
+          {/* Avatar */}
+          <div className="flex justify-between">
+            <div>
+            <Avatar
+              size={64}
+              src="https://via.placeholder.com/150" // Replace with the actual image URL
+            />
+            <h2 className="text-lg font-semibold mt-2">Diannel Russell</h2>
+            </div>
+            <button onClick={() => setModal2Open(true)}>Edit</button>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <h3 className="text-md font-medium mb-2">Contact Details</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <MailOutlined className="text-lg" />
+            <span>diannelrussell24@gmail.com</span>
+          </div>
+          <div className="flex items-center gap-2 mb-3">
+            <PhoneOutlined className="text-lg" />
+            <span>+8801834109489</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <HomeOutlined className="text-lg" />
+            <span>Managing Director (Square Company Ltd.)</span>
+          </div>
+        </div>
+      </Modal>
+
       <ContactCreate
         setModal2Open={setModal2Open}
         modal2Open={modal2Open}

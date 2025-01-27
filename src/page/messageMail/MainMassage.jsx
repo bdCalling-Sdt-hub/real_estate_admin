@@ -68,9 +68,9 @@ export const MainMassage = () => {
       render: (sender) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Avatar src={sender.avatar} alt={sender.name} style={{ marginRight: '10px' }} />
-          <Link to={`/dashboard/message-mail/user-details`} style={{ color: 'inherit', textDecoration: 'none' }}>
+          
             {sender.name}
-          </Link>
+          
         </div>
       ),
       width: '20%',

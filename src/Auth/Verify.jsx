@@ -39,12 +39,13 @@ const Verify = () => {
               )}
             />
           </div>
+          <Link to={'/reset'}>
           <button
             // onClick={handleVerify}
             className="w-full py-2 bg-[#2A216D] text-white rounded-md mb-4"
           >
             Verify Code
-          </button>
+          </button></Link>
 
           <span className="flex justify-center">
             You have not received the email?{" "}

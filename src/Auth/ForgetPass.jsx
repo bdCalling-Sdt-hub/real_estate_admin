@@ -46,6 +46,7 @@ const ForgetPass = () => {
                   />
                 </Form.Item>
 
+                <Link to={'/verify'}>
                 <Form.Item>
                   <button
                     type="primary"
@@ -54,7 +55,7 @@ const ForgetPass = () => {
                   >
                     Submit
                   </button>
-                </Form.Item>
+                </Form.Item></Link>
               </Form>
         </div>
         </div>

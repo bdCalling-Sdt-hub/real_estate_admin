@@ -194,7 +194,7 @@ export const InvoiceOrder = () => {
       width={600}
     >
       <div className="p-4">
-        <h2 className="text-center font-bold mb-6">Invoice</h2>
+        <h2 className="text-center font-bold mb-6">Invoice Order</h2>
         <Table
           columns={columnss}
           dataSource={dataa}

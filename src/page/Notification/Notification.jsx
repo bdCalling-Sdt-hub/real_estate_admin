@@ -38,7 +38,7 @@ const Notification = () => {
             <button className="text-[#EF4849]">
               <FaArrowLeft />
             </button>
-            <span className="text-lg font-semibold">Change Password</span>
+            <span className="text-lg font-semibold">Notification</span>
           </h1>
       <div className="mt-4 p-4">
       <Typography.Title level={4} className="mb-4">
