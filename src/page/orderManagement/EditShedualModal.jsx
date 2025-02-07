@@ -19,17 +19,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
     >
       <Form layout="vertical" onFinish={handleFinish}>
         {/* Time Zone Selection */}
-        <Form.Item
-          name="timeZone"
-          label="Time Zone"
-          rules={[{ required: true, message: "Time Zone is required" }]}
-        >
-          <Select placeholder="Select Time Zone">
-            <Option value="America/New_York">America/New_York</Option>
-            <Option value="Europe/London">Europe/London</Option>
-            <Option value="Asia/Dhaka">Asia/Dhaka</Option>
-          </Select>
-        </Form.Item>
+        
 
         {/* Calendar Section */}
         <div className="mb-6">
@@ -52,12 +42,13 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
 
         {/* Time Selection */}
         <Form.Item
-          name="selectTime"
-          label="Select Time:"
-          rules={[{ required: true, message: "Please select a time" }]}
-        >
-          <TimePicker use12Hours format="h:mm A" />
-        </Form.Item>
+  name="selectTime"
+  label="Select Time:"
+  rules={[{ required: true, message: "Please select a time" }]}
+>
+  <TimePicker use12Hours={false} format="HH:mm" />
+</Form.Item>
+
 
         {/* Team Member Section */}
         <div className="mb-6">

@@ -42,14 +42,7 @@ export const AdressTab = () => {
           >
             <Input placeholder="Input here" />
           </Form.Item>
-          <Form.Item
-            label="State"
-            name="state"
-            style={{ flex: 1 }}
-            rules={[{ required: true, message: 'Please input your state!' }]}
-          >
-            <Input placeholder="Input here" />
-          </Form.Item>
+          
         </div>
 
         <Form.Item label="Pickup keys at real estate office?" name="pickupKeys">

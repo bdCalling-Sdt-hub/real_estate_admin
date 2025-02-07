@@ -92,7 +92,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
           ]}
           >
           <Select
-            placeholder="Please select"
+            placeholder="Role"
             style={{
               width: "100%",
               fontSize: "16px",
@@ -100,9 +100,8 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
               
             }}
             options={[
-              { label: "Option 1", value: "option1" },
-              { label: "Option 2", value: "option2" },
-              { label: "Option 3", value: "option3" },
+              { label: "Photographer", value: "Photographer" },
+          
             ]}
           />
           </Form.Item>

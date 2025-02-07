@@ -51,6 +51,9 @@ export const DetailsNote = () => {
             >
               <Input.TextArea rows={7} placeholder="Enter description" />
             </Form.Item>
+            <div className="flex justify-center">
+              <button className="bg-[#2A216D] py-2 px-6 rounded text-white">Add</button>
+            </div>
           </Form>
         </div>
       </Modal>
