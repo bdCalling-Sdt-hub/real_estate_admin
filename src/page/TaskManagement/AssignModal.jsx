@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, Select } from "antd";
 export const AssignModal = ({setModal2Open,modal2Open}) => {
     const handleFinish = async (values) => {
         console.log(values);
@@ -30,12 +30,18 @@ export const AssignModal = ({setModal2Open,modal2Open}) => {
         onFinish={handleFinish}
       >
         <Form.Item
-          name="member"
-          label="To"
-          rules={[{ required: true, message: "Recipient is required" }]}
-        >
-          <Input placeholder="Enter recipient email" />
-        </Form.Item>
+  name="member"
+  label="Team Member"
+  rules={[{ required: true, message: "Recipient is required" }]}
+>
+  <Select placeholder="Select a team member">
+    <Select.Option value="member1">John Doe</Select.Option>
+    <Select.Option value="member2">Jane Smith</Select.Option>
+    <Select.Option value="member3">Sophie Ramirez</Select.Option>
+    {/* Add more team members here */}
+  </Select>
+</Form.Item>
+
 
         
       </Form>

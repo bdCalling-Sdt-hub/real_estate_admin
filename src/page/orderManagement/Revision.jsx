@@ -10,7 +10,7 @@ export const Revision = () => {
           key: '1',
           orderId: '#12333',
           orderDate: '12/04/24',
-          company: { logo: 'https://i.pravatar.cc/40?img=1', name: 'Louis Vuitton' },
+          company: { logo: 'https://i.pravatar.cc/40?img=1', name: 'Revision' },
           address: '2464 Royal Ln. Mesa, New Jersey',
           services: 2,
           total: '$546',

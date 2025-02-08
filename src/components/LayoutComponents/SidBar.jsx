@@ -40,7 +40,7 @@ const items = [
     key: "orderManagement",
     label: "Order Management",
     icon: <FaJediOrder />,
-    link: "/dashboard/order-management",
+    link: "/dashboard/order-management/all",
   },
   // {
   //   key: "categoriesManagement",

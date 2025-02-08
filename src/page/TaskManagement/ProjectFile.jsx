@@ -5,7 +5,7 @@ import { SourceFile } from "./SourceFile";
 import { FinishedFile } from "./FinishedFile";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FinishedFileComnt } from "./FinishedFileComnt";
-
+import { GoDownload } from "react-icons/go";
 export const ProjectFile = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("all");
@@ -27,31 +27,31 @@ export const ProjectFile = () => {
 
           <div className="flex justify-between mt-7">
             <div className="flex gap-3 border-b">
-            <div
-            onClick={() => setSelectedTab("all")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor: selectedTab === "all" ? "#F5ECF2" : "white",
-              color: selectedTab === "all" ? "#9B3C7B" : "black",
-            }}
-          >
-            Source File
-          </div>
-          <div
-            onClick={() => setSelectedTab("submitted")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "submitted" ? "#F5ECF2" : "white",
-              color: selectedTab === "submitted" ? "#9B3C7B" : "black",
-            }}
-          >
-            Finished File
-          </div>
+              <div
+                onClick={() => setSelectedTab("all")}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: "5px 5px 0px 0px",
+                  cursor: "pointer",
+                  backgroundColor: selectedTab === "all" ? "#F5ECF2" : "white",
+                  color: selectedTab === "all" ? "#9B3C7B" : "black",
+                }}
+              >
+                Source File
+              </div>
+              <div
+                onClick={() => setSelectedTab("submitted")}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: "5px 5px 0px 0px",
+                  cursor: "pointer",
+                  backgroundColor:
+                    selectedTab === "submitted" ? "#F5ECF2" : "white",
+                  color: selectedTab === "submitted" ? "#9B3C7B" : "black",
+                }}
+              >
+                Finished File
+              </div>
             </div>
             {selectedTab === "submitted" && (
               <div>
@@ -68,12 +68,24 @@ export const ProjectFile = () => {
           )}
         </div>
         <div className="col-span-2">
-        {selectedTab === "submitted" && (
+          {selectedTab === "submitted" && (
             <div>
-            <FinishedFileComnt></FinishedFileComnt>
-        </div>
+              <FinishedFileComnt></FinishedFileComnt>
+            </div>
           )}
         </div>
+      </div>
+      <div className="flex justify-end -mt-16">
+        {selectedTab === "all" && (
+          <div className="flex gap-4">
+            <button className="bg-[#D80027] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
+              <GoDownload className="text-xl" /> Download
+            </button>
+            <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
+              <MdOutlineFileUpload className="text-xl" /> Upload
+            </button>
+          </div>
+        )}
       </div>
       {selectedTab === "all" && (
         <div>

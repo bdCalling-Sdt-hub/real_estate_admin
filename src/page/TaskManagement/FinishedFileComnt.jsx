@@ -1,7 +1,7 @@
 import React from "react";
 import { IoSendOutline } from "react-icons/io5";
 import { VscReply } from "react-icons/vsc";
-
+import { RiGalleryLine } from "react-icons/ri";
 export const FinishedFileComnt = () => {
   return (
     <div>
@@ -17,6 +17,9 @@ export const FinishedFileComnt = () => {
               className="w-full border border-gray-300 rounded-md p-3  mb-3 resize-none"
               rows={4}
             />
+            <button className="absolute flex gap-3 bottom-6 left-[5px] text-2xl">
+            <RiGalleryLine />
+            </button>
             <button className="absolute flex gap-3 bottom-6 right-[5px] bg-[#2A216D] text-white px-4 py-2 rounded-md hover:bg-purple-600">
               Send
               <IoSendOutline className="text-xl mt-[3px]" />

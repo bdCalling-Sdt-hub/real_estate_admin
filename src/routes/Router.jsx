@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
         element: <CreateServices></CreateServices>
       },
       {
-        path: "/dashboard/order-management",
+        path: "/dashboard/order-management/:tab?",
         element: <OrderManagement></OrderManagement>
       },
       

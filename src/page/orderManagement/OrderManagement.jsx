@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Input } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { AllManage } from "./AllManage";
 import { Submited } from "./Submited";
@@ -11,24 +11,22 @@ import { Revision } from "./Revision";
 import { Complete } from "./Complete";
 
 export const OrderManagement = () => {
-  const [selectedTab, setSelectedTab] = useState("all");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get selected tab from URL
+  const selectedTab = location.pathname.split("/").pop() || "all";
+
+  // Function to change tab & update route
+  const handleTabChange = (tab) => {
+    navigate(`/dashboard/order-management/${tab}`);
+  };
 
   return (
-    <div className="h-screen ">
+    <div className="h-screen">
       <div className="bg-white p-4">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <h1
-            onClick={() => navigate(-1)}
-            className="flex gap-4 cursor-pointer"
-          >
+        <div className="flex justify-between items-center mb-5">
+          <h1 onClick={() => navigate(-1)} className="flex gap-4 cursor-pointer">
             <button className="text-[#EF4849]">
               <FaArrowLeft />
             </button>
@@ -37,142 +35,42 @@ export const OrderManagement = () => {
           <Input placeholder="Search here..." style={{ width: 300 }} />
         </div>
 
-        <div
-          className="border-b"
-          style={{ marginBottom: "20px", display: "flex" }}
-        >
-          <div
-            onClick={() => setSelectedTab("all")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor: selectedTab === "all" ? "#F5ECF2" : "white",
-              color: selectedTab === "all" ? "#9B3C7B" : "black",
-            }}
-          >
-            All(400)
-          </div>
-          <div
-            onClick={() => setSelectedTab("submitted")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "submitted" ? "#F5ECF2" : "white",
-              color: selectedTab === "submitted" ? "#9B3C7B" : "black",
-            }}
-          >
-            Submitted(120)
-          </div>
-          <div
-            onClick={() => setSelectedTab("scheduled")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "scheduled" ? "#F5ECF2" : "white",
-              color: selectedTab === "scheduled" ? "#9B3C7B" : "black",
-            }}
-          >
-            Scheduled
-          </div>
-          <div
-            onClick={() => setSelectedTab("production")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "production" ? "#F5ECF2" : "white",
-              color: selectedTab === "production" ? "#9B3C7B" : "black",
-            }}
-          >
-            In Production(45)
-          </div>
-          <div
-            onClick={() => setSelectedTab("delivered")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "delivered" ? "#F5ECF2" : "white",
-              color: selectedTab === "delivered" ? "#9B3C7B" : "black",
-            }}
-          >
-            Delivered(47)
-          </div>
-          <div
-            onClick={() => setSelectedTab("revisions")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "revisions" ? "#F5ECF2" : "white",
-              color: selectedTab === "revisions" ? "#9B3C7B" : "black",
-            }}
-          >
-            Revisions(21)
-          </div>
-          <div
-            onClick={() => setSelectedTab("completed")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "5px 5px 0px 0px",
-              cursor: "pointer",
-              backgroundColor:
-                selectedTab === "completed" ? "#F5ECF2" : "white",
-              color: selectedTab === "completed" ? "#9B3C7B" : "black",
-            }}
-          >
-            Completed
-          </div>
+        {/* Tabs */}
+        <div className="border-b flex mb-5">
+          {[
+            { label: "All", key: "all", count: 400 },
+            { label: "Submitted", key: "submitted", count: 120 },
+            { label: "Scheduled", key: "scheduled" },
+            { label: "In Production", key: "production", count: 45 },
+            { label: "Delivered", key: "delivered", count: 47 },
+            { label: "Revisions", key: "revisions", count: 21 },
+            { label: "Completed", key: "completed" },
+          ].map((tab) => (
+            <div
+              key={tab.key}
+              onClick={() => handleTabChange(tab.key)}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "5px 5px 0px 0px",
+                cursor: "pointer",
+                backgroundColor: selectedTab === tab.key ? "#F5ECF2" : "white",
+                color: selectedTab === tab.key ? "#9B3C7B" : "black",
+              }}
+            >
+              {tab.label} {tab.count && `(${tab.count})`}
+            </div>
+          ))}
         </div>
 
-        <div
-          style={{
-            borderRadius: "8px",
-          }}
-        >
-          {selectedTab === "all" && (
-            <div>
-              <AllManage></AllManage>
-            </div>
-          )}
-          {selectedTab === "submitted" && (
-            <div>
-              <Submited></Submited>
-            </div>
-          )}
-          {selectedTab === "scheduled" && (
-            <div>
-              <Scedualed></Scedualed>
-            </div>
-          )}
-          {selectedTab === "production" && (
-            <div>
-              <Production></Production>
-            </div>
-          )}
-          {selectedTab === "delivered" && (
-            <div>
-              <Delivered></Delivered>
-            </div>
-          )}
-          {selectedTab === "revisions" && (
-            <div>
-              <Revision></Revision>
-            </div>
-          )}
-          {selectedTab === "completed" && (
-            <div>
-              <Complete></Complete>
-            </div>
-          )}
+        {/* Tab Content */}
+        <div style={{ borderRadius: "8px" }}>
+          {selectedTab === "all" && <AllManage />}
+          {selectedTab === "submitted" && <Submited />}
+          {selectedTab === "scheduled" && <Scedualed />}
+          {selectedTab === "production" && <Production />}
+          {selectedTab === "delivered" && <Delivered />}
+          {selectedTab === "revisions" && <Revision />}
+          {selectedTab === "completed" && <Complete />}
         </div>
       </div>
     </div>
