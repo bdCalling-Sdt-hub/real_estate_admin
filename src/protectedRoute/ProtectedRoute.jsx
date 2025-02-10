@@ -1,39 +1,49 @@
-import { useEffect, useState } from "react";
-import UseAxios from "../hook/UseAxios";
-import { Navigate } from "react-router-dom";
+// import React, { useEffect } from "react";
+// import { Navigate, useLocation, useNavigate } from "react-router-dom";
+// import { Skeleton } from "antd";
 
-const ProtectedRoute = () => {
-  const request = UseAxios();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await request.get("/dashboard/admin", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setUser(res?.data?.data?.auth);
-      } catch (error) {
-        console.log("err", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-  if (!localStorage.getItem("token")) {
-    return <Navigate to={`/login`}></Navigate>;
+// import { useGetSuperAdminQuery } from "../page/redux/api/userApi";
+
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
+
+const ProtectedRoute = ({ children }) => {
+  // const location = useLocation();
+  // const navigate = useNavigate(); // Added useNavigate
+  // const accessToken = localStorage.getItem("accessToken");
+
+  // if (!accessToken) {
+  //   return <Navigate to={"/login"} state={{ from: location }} replace />;
+  // }
+
+  // const { data: getUserInfo, isError, isLoading, isSuccess } = useGetSuperAdminQuery(undefined, {
+  //   refetchOnMountOrArgChange: true,
+  // });
+
+  // useEffect(() => {
+  //   if (isError || (!isLoading && !isSuccess) || !getUserInfo?.data || !["admin", "super_admin"].includes(getUserInfo.data.role)) {
+  //     navigate("/login", { state: { from: location }, replace: true });
+  //   }
+  // }, [isError, isLoading, isSuccess, getUserInfo, navigate, location]);
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <Skeleton active />
+  //     </div>
+  //   );
+  // }
+
+  // return children;
+  
+  const {token} = useSelector((state) => state.logInUser)
+  console.log(token)
+  const { pathname } = useLocation();
+
+  if (!token) {
+      return <Navigate to="/login" state={{ path: pathname }}></Navigate>;
   }
-  if (loading) {
-    return <p>loading...</p>;
-  }
-  if (user?.role === "ADMIN") {
-    return children;
-  }
-  return <Navigate to={`/login`}></Navigate>;
+  return children;
 };
 
 export default ProtectedRoute;
