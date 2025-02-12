@@ -1,10 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/header/reset.png";
-import { Checkbox, Form, Input } from "antd";
+import { Checkbox, Form, Input, message } from "antd";
+import { useResetPasswordMutation } from "../page/redux/api/userApi";
 
 const ResetPass = () => {
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const navigate = useNavigate();
+  
   const onFinish = async (values) => {
+  
     console.log(values);
+    const data = {
+      email: localStorage.getItem("email"), 
+      newPassword: values?.password,
+      confirmPassword: values?.confirmPassword,
+    };
+
+    try {
+      const result = await resetPassword({ data, email: data.email }).unwrap();
+      console.log(result) 
+      message.success(result?.message);
+      navigate("/login");
+    } catch (error) {
+      message.error(error?.data?.message || "Error resetting password.");
+    }
   };
   return (
     <div className="min-h-screen grid grid-cols-2 bg-white">

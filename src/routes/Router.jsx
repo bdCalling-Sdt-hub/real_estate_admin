@@ -34,6 +34,7 @@ import { EditPricingPage } from "../page/pricingGroup/EditPricingPage";
 import { Report } from "../page/Report/Report";
 import { TaskManagementPage } from "../page/TaskManagement/TaskManagementPage";
 import Settings from "../page/Settings/Settings";
+import ProtectedRoute from "../protectedRoute/ProtectedRoute";
 
 
 export const router = createBrowserRouter([
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
      
-        <DashboardLayout></DashboardLayout>
+        <ProtectedRoute><DashboardLayout></DashboardLayout></ProtectedRoute>
       
     ),
     children: [

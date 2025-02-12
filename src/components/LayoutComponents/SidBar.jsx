@@ -16,6 +16,8 @@ import { RiImageEditLine, RiMoneyDollarBoxLine } from "react-icons/ri";
 import { GoPackage } from "react-icons/go";
 import { LiaUsersSolid } from "react-icons/lia";
 import { IoBagOutline, IoSettingsOutline } from "react-icons/io5";
+import { logout } from "../../page/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const items = [
   {
@@ -125,7 +127,7 @@ const SidBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentRef = useRef({});
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const currentPath = location.pathname;
 
@@ -158,7 +160,7 @@ const SidBar = () => {
 
   // Logout Function
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    dispatch(logout())
     navigate("/login");
   };
 

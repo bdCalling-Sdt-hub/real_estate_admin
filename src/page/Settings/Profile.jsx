@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/header/profileLogo.png";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoCameraOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
+import { useGetProfileQuery, useUpdateProfileMutation } from "../redux/api/userApi";
+import { imageUrl } from "../redux/api/baseApi";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState();
   const [form] = Form.useForm();
   const [updateLoading, setUpdateLoading] = useState(false);
   const tab = "Profile";
+  const{data:getProfile} = useGetProfileQuery();
+  console.log(getProfile?.data?.profile_image)
+  const [updateProfile] =useUpdateProfileMutation();
+  useEffect(() => {
+    if (getProfile?.data) {
+      form.setFieldsValue({
+        name: getProfile?.data?.name,
+        email: getProfile?.data?.email,
+        phone: getProfile?.data?.phone_number,
+      });
+    }
+  }, [getProfile, form]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -18,11 +32,19 @@ const Profile = () => {
   };
 
   const onEditProfile = (values) => {
-    console.log("Updated Values:", values);
-    setUpdateLoading(true);
-    setTimeout(() => {
-      setUpdateLoading(false);
-    }, 2000);
+    const data = new FormData();
+    if (image) data.append("profile_image", image);
+    data.append("name", values.name);
+    data.append("phone_number", values.phone);
+    updateProfile(data)
+      .unwrap()
+      .then(() => {
+        message.success("Profile updated successfully");
+        // Redirect after success
+      })
+      .catch((error) => {
+        message.error( "Failed to add category.", error);
+      });
   };
 
   return (
@@ -43,17 +65,21 @@ const Profile = () => {
           {/* Profile Picture Section */}
           <div className="mb-4 flex justify-center">
             <div className="relative w-[140px] h-[140px] mx-auto">
-              <input
-                type="file"
-                onChange={handleImageChange}
-                id="img"
-                style={{ display: "none" }}
-              />
-              <img
-                style={{ width: 140, height: 140, borderRadius: "100%" }}
-                src={image ? URL.createObjectURL(image) : logo}
-                alt="Admin Profile"
-              />
+            <input
+            type="file"
+            onChange={handleImageChange}
+            id="img"
+            style={{ display: "none" }}
+          />
+          <img
+            style={{ width: 140, height: 140, borderRadius: "100%" }}
+            src={`${
+              image
+                ? URL.createObjectURL(image)
+                : `${imageUrl}${getProfile?.data?.profile_image}`
+            }`}
+            alt="Admin Profile"
+          />
               {tab === "Profile" && (
                 <label
                   htmlFor="img"
@@ -71,11 +97,11 @@ const Profile = () => {
               onFinish={onEditProfile}
               layout="vertical"
               form={form}
+              
               initialValues={{
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
+                name: getProfile?.name,
+                email: getProfile?.email,
+                phone: getProfile?.phone_number,
               }}
             >
               <Form.Item
@@ -128,22 +154,7 @@ const Profile = () => {
                   placeholder="+9900700007"
                 />
               </Form.Item>
-              <Form.Item
-                name="address"
-                label={<p className="text-[16px] font-normal">Address</p>}
-                rules={[{ required: true, message: "Please enter your address" }]}
-              >
-                <Input
-                  style={{
-                    width: "100%",
-                    height: 48,
-                    borderRadius: "5px",
-                    color: "#919191",
-                  }}
-                  className="text-[16px] leading-5"
-                  placeholder="79/A Joker Vila, Gotham City"
-                />
-              </Form.Item>
+             
 
               <Form.Item>
                 <Button

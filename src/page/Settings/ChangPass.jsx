@@ -1,11 +1,43 @@
-import React from "react";
-import { Form, Input, Button } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, message } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useChangePasswordMutation } from "../redux/api/userApi";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/features/auth/authSlice";
 
 export const ChangPass = () => {
-  const handleFinish = (values) => {
+
+const [changePassword] = useChangePasswordMutation()
+const [passError, setPassError] = useState("");
+const dispatch = useDispatch();
+  const handleFinish = async (values) => {
     console.log("Form Values:", values);
+    if (values?.newPassword === values.currentPassword) {
+      return setPassError("Your old password cannot be your new password.");
+    }
+    if (values?.newPassword !== values?.confirmPassword) {
+      return setPassError("Confirm password doesn't match.");
+    } else {
+      setPassError("");
+    }
+    const data = {
+      oldPassword: values.currentPassword,
+      newPassword: values.newPassword,
+      confirmPassword: values.confirmPassword,
+    };
+    console.log(data)
+
+    try {
+      const response = await changePassword(data).unwrap(); 
+      console.log(response)
+      message.success(response?.data);
+      dispatch(logout())
+     
+      
+    } catch (error) {
+      message.error(error?.data?.message || "Failed to update password.");
+    }
   };
 
   const navigate = useNavigate()
@@ -62,7 +94,9 @@ export const ChangPass = () => {
         >
           <Input.Password className="py-2" placeholder="Confirm new password" />
         </Form.Item>
-
+        {passError && (
+                <p className="text-red-600 -mt-4 mb-2">{passError}</p>
+              )}
         <Form.Item>
           <Button
             type="primary"

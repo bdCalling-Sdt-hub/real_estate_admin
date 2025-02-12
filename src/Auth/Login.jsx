@@ -1,10 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/header/login.png";
-import { Checkbox, Form, Input } from "antd";
+import { Checkbox, Form, Input, message } from "antd";
+import { useDispatch } from "react-redux";
+import { useLoginAdminMutation } from "../page/redux/api/userApi";
+import { setToken } from "../page/redux/features/auth/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const[loginAdmin] = useLoginAdminMutation()
   const onFinish = async (values) => {
-    console.log(values);
+      try {
+        console.log("Form Values:", values);
+        const payload = await loginAdmin(values).unwrap();
+        console.log("API Response:", payload);
+        if (payload?.success) {
+          dispatch(setToken(payload?.data?.accessToken))
+          message.success("Login successful!");
+          navigate("/");
+        } else {
+          message.error(payload?.message || "Login failed!");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        message.error(error?.data?.message || "Something went wrong. Try again!");
+      } finally {
+       
+        console.log("Login attempt finished.");
+      }
   };
   return (
     <div className="min-h-screen grid grid-cols-2 bg-white">
@@ -77,7 +100,7 @@ const Login = () => {
               </Link>
             </div>
 
-            <Link to={'/'}>
+        
             <Form.Item>
               <button
                 type="submit"
@@ -85,7 +108,7 @@ const Login = () => {
               >
                 Submit
               </button>
-            </Form.Item></Link>
+            </Form.Item>
           </Form>
         </div>
         </div>
