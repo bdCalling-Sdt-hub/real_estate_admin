@@ -1,16 +1,45 @@
+import { useEffect, useState } from "react";
 import { Input } from "antd";
-import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Photo } from "./Photo";
-import { Videos } from "./Videos";
+import { CategoryWiseServices } from "./CategoryWiseServices";
 import { AddServices } from "./AddServices";
-import { EditServiceMOdal } from "./EditServiceMOdal";
+import { useGetAllServicesCategoriesQuery } from "../redux/api/serviceApi";
 
 export const Services = () => {
+  
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [searchTerm, setSearch] = useState("");
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState("all");
+  const [category, setCategoryData] = useState("");
+
+  const { data: getAllCategory, isLoading } =
+    useGetAllServicesCategoriesQuery();
+
+  const data =
+    getAllCategory?.data?.map((item, index) => ({
+      key: item._id,
+      slNo: (index + 1).toString().padStart(2, "0"),
+      categoryName: item.name,
+      categoryId: item._id,
+    })) || [];
+
+  useEffect(() => {
+    if (data.length > 0 && !category) {
+      setCategoryData(data[0].categoryId);
+    }
+  }, [data]);
+
+  const handleCategory = (categoryId) => {
+    console.log("Selected Category ID:", categoryId);
+    setCategoryData(categoryId);
+  };
+
+  console.log(
+    category
+      ? data.find((item) => item.categoryId === category)?.categoryName
+      : ""
+  );
 
   return (
     <div className="bg-white h-screen p-4">
@@ -28,54 +57,50 @@ export const Services = () => {
           </button>
           <span className="text-lg font-semibold">Services</span>
         </h1>
-        <Input placeholder="Search here..." style={{ width: 300 }} />
+        <Input onChange={(e) => setSearch(e.target.value)} placeholder="Search here..." style={{ width: 300 }} />
       </div>
 
       <div className="flex justify-between">
+        {/* Category Selection */}
         <div className="flex gap-3">
-          <div
-            onClick={() => setSelectedTab("all")}
-            className={`px-11 py-2.5  cursor-pointer ${
-              selectedTab === "all"
-                ? "bg-[#2A216D] text-[white] rounded "
-                : "border border-[#2A216D] text-[#2A216D] rounded "
-            }`}
-          >
-            Photo
-          </div>
-          <div
-            onClick={() => setSelectedTab("submitted")}
-            className={`px-11 py-2.5  cursor-pointer ${
-              selectedTab === "submitted"
-                ? "bg-[#2A216D] text-[white] rounded"
-                : "border border-[#2A216D] text-[#2A216D] rounded "
-            }`}
-          >
-            Video
-          </div>
+          {isLoading ? (
+            <p>Loading categories...</p>
+          ) : (
+            data.map((item) => (
+              <button
+                key={item.categoryId}
+                onClick={() => handleCategory(item.categoryId)}
+                className={`px-4 py-2 border rounded ${
+                  category === item.categoryId
+                    ? "bg-[#2A216D] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {item.categoryName}
+              </button>
+            ))
+          )}
         </div>
         <div>
-          <button onClick={() => setOpenAddModal(true)} className="bg-[#2A216D] text-[white] rounded px-11 py-2.5">
+          <button
+            onClick={() => setOpenAddModal(true)}
+            className="bg-[#2A216D] text-white rounded px-11 py-2.5"
+          >
             + New Services
           </button>
         </div>
       </div>
 
-      <AddServices openAddModal={openAddModal}
-        setOpenAddModal={setOpenAddModal}></AddServices>
-        <EditServiceMOdal openAddModal1={openAddModal}
-        setOpenAddModal1={setOpenAddModal}></EditServiceMOdal>
-
-      {selectedTab === "all" && (
-        <div>
-          <Photo></Photo>
-        </div>
-      )}
-      {selectedTab === "submitted" && (
-        <div>
-          <Videos></Videos>
-        </div>
-      )}
+      <AddServices
+        key={category}  // Force re-render when category changes
+        openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}
+        selectedCategory={category ? data.find((item) => item.categoryId === category)?.categoryName : ''}
+        categoryId={category}  
+      />
+      <div>
+        <CategoryWiseServices category={category} searchTerm={searchTerm}/>
+      </div>
     </div>
   );
 };

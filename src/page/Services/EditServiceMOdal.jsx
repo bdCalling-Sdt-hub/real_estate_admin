@@ -1,41 +1,106 @@
-import { Form, Input, Modal, Button, Upload } from "antd";
-import { useState } from "react";
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Form, Input, Modal, Upload, message } from "antd";
+import { useEffect, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { useUpdateServiceMutation } from "../redux/api/serviceApi";
 
-export const EditServiceMOdal = ({ openAddModal1, setOpenAddModal1 }) => {
-    const [fileList, setFileList] = useState([]);
-      const onChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-      };
-      const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-          src = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file.originFileObj);
-            reader.onload = () => resolve(reader.result);
-          });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-      };
+export const EditServiceMOdal = ({
+  editModal,
+  setEditModal,
+  selectedCategory,
+}) => {
+  console.log(selectedCategory)
+  const [updateServices] = useUpdateServiceMutation();
+  const [form] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+
+  const handleRemove = (file) => {
+    setFileList(fileList.filter((item) => item.uid !== file.uid));
+  };
+
+  const handleUploadChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const onFinish = async (values) => {
+    const id = selectedCategory?.key;
+    console.log(id)
+    const data = { ...values };
+    console.log(data)
+
+    
+    const existingImages = fileList
+      .filter((file) => file.url) 
+      .map((file) => file.url);
+
+    const newImages = fileList
+      .filter((file) => file.originFileObj)
+      .map((file) => file.originFileObj);
+
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ ...data, service_image: existingImages }));console.log('data immmmm',data)
+    newImages.forEach((file) => {
+      formData.append("service_image", file);
+    });
+    
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ':', pair[1]);
+    }
+  
+    try {
+      const res = await updateServices({ data: formData, id }).unwrap();
+      console.log(res);
+      message.success(res?.message);
+
+   
+      form.resetFields();
+      
+    
+      setFileList((prevFileList) =>
+        prevFileList.filter((file) => file.url)
+      );
+
+      setEditModal(false);
+    } catch (error) {
+      message.error(error?.data?.message || "An error occurred.");
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCategory) {
+      form.setFieldsValue({
+        title: selectedCategory?.title,
+        price: selectedCategory?.price,
+        descriptions: selectedCategory?.description,
+      });
+
+      // Create a list of existing images based on selectedCategory data
+      const images = selectedCategory?.serviceImage?.map((url, index) => ({
+        uid: index.toString(),
+        name: `image-${index}.png`,
+        status: "done",
+        url: url,
+      }));
+
+      setFileList(images || []); // Set the file list with existing images
+    }
+  }, [selectedCategory, form]);
+
   return (
     <Modal
       centered
-      open={openAddModal1}
-      onCancel={() => setOpenAddModal1(false)}
+      open={editModal}
+      onCancel={() => setEditModal(false)}
       footer={null}
       width={600}
     >
       <div className="mb-6 mt-4">
-        <h2 className="text-center font-bold text-lg mb-11">New Service</h2>
-        <Form layout="vertical">
+        <h2 className="text-center font-bold text-lg mb-11">Edit Service</h2>
+        <Form form={form} onFinish={onFinish} layout="vertical">
           {/* Package Name */}
           <Form.Item
-            label="title"
-            name="Title"
+            label="Title"
+            name="title"
             rules={[{ required: true, message: "Please enter the package name" }]}
           >
             <Input className="py-2" placeholder="Input here" />
@@ -53,33 +118,37 @@ export const EditServiceMOdal = ({ openAddModal1, setOpenAddModal1 }) => {
           {/* Description */}
           <Form.Item
             label="Description"
-            name="description"
+            name="descriptions"
             rules={[{ required: true, message: "Please enter the description" }]}
           >
-            <Input.TextArea  placeholder="Input here" rows={4} />
+            <Input.TextArea placeholder="Input here" rows={4} />
           </Form.Item>
-
-          
 
           {/* Photos */}
           <Form.Item label="Photos">
-          <Upload
-        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-        listType="picture-card"
-        fileList={fileList}
-        onChange={onChange}
-        onPreview={onPreview}
-      >
-        {fileList.length < 5 && '+ Upload'}
-      </Upload>
+            <Upload
+              listType="picture-card"
+              fileList={fileList}
+              onChange={handleUploadChange}
+              onRemove={handleRemove}
+              beforeUpload={() => false}
+              multiple
+            >
+              {fileList.length >= 4 ? null : (
+                <div className="flex items-center gap-2">
+                  <PlusOutlined />
+                  <div>Add Image</div>
+                </div>
+              )}
+            </Upload>
           </Form.Item>
 
           {/* Buttons */}
-          <div className="flex  gap-3 mt-4">
+          <div className="flex gap-3 mt-4">
             <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal1(false)}
+              onClick={() => setEditModal(false)}
             >
               Cancel
             </button>
@@ -87,7 +156,7 @@ export const EditServiceMOdal = ({ openAddModal1, setOpenAddModal1 }) => {
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
             >
-              Add
+              Save Changes
             </button>
           </div>
         </Form>
