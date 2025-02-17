@@ -35,12 +35,20 @@ export const CreateCard = ({ service, formData, setFormData }) => {
   };
 
   const handleAddService = () => {
-    if (formData?.serviceIds?.some(s => s === service._id)) {
-      setFormData({ ...formData, serviceIds: formData.serviceIds.filter(s => s !== service._id) });
+    if (formData?.serviceIds?.some((s) => s === service._id)) {
+      setFormData({
+        ...formData,
+        serviceIds: formData.serviceIds.filter((s) => s !== service._id),
+        services: formData.services.filter((s) => s._id !== service._id),
+      });
     } else {
-      setFormData({ ...formData, serviceIds: [...formData.serviceIds, service._id] });
+      setFormData({
+        ...formData,
+        serviceIds: [...formData.serviceIds, service._id],
+        services: [...formData.services, service],
+      });
     }
-  }
+  };
   return (
     <div>
       <div
@@ -52,21 +60,24 @@ export const CreateCard = ({ service, formData, setFormData }) => {
         }}
       >
         <Swiper spaceBetween={10} slidesPerView={1} autoplay={{ delay: 3000 }}>
-          {service?.service_image?.length > 0 && service?.service_image?.map((image, imgIndex) => (
-            <SwiperSlide key={imgIndex}>
-              <img
-                src={image}
-                alt={service.title}
-                style={{
-                  width: "100%",
-                  height: "200px",
-                  objectFit: "cover",
-                  cursor: "pointer",
-                }}
-                onClick={() => openModal(service.service_image, service.title)}
-              />
-            </SwiperSlide>
-          ))}
+          {service?.service_image?.length > 0 &&
+            service?.service_image?.map((image, imgIndex) => (
+              <SwiperSlide key={imgIndex}>
+                <img
+                  src={image}
+                  alt={service.title}
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    openModal(service.service_image, service.title)
+                  }
+                />
+              </SwiperSlide>
+            ))}
         </Swiper>
         <div className="p-3">
           <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
@@ -92,9 +103,9 @@ export const CreateCard = ({ service, formData, setFormData }) => {
             }}
             onClick={() => handleAddService()}
           >
-            {
-              formData?.serviceIds?.some(s => s === service._id) ? "Added" : "Add"
-            }
+            {formData?.serviceIds?.some((s) => s === service._id)
+              ? "Added"
+              : "Add"}
           </button>
         </div>
       </div>

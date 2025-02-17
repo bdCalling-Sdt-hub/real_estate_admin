@@ -5,7 +5,10 @@ const ordersApi = baseApi.injectEndpoints({
         getAllClients: builder.query({
             query: () => "/service/get-all-client",
         }),
+        getClientAgents: builder.query({
+            query: (clientId) => `/client/get-client-agent?clientId=${clientId}`,
+        }),
     }),
 });
 
-export const { useGetAllClientsQuery } = ordersApi;
+export const { useGetAllClientsQuery, useGetClientAgentsQuery } = ordersApi;

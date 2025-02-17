@@ -45,7 +45,7 @@ export const ConfirmCard = ({ service }) => {
         }}
       >
         <Swiper spaceBetween={10} slidesPerView={1} autoplay={{ delay: 3000 }}>
-          {service?.images.map((image, imgIndex) => (
+          {service?.service_image?.map((image, imgIndex) => (
             <SwiperSlide key={imgIndex}>
               <img
                 src={image}
@@ -56,25 +56,24 @@ export const ConfirmCard = ({ service }) => {
                   objectFit: "cover",
                   cursor: "pointer",
                 }}
-                onClick={() => openModal(service.images, service.title)}
+                onClick={() => openModal(service.service_image, service.title)}
               />
             </SwiperSlide>
           ))}
         </Swiper>
         <div className="p-3">
           <h3 className="text-xl font-semibold mb-2">{service?.title}</h3>
-          <p>{service?.description}</p>
-          <ul className="mt-3 list-disc ml-7">
+          <p className="line-clamp-2 min-h-[50px]">{service?.descriptions}</p>
+          {/* <ul className="mt-3 list-disc ml-7">
             {service?.features?.map((feature, featureIndex) => (
               <li key={featureIndex}>{feature}</li>
             ))}
-          </ul>
+          </ul> */}
         </div>
         <div className="border-t flex justify-between p-3 items-center">
           <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
-            Price: {service?.price}
+            Price: ${service?.price.toLocaleString()}
           </p>
-          
         </div>
       </div>
       {/* Modal with Swiper */}
