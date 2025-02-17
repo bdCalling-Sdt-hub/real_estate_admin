@@ -45,9 +45,11 @@ const service = baseApi.injectEndpoints({
     }),
 
     getAllServices: builder.query({
-      query: ({ category,searchTerm}) => {
+      query: ({ category, searchTerm, limit = 100, page = 1 }) => {
+        const searchQuery = searchTerm ? `&searchTerm=${searchTerm}` : "";
+        const categoryQuery = category ? `&category=${category}` : "";
         return {
-          url: `/service/services?category=${category}&searchTerm=${searchTerm}`,
+          url: `/service/services?limit=${limit}&page=${page}${searchQuery}${categoryQuery}`,
           method: "GET",
         };
       },
@@ -65,36 +67,36 @@ const service = baseApi.injectEndpoints({
     }),
 
     addServices: builder.mutation({
-        query: (data) => {
-          return {
-            url: "/service/create-service",
-            method: "POST",
-            body: data,
-          };
-        },
-        invalidatesTags: ["updateProfile"],
-      }),
+      query: (data) => {
+        return {
+          url: "/service/create-service",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
 
-      updateService: builder.mutation({
-        query: ({ data, id }) => {
-          return {
-            url: `/service/update-service/${id}`,
-            method: "PATCH",
-            body: data,
-          };
-        },
-        invalidatesTags: ["updateProfile"],
-      }),
+    updateService: builder.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/service/update-service/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
 
-      deleteServices: builder.mutation({
-        query: (id) => {
-          return {
-            url: `/service/delete/${id}`,
-            method: "DELETE",
-          };
-        },
-        invalidatesTags: ["updateProfile"],
-      }),
+    deleteServices: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/service/delete/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
 
     // getProfile: builder.query({
     //   query: () => {

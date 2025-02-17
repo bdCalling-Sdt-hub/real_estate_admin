@@ -1,70 +1,58 @@
 import { Input } from "antd";
-import React, { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { ServicesPackeg } from "./ServicesPackeg";
-import { ServicesPhoto } from "./ServicesPhoto";
-import { ServicesVideos } from "./ServicesVideos";
+import { useGetAllServicesCategoriesQuery, useGetAllServicesQuery } from "../redux/api/serviceApi";
 
-export const ServicesTab = () => {
-  const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState("all");
+export const ServicesTab = ({ formData, setFormData }) => {
+  const [selectedTab, setSelectedTab] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const { data: servicesCategories } = useGetAllServicesCategoriesQuery();
+  const { data: services } = useGetAllServicesQuery({ searchTerm, category: selectedTab, limit: 8 });
   return (
     <div className="mt-5">
       <div className="flex justify-between">
         <div className="flex gap-3">
           <div
-            onClick={() => setSelectedTab("all")}
-            className={`px-11 py-1  cursor-pointer ${
-              selectedTab === "all"
-                ? "bg-[#2A216D] text-[white] rounded-full "
-                : "border border-[#2A216D] text-[#2A216D] rounded-full "
-            }`}
+            onClick={() => setSelectedTab(null)}
+            className={`px-11 py-1  cursor-pointer ${selectedTab === null
+              ? "bg-[#2A216D] text-[white] rounded-full "
+              : "border border-[#2A216D] text-[#2A216D] rounded-full "
+              }`}
           >
             Packages
           </div>
-          <div
-            onClick={() => setSelectedTab("submitted")}
-            className={`px-11 py-1  cursor-pointer ${
-              selectedTab === "submitted"
+          {servicesCategories?.data?.map((category) => (
+            <div
+              key={category._id}
+              onClick={() => setSelectedTab(category._id)}
+              className={`px-11 py-1  cursor-pointer ${selectedTab === category._id
                 ? "bg-[#2A216D] text-[white] rounded-full"
                 : "border border-[#2A216D] text-[#2A216D] rounded-full "
-            }`}
-          >
-            Photos
-          </div>
-          <div
-            onClick={() => setSelectedTab("video")}
-            className={`px-11 py-1  cursor-pointer ${
-              selectedTab === "video"
-                ? "bg-[#2A216D] text-[white] rounded-full"
-                : "border border-[#2A216D] text-[#2A216D] rounded-full "
-            }`}
-          >
-            Videos
-          </div>
+                }`}
+            >
+              {category.name}
+            </div>
+          ))}
         </div>
 
-        <Input placeholder="Search here..." style={{ width: 300 }} />
+        <Input placeholder="Search here..." style={{ width: 300 }} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
 
-      {selectedTab === "all" && (
-        <div>
-          <ServicesPackeg></ServicesPackeg>
-        </div>
-      )}
-      {selectedTab === "submitted" && (
+      <div>
+        <ServicesPackeg services={services?.data} selectedTab={selectedTab} formData={formData} setFormData={setFormData} />
+      </div>
+      {/* {selectedTab === "submitted" && (
         <div>
           <ServicesPhoto></ServicesPhoto>
         </div>
       )}
       {selectedTab === "video" && (
         <div>
-         <ServicesVideos></ServicesVideos>
+          <ServicesVideos></ServicesVideos>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

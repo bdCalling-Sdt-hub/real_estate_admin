@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 import { Modal } from "antd";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
-export const CreateCard = ({ service }) => {
+export const CreateCard = ({ service, formData, setFormData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
@@ -34,6 +34,13 @@ export const CreateCard = ({ service }) => {
     );
   };
 
+  const handleAddService = () => {
+    if (formData?.serviceIds?.some(s => s === service._id)) {
+      setFormData({ ...formData, serviceIds: formData.serviceIds.filter(s => s !== service._id) });
+    } else {
+      setFormData({ ...formData, serviceIds: [...formData.serviceIds, service._id] });
+    }
+  }
   return (
     <div>
       <div
@@ -45,7 +52,7 @@ export const CreateCard = ({ service }) => {
         }}
       >
         <Swiper spaceBetween={10} slidesPerView={1} autoplay={{ delay: 3000 }}>
-          {service.images.map((image, imgIndex) => (
+          {service?.service_image?.length > 0 && service?.service_image?.map((image, imgIndex) => (
             <SwiperSlide key={imgIndex}>
               <img
                 src={image}
@@ -56,23 +63,23 @@ export const CreateCard = ({ service }) => {
                   objectFit: "cover",
                   cursor: "pointer",
                 }}
-                onClick={() => openModal(service.images, service.title)}
+                onClick={() => openModal(service.service_image, service.title)}
               />
             </SwiperSlide>
           ))}
         </Swiper>
         <div className="p-3">
           <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-          <p>{service.description}</p>
-          <ul className="mt-3 list-disc ml-7">
-            {service.features.map((feature, featureIndex) => (
+          <p className="line-clamp-2 min-h-[50px]">{service.descriptions}</p>
+          {/* <ul className="mt-3 list-disc ml-7">
+            {service?.features?.map((feature, featureIndex) => (
               <li key={featureIndex}>{feature}</li>
             ))}
-          </ul>
+          </ul> */}
         </div>
         <div className="border-t flex justify-between p-3 items-center">
           <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
-            Price: {service.price}
+            Price: ${service.price.toLocaleString()}
           </p>
           <button
             style={{
@@ -83,8 +90,11 @@ export const CreateCard = ({ service }) => {
               borderRadius: "3px",
               cursor: "pointer",
             }}
+            onClick={() => handleAddService()}
           >
-            Add
+            {
+              formData?.serviceIds?.some(s => s === service._id) ? "Added" : "Add"
+            }
           </button>
         </div>
       </div>
