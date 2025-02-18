@@ -15,6 +15,16 @@ const ordersApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getAllOrders: builder.query({
+      query: ({ searchTerm, status, page, paymentStatus }) => {
+        const queryParams = new URLSearchParams();
+        if (searchTerm) queryParams.append("searchTerm", searchTerm);
+        if (status) queryParams.append("status", status);
+        if (page) queryParams.append("page", page);
+        if (paymentStatus) queryParams.append("paymentStatus", paymentStatus);
+        return `/orders/?${queryParams.toString()}`;
+      },
+    }),
   }),
 });
 
@@ -22,4 +32,5 @@ export const {
   useGetAllClientsQuery,
   useGetClientAgentsQuery,
   useCreateOrderMutation,
+  useGetAllOrdersQuery,
 } = ordersApi;
