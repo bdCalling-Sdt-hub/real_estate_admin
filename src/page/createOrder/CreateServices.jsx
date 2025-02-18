@@ -6,7 +6,8 @@ import { ConfirmSection } from "./ConfirmDection";
 import { FaArrowLeftLong, FaArrowRightLong, FaCheck } from "react-icons/fa6";
 import { CreateANewOrder } from "./CreateANewOrder";
 import { message } from "antd";
-
+import { useNavigate } from "react-router-dom";
+import { useCreateOrderMutation } from "../redux/api/ordersApi";
 const CreateServices = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [formData, setFormData] = useState({
@@ -62,7 +63,7 @@ const CreateServices = () => {
     // Step 4: Confirm Tab (Final Step Validation)
     if (activeTab === 4) {
       if (formData.services?.length > 0) {
-        console.log({ formData });
+        handleCreateOrder();
       } else {
         message.error("Please review your service information");
         return; // Stop further processing
@@ -75,7 +76,52 @@ const CreateServices = () => {
       setActiveTab(activeTab - 1);
     }
   };
+  const navigate = useNavigate();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  console.log({ formData });
 
+  const handleCreateOrder = () => {
+    const formDataForAPI = new FormData();
+    const serviceIds = formData.services
+      .filter((service) => !service.package_image)
+      .map((service) => service._id);
+    const packageIds = formData.services
+      .filter((service) => service.package_image)
+      .map((service) => service._id);
+
+    const data = {
+      clientId: formData.client,
+      pickupKeyOffice: formData.pickupKeys === "yes" ? true : false,
+      contactAgent: formData.contactAgent,
+      contactOwner: formData.contactAgent === "false" ? true : false,
+      address: formData.address,
+      contactInfo: formData.contactInfo,
+      linkedAgents: [formData.linkedAgents._id],
+      locations: {
+        lat: formData.address.lat,
+        lng: formData.address.lng,
+      },
+      descriptions: formData.description,
+      totalAmount: formData.services.reduce((acc, curr) => acc + curr.price, 0),
+      serviceIds: serviceIds,
+      packageIds: packageIds,
+    };
+    formDataForAPI.append("uploadFiles", formData.uploadFiles);
+    formDataForAPI.append("data", JSON.stringify(data));
+
+    createOrder(formDataForAPI);
+
+    message.success("Order created successfully");
+
+    // Reset form data
+    // setFormData({
+    //   serviceIds: [],
+    //   services: [],
+    //   contactAgent: "false",
+    // });
+
+    // navigate("/");
+  };
   return (
     <div className="bg-white p-4">
       <div
