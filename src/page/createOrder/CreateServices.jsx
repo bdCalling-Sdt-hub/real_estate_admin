@@ -5,9 +5,15 @@ import { ContactInforTab } from "./ContactInforTab";
 import { ConfirmSection } from "./ConfirmDection";
 import { FaArrowLeftLong, FaArrowRightLong, FaCheck } from "react-icons/fa6";
 import { CreateANewOrder } from "./CreateANewOrder";
+import { message } from "antd";
+
 const CreateServices = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [formData, setFormData] = useState({ serviceIds: [], services: [] });
+  const [formData, setFormData] = useState({
+    serviceIds: [],
+    services: [],
+    contactAgent: "false",
+  });
 
   const tabs = ["Services", "Address", "Contact Info", "Confirm"];
   const tabContent = [
@@ -22,10 +28,45 @@ const CreateServices = () => {
     <ContactInforTab key={3} formData={formData} setFormData={setFormData} />,
     <ConfirmSection key={4} formData={formData} setFormData={setFormData} />,
   ];
-
   const handleNext = () => {
-    if (activeTab < tabs.length) {
-      setActiveTab(activeTab + 1);
+    // Step 1: Services Tab Validation
+    if (activeTab === 1) {
+      if (formData.serviceIds.length > 0) {
+        setActiveTab(2);
+      } else {
+        message.error("Please select a service");
+        return; // Stop further processing
+      }
+    }
+
+    // Step 2: Address Tab Validation
+    if (activeTab === 2) {
+      if (formData.address?.zipCode) {
+        setActiveTab(3);
+      } else {
+        message.error("Please enter an address");
+        return; // Stop further processing
+      }
+    }
+
+    // Step 3: Contact Info Tab Validation
+    if (activeTab === 3) {
+      if (formData.contactInfo) {
+        setActiveTab(4);
+      } else {
+        message.error("Please enter contact information");
+        return; // Stop further processing
+      }
+    }
+
+    // Step 4: Confirm Tab (Final Step Validation)
+    if (activeTab === 4) {
+      if (formData.services?.length > 0) {
+        console.log({ formData });
+      } else {
+        message.error("Please review your service information");
+        return; // Stop further processing
+      }
     }
   };
 
@@ -108,10 +149,10 @@ const TabFooter = ({ activeTab, handleNext, handlePrevious, tabs }) => (
       <button
         className="border border-[#2A216D] text-[#2A216D] flex items-center"
         onClick={handleNext}
-        disabled={activeTab === tabs.length}
+        disabled={activeTab === tabs.length + 1}
         style={{
           padding: "7px 40px",
-          cursor: activeTab === tabs.length ? "not-allowed" : "pointer",
+          cursor: activeTab === tabs.length + 1 ? "not-allowed" : "pointer",
         }}
       >
         {activeTab === tabs.length ? (

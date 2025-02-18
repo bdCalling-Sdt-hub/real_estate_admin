@@ -1,26 +1,49 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Form, Input, Radio, Typography } from "antd";
-import {
-  APIProvider,
-  Map,
-  Marker,
-  useMapsLibrary,
-} from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
 export const AdressTab = ({ formData, setFormData }) => {
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
-  const placesLibrary = useMapsLibrary("places");
-  const [service, setService] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState({
+    lat: formData.address?.lat || 0,
+    lng: formData.address?.lng || 0,
+  });
+  const [form] = Form.useForm();
+
+  const getLatLngFromAddress = async (address) => {
+    if (!window.google) return;
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const { lat, lng } = results[0].geometry.location;
+        setMarkerPosition({ lat: lat(), lng: lng() });
+        setFormData((prev) => ({
+          ...prev,
+          address: {
+            ...prev.address,
+            lat: lat(),
+            lng: lng(),
+          },
+        }));
+      } else {
+        console.error("Geocode failed: ", status);
+      }
+    });
+  };
 
   const handleMapClick = (e) => {
-    setMapCenter(e.detail.latLng);
+    const { lat, lng } = e.detail.latLng;
+    setMarkerPosition({ lat, lng });
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        lat,
+        lng,
+      },
+    }));
+    getAddressFromLatLng(lat, lng);
   };
-  useEffect(() => {
-    if (placesLibrary) {
-      const service = new placesLibrary.placesService();
-      setService(service);
-    }
-  }, [placesLibrary]);
 
   const handleValuesChange = async (_, allValues) => {
     setFormData({
@@ -30,19 +53,68 @@ export const AdressTab = ({ formData, setFormData }) => {
         city: allValues.city,
         streetAddress: allValues.streetAddress,
         streetName: allValues.streetNumber,
+        streetNumber: allValues.streetNumber,
       },
     });
 
-    const fullAddress = `${allValues.streetAddress || ""} ${
-      allValues.city || ""
-    } ${allValues.zipCode || ""}`;
-    if (!service || fullAddress.length === 0) {
-      setMapCenter({ lat: 0, lng: 0 });
-      return;
-    }
-    const request = { input: fullAddress };
-    service.getQueryPredictions(request, (res) => {
-      setMapCenter(res.predictions[0].geometry.location);
+    const address = `${allValues.streetAddress} ${allValues.streetNumber}, ${allValues.city}, ${allValues.zipCode}`;
+
+    await getLatLngFromAddress(address);
+  };
+
+  const getAddressFromLatLng = async (lat, lng) => {
+    if (!window.google) return;
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const addressComponents = results[0].address_components;
+
+        let streetAddress = "";
+        let streetNumber = "";
+        let city = "";
+        let state = "";
+        let zipCode = "";
+
+        addressComponents.forEach((component) => {
+          if (component.types.includes("street_number")) {
+            streetNumber = component.long_name;
+          }
+          if (component.types.includes("route")) {
+            streetAddress = component.long_name;
+          }
+          if (component.types.includes("locality")) {
+            city = component.long_name;
+          }
+          if (component.types.includes("postal_code")) {
+            zipCode = component.long_name;
+          }
+          if (component.types.includes("administrative_area_level_1")) {
+            state = component.long_name;
+          }
+        });
+
+        setFormData({
+          ...formData,
+          address: {
+            zipCode,
+            city,
+            streetAddress,
+            streetName: streetNumber,
+            streetNumber,
+            state: state,
+          },
+        });
+
+        form.setFieldsValue({
+          zipCode,
+          city,
+          streetAddress,
+          streetNumber,
+        });
+      } else {
+        console.error("Geocode failed: ", status);
+      }
     });
   };
   return (
@@ -51,18 +123,20 @@ export const AdressTab = ({ formData, setFormData }) => {
       style={{ maxWidth: "600px", margin: "auto", textAlign: "center" }}
     >
       <Typography.Title level={3}>Address</Typography.Title>
-      <APIProvider apiKey={""}>
+      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <Map
-          style={{ width: "100%", height: "140px" }}
-          defaultCenter={mapCenter}
+          style={{ width: "100%", height: "200px" }}
+          defaultCenter={markerPosition}
           defaultZoom={6}
           gestureHandling={"greedy"}
           onClick={handleMapClick}
         >
-          <Marker position={mapCenter} />
+          <Marker position={markerPosition} />
         </Map>
       </APIProvider>
       <Form
+        form={form}
+        initialValues={formData.address}
         onValuesChange={handleValuesChange}
         layout="vertical"
         className="mt-8"
@@ -122,7 +196,12 @@ export const AdressTab = ({ formData, setFormData }) => {
         </div>
 
         <Form.Item label="Pickup keys at real estate office?" name="pickupKeys">
-          <Radio.Group>
+          <Radio.Group
+            defaultValue={formData.pickupKeys}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, pickupKeys: e.target.value }));
+            }}
+          >
             <Radio value="yes">Yes</Radio>
             <Radio value="no">No</Radio>
           </Radio.Group>

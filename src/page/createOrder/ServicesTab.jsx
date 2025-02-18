@@ -6,16 +6,20 @@ import {
   useGetAllServicesCategoriesQuery,
   useGetAllServicesQuery,
 } from "../redux/api/serviceApi";
+import { useGetAllPackageQuery } from "../redux/api/packageApi";
 
 export const ServicesTab = ({ formData, setFormData }) => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: servicesCategories } = useGetAllServicesCategoriesQuery();
-  const { data: services } = useGetAllServicesQuery({
+  const { data: packages } = useGetAllPackageQuery({
     searchTerm,
+  });
+  const { data: services } = useGetAllServicesQuery({
     category: selectedTab,
-    limit: 8,
+    searchTerm,
+    limit: 100,
   });
   return (
     <div className="mt-5">
@@ -54,13 +58,23 @@ export const ServicesTab = ({ formData, setFormData }) => {
       </div>
 
       <div>
-        <ServicesPackeg
-          services={services?.data}
-          selectedTab={selectedTab}
-          searchTerm={searchTerm}
-          formData={formData}
-          setFormData={setFormData}
-        />
+        {selectedTab === null ? (
+          <ServicesPackeg
+            packages={packages?.data}
+            selectedTab={selectedTab}
+            searchTerm={searchTerm}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        ) : (
+          <ServicesPackeg
+            services={services?.data}
+            selectedTab={selectedTab}
+            searchTerm={searchTerm}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        )}
       </div>
       {/* {selectedTab === "submitted" && (
         <div>

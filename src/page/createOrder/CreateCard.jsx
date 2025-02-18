@@ -7,7 +7,8 @@ import "swiper/css/navigation";
 import { Modal } from "antd";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
-export const CreateCard = ({ service, formData, setFormData }) => {
+
+export const CreateCard = ({ _package, formData, setFormData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
@@ -35,20 +36,21 @@ export const CreateCard = ({ service, formData, setFormData }) => {
   };
 
   const handleAddService = () => {
-    if (formData?.serviceIds?.some((s) => s === service._id)) {
+    if (formData?.serviceIds?.some((s) => s === _package._id)) {
       setFormData({
         ...formData,
-        serviceIds: formData.serviceIds.filter((s) => s !== service._id),
-        services: formData.services.filter((s) => s._id !== service._id),
+        serviceIds: formData.serviceIds.filter((s) => s !== _package._id),
+        services: formData.services.filter((s) => s._id !== _package._id),
       });
     } else {
       setFormData({
         ...formData,
-        serviceIds: [...formData.serviceIds, service._id],
-        services: [...formData.services, service],
+        serviceIds: [...formData.serviceIds, _package._id],
+        services: [...formData.services, _package],
       });
     }
   };
+  const images = _package?.package_image || _package?.service_image;
   return (
     <div>
       <div
@@ -60,37 +62,37 @@ export const CreateCard = ({ service, formData, setFormData }) => {
         }}
       >
         <Swiper spaceBetween={10} slidesPerView={1} autoplay={{ delay: 3000 }}>
-          {service?.service_image?.length > 0 &&
-            service?.service_image?.map((image, imgIndex) => (
+          {images?.length > 0 &&
+            images?.map((image, imgIndex) => (
               <SwiperSlide key={imgIndex}>
                 <img
                   src={image}
-                  alt={service.title}
+                  alt={_package.name}
                   style={{
                     width: "100%",
                     height: "200px",
                     objectFit: "cover",
                     cursor: "pointer",
                   }}
-                  onClick={() =>
-                    openModal(service.service_image, service.title)
-                  }
+                  onClick={() => openModal(images, _package.name)}
                 />
               </SwiperSlide>
             ))}
         </Swiper>
         <div className="p-3">
-          <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-          <p className="line-clamp-2 min-h-[50px]">{service.descriptions}</p>
-          {/* <ul className="mt-3 list-disc ml-7">
-            {service?.features?.map((feature, featureIndex) => (
-              <li key={featureIndex}>{feature}</li>
+          <h3 className="text-xl font-semibold mb-2">
+            {_package.name || _package.title}
+          </h3>
+          <p className="line-clamp-2">{_package.descriptions}</p>
+          <ul className="mt-3 list-disc ml-7">
+            {_package?.services?.map((service) => (
+              <li key={service._id}>{service.title}</li>
             ))}
-          </ul> */}
+          </ul>
         </div>
         <div className="border-t flex justify-between p-3 items-center">
           <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
-            Price: ${service.price.toLocaleString()}
+            Price: ${_package.price.toLocaleString()}
           </p>
           <button
             style={{
@@ -103,7 +105,7 @@ export const CreateCard = ({ service, formData, setFormData }) => {
             }}
             onClick={() => handleAddService()}
           >
-            {formData?.serviceIds?.some((s) => s === service._id)
+            {formData?.serviceIds?.some((s) => s === _package._id)
               ? "Added"
               : "Add"}
           </button>

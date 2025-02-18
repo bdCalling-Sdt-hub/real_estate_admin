@@ -34,6 +34,8 @@ export const ConfirmCard = ({ service }) => {
     );
   };
 
+  const images = service?.service_image || service?.package_image;
+  const name = service?.title || service?.name;
   return (
     <div>
       <div
@@ -45,30 +47,30 @@ export const ConfirmCard = ({ service }) => {
         }}
       >
         <Swiper spaceBetween={10} slidesPerView={1} autoplay={{ delay: 3000 }}>
-          {service?.service_image?.map((image, imgIndex) => (
+          {images?.map((image, imgIndex) => (
             <SwiperSlide key={imgIndex}>
               <img
                 src={image}
-                alt={service.title}
+                alt={name}
                 style={{
                   width: "100%",
                   height: "200px",
                   objectFit: "cover",
                   cursor: "pointer",
                 }}
-                onClick={() => openModal(service.service_image, service.title)}
+                onClick={() => openModal(images, name)}
               />
             </SwiperSlide>
           ))}
         </Swiper>
         <div className="p-3">
-          <h3 className="text-xl font-semibold mb-2">{service?.title}</h3>
+          <h3 className="text-xl font-semibold mb-2">{name}</h3>
           <p className="line-clamp-2 min-h-[50px]">{service?.descriptions}</p>
-          {/* <ul className="mt-3 list-disc ml-7">
-            {service?.features?.map((feature, featureIndex) => (
-              <li key={featureIndex}>{feature}</li>
+          <ul className="mt-3 list-disc ml-7">
+            {service?.services?.map((service) => (
+              <li key={service._id}>{service.title}</li>
             ))}
-          </ul> */}
+          </ul>
         </div>
         <div className="border-t flex justify-between p-3 items-center">
           <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>

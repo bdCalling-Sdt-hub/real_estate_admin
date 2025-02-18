@@ -13,9 +13,10 @@ const service = baseApi.injectEndpoints({
       invalidatesTags: ["updateProfile"],
     }),
     getAllPackage: builder.query({
-      query: () => {
+      query: ({ limit = 100, page = 1, searchTerm }) => {
+        const searchQuery = searchTerm ? `&searchTerm=${searchTerm}` : "";
         return {
-          url: `/service/packages?limit=100`,
+          url: `/service/packages?limit=${limit}&page=${page}${searchQuery}`,
           method: "GET",
         };
       },
@@ -104,14 +105,13 @@ const service = baseApi.injectEndpoints({
     //     },
     //     invalidatesTags: ["updateProfile"],
     //   }),
-
   }),
 });
 
 export const {
- useGetAllPackageQuery,
- useAddPackageMutation,
- useUpdatePackageMutation,
- useGetAllClientQuery,
- useGetServicesAllQuery
+  useGetAllPackageQuery,
+  useAddPackageMutation,
+  useUpdatePackageMutation,
+  useGetAllClientQuery,
+  useGetServicesAllQuery,
 } = service;
