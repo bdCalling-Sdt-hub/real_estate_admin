@@ -42,17 +42,35 @@ const CreateServices = () => {
 
     // Step 2: Address Tab Validation
     if (activeTab === 2) {
-      if (formData.address?.zipCode) {
+      const { zipCode, city, streetAddress, streetName, streetNumber } =
+        formData.address || {};
+      if (
+        zipCode &&
+        city &&
+        streetAddress &&
+        streetName &&
+        streetNumber &&
+        formData?.pickupKeys
+      ) {
         setActiveTab(3);
       } else {
         message.error("Please enter an address");
-        return; // Stop further processing
+        return;
       }
     }
 
     // Step 3: Contact Info Tab Validation
     if (activeTab === 3) {
-      if (formData.contactInfo) {
+      console.log({ formData });
+      const contactAgent =
+        formData?.contactAgent === "true" && formData?.linkedAgents?._id;
+      const contactOwner =
+        formData?.contactAgent === "false" &&
+        formData?.contactInfo &&
+        formData.contactInfo.name1 &&
+        formData.contactInfo.email1 &&
+        formData.contactInfo.phone1;
+      if (contactAgent || contactOwner) {
         setActiveTab(4);
       } else {
         message.error("Please enter contact information");
@@ -78,7 +96,6 @@ const CreateServices = () => {
   };
   const navigate = useNavigate();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
-  console.log({ formData });
 
   const handleCreateOrder = () => {
     const formDataForAPI = new FormData();
@@ -96,7 +113,8 @@ const CreateServices = () => {
       contactOwner: formData.contactAgent === "false" ? true : false,
       address: formData.address,
       contactInfo: formData.contactInfo,
-      linkedAgents: [formData.linkedAgents._id],
+      linkedAgents:
+        formData.contactAgent === "true" ? [formData.linkedAgents._id] : [],
       locations: {
         lat: formData.address.lat,
         lng: formData.address.lng,
@@ -114,13 +132,13 @@ const CreateServices = () => {
     message.success("Order created successfully");
 
     // Reset form data
-    // setFormData({
-    //   serviceIds: [],
-    //   services: [],
-    //   contactAgent: "false",
-    // });
+    setFormData({
+      serviceIds: [],
+      services: [],
+      contactAgent: "false",
+    });
 
-    // navigate("/");
+    navigate("/");
   };
   return (
     <div className="bg-white p-4">

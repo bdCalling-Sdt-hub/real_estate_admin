@@ -109,29 +109,33 @@ export const ContactInforTab = ({ formData, setFormData }) => {
             </>
           )}
 
-          <Typography.Title
-            level={5}
-            style={{ textAlign: "left", marginTop: "20px" }}
-          >
-            Linked real estate agent
-          </Typography.Title>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            {agents.data?.data?.length > 0 &&
-              agents.data?.data?.map((agent) => (
-                <AgentCheckbox
-                  key={agent?._id}
-                  agent={agent}
-                  handleCheckboxChange={handleCheckboxChange}
-                  selectedAgent={selectedAgent}
-                />
-              ))}
-          </div>
+          {formData?.contactAgent === "true" && (
+            <>
+              <Typography.Title
+                level={5}
+                style={{ textAlign: "left", marginTop: "20px" }}
+              >
+                Linked real estate agent
+              </Typography.Title>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                {agents.data?.data?.length > 0 &&
+                  agents.data?.data?.map((agent) => (
+                    <AgentCheckbox
+                      key={agent?._id}
+                      agent={agent}
+                      handleCheckboxChange={handleCheckboxChange}
+                      selectedAgent={selectedAgent}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
         </Form>
       </div>
     </div>
