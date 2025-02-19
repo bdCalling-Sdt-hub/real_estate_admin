@@ -7,6 +7,15 @@ import { PiFileImageDuotone } from "react-icons/pi";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 
 export const PurchasedPackageSection = ({ tasks }) => {
+  const handleDownload = (files) => {
+    files.forEach((file) => {
+      const link = document.createElement("a");
+      link.href = file.url;
+      link.download = file.url.split("/").pop();
+      link.target = "_blank";
+      link.click();
+    });
+  };
   return (
     <div className="mt-8">
       <h2 className="text-lg font-bold mb-4 bg-[#F38E0A] text-white p-3 rounded-md">
@@ -31,12 +40,17 @@ export const PurchasedPackageSection = ({ tasks }) => {
                       View Link
                     </span>
                   </button>
-                  <button className="relative bg-[#2A216D] text-white w-[40px] h-[40px] items-center text-xl rounded pl-[10px] group">
-                    <LuDownload />
-                    <span className="absolute hidden group-hover:block bg-gray-800 text-white text-sm rounded-md px-2 py-1 top-[-2rem] left-1/2 transform -translate-x-1/2">
-                      Download
-                    </span>
-                  </button>
+                  {service.finishFile?.length > 0 && (
+                    <button
+                      onClick={() => handleDownload(service.finishFile)}
+                      className="relative bg-[#2A216D] text-white w-[40px] h-[40px] items-center text-xl rounded pl-[10px] group"
+                    >
+                      <LuDownload />
+                      <span className="absolute hidden group-hover:block bg-gray-800 text-white text-sm rounded-md px-2 py-1 top-[-2rem] left-1/2 transform -translate-x-1/2">
+                        Download
+                      </span>
+                    </button>
+                  )}
                 </div>
               </div>
 

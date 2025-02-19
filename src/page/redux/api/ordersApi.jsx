@@ -47,6 +47,15 @@ const ordersApi = baseApi.injectEndpoints({
         };
       },
     }),
+    addNote: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/orders/add-notes/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -58,4 +67,5 @@ export const {
   useGetOrderByIdQuery,
   useGetTeamMembersQuery,
   useSetAppointmentScheduleMutation,
+  useAddNoteMutation,
 } = ordersApi;

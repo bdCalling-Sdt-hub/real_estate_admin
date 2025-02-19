@@ -1,13 +1,18 @@
-import { Form, Input, Modal } from "antd";
+import { Form, Input, Modal, message } from "antd";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useAddNoteMutation } from "../redux/api/ordersApi";
+import { useParams } from "react-router-dom";
 
 export const DetailsNote = ({ notes }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
-  const onFinish = async (values) => {
-    console.log(values);
+  const [addNote, { isLoading }] = useAddNoteMutation();
+  const { id } = useParams();
+  const onFinish = async ({ text }) => {
+    await addNote({ id: id, data: { text } });
+    setOpenAddModal(false);
+    message.success("Note added successfully");
   };
-  console.log(notes);
   return (
     <div className="mt-6">
       <div className="flex justify-between">
@@ -47,7 +52,7 @@ export const DetailsNote = ({ notes }) => {
           <Form layout="vertical" onFinish={onFinish}>
             <Form.Item
               label="Description"
-              name="description"
+              name="text"
               rules={[
                 { required: true, message: "Please enter a description" },
               ]}
