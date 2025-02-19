@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, Menu } from "antd";
+import { Avatar, Button, Dropdown, Menu, Modal } from "antd";
 import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { PurchasedPackageSection } from "./PurchasedPackageSection";
@@ -7,7 +7,10 @@ import { DetailsNote } from "./DetailsNote";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { EditShedualModal } from "./EditShedualModal";
-import { useGetOrderByIdQuery } from "../redux/api/ordersApi";
+import {
+  useGetOrderByIdQuery,
+  useRemoveOrderMutation,
+} from "../redux/api/ordersApi";
 import Loading from "../../components/Loading";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { imageUrl } from "../redux/api/baseApi";
@@ -16,6 +19,13 @@ import { formatDateTime } from "../../utils/formatDateTime";
 export const OrderDetailsPage = () => {
   const navigate = useNavigate();
   const [modal2Open, setModal2Open] = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const [removeOrder, { isLoading: isRemoving }] = useRemoveOrderMutation();
+
+  const handleRemoveOrder = async () => {
+    await removeOrder(id);
+    navigate("/dashboard/order-management/all");
+  };
   const menu = (
     <Menu>
       <Menu.Item key="1">
@@ -33,7 +43,9 @@ export const OrderDetailsPage = () => {
         Edit Schedule
       </Menu.Item>
       <Menu.Item key="4">Set Order On Hold</Menu.Item>
-      <Menu.Item key="5">Remove Order</Menu.Item>
+      <Menu.Item key="5" onClick={() => setRemoveModalOpen(true)}>
+        Remove Order
+      </Menu.Item>
       <Menu.Item key="6">Cancel Order</Menu.Item>
     </Menu>
   );
@@ -244,6 +256,18 @@ export const OrderDetailsPage = () => {
         modal2Open={modal2Open}
         schedule={data?.data?.schedule}
       />
+      <Modal
+        open={removeModalOpen}
+        onCancel={() => setRemoveModalOpen(false)}
+        onOk={handleRemoveOrder}
+        okText="Remove"
+        cancelText="Cancel"
+        okButtonProps={{
+          loading: isRemoving,
+        }}
+      >
+        <p>Are you sure you want to remove this order?</p>
+      </Modal>
     </div>
   );
 };
