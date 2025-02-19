@@ -97,9 +97,10 @@ const columns = [
   },
   {
     title: "Details",
-    key: "details",
-    render: () => (
-      <Link to={"/dashboard/order-management/order-details"}>
+    key: "_id",
+    dataIndex: "_id",
+    render: (id) => (
+      <Link to={`/dashboard/order-management/order-details/${id}`}>
         {" "}
         <button className="w-10 h-10 text-white bg-[#2A216D] rounded text-xl">
           <EyeOutlined />

@@ -72,7 +72,7 @@ export const router = createBrowserRouter([
       },
       
       {
-        path: "/dashboard/order-management/order-details",
+        path: "/dashboard/order-management/order-details/:id",
         element: <OrderDetailsPage></OrderDetailsPage>
       },
       {

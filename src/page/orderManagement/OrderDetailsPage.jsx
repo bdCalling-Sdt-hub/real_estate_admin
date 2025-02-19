@@ -1,28 +1,46 @@
-import { Button, Dropdown, Input, Menu } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { PurchasedPackageSection } from "./PurchasedPackageSection";
 import { MassageBox } from "./MassageBox";
 import { DetailsNote } from "./DetailsNote";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { EditShedualModal } from "./EditShedualModal";
+import { useGetOrderByIdQuery } from "../redux/api/ordersApi";
+import Loading from "../../components/Loading";
 
 export const OrderDetailsPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [modal2Open, setModal2Open] = useState(false);
   const menu = (
     <Menu>
-      
-        <Menu.Item key="1"><Link to={"/dashboard/order-management/order-details/edit-order"}>Edit Order</Link></Menu.Item>
-      
-      <Menu.Item key="2"><Link to={'/dashboard/order-management/order-details/edit-services'}>Edit Services</Link></Menu.Item>
-      <Menu.Item onClick={() => setModal2Open(true)} key="3">Edit Schedule</Menu.Item>
+      <Menu.Item key="1">
+        <Link to={"/dashboard/order-management/order-details/edit-order"}>
+          Edit Order
+        </Link>
+      </Menu.Item>
+
+      <Menu.Item key="2">
+        <Link to={"/dashboard/order-management/order-details/edit-services"}>
+          Edit Services
+        </Link>
+      </Menu.Item>
+      <Menu.Item onClick={() => setModal2Open(true)} key="3">
+        Edit Schedule
+      </Menu.Item>
       <Menu.Item key="4">Set Order On Hold</Menu.Item>
       <Menu.Item key="5">Remove Order</Menu.Item>
       <Menu.Item key="6">Cancel Order</Menu.Item>
     </Menu>
   );
+  const { id } = useParams();
+  console.log(id);
+
+  const { data, isLoading } = useGetOrderByIdQuery(id);
+
+  if (isLoading) return <Loading />;
+
   return (
     <div className="p-6 bg-white min-h-screen">
       <div
@@ -67,7 +85,10 @@ export const OrderDetailsPage = () => {
 
             <div className="border flex justify-between p-3 rounded-md items-center">
               <p className="font-semibold">Appointment</p>
-              <button  onClick={() => setModal2Open(true)} className="border border-[#F38E0A] text-[#F38E0A] py-2 px-4 rounded-md ">
+              <button
+                onClick={() => setModal2Open(true)}
+                className="border border-[#F38E0A] text-[#F38E0A] py-2 px-4 rounded-md "
+              >
                 Schedule An Appointment
               </button>
             </div>
@@ -170,8 +191,10 @@ export const OrderDetailsPage = () => {
         <PurchasedPackageSection></PurchasedPackageSection>
         <MassageBox></MassageBox>
       </div>
-      <EditShedualModal setModal2Open={setModal2Open}
-        modal2Open={modal2Open}></EditShedualModal>
+      <EditShedualModal
+        setModal2Open={setModal2Open}
+        modal2Open={modal2Open}
+      ></EditShedualModal>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { useGetAllOrdersQuery } from "../redux/api/ordersApi";
 
 export const Delivered = ({ search }) => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const pageSize = 10;
   const { data: orders, isLoading } = useGetAllOrdersQuery({
     page: page,
     limit: pageSize,
@@ -19,10 +19,9 @@ export const Delivered = ({ search }) => {
       pagination={{
         pageSize: pageSize,
         showSizeChanger: true,
-        pageSizeOptions: ["5", "10", "20"],
-        onChange: (page, pageSize) => {
+        pageSizeOptions: ["10"],
+        onChange: (page) => {
           setPage(page);
-          setPageSize(pageSize);
         },
       }}
       bordered

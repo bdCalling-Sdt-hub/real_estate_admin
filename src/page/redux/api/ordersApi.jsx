@@ -25,6 +25,9 @@ const ordersApi = baseApi.injectEndpoints({
         return `/orders/?${queryParams.toString()}`;
       },
     }),
+    getOrderById: builder.query({
+      query: (id) => `/orders/get/${id}`,
+    }),
   }),
 });
 
@@ -33,4 +36,5 @@ export const {
   useGetClientAgentsQuery,
   useCreateOrderMutation,
   useGetAllOrdersQuery,
+  useGetOrderByIdQuery,
 } = ordersApi;

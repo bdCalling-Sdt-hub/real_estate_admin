@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const PORT = 5000
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.0.60.118:5001",
+  baseUrl: `http://10.0.60.118:${PORT}`,
   // prepareHeaders: (headers) => {
   //   const token = localStorage.getItem("accessToken");
   //   console.log(token);
@@ -31,4 +32,4 @@ export const baseApi = createApi({
   endpoints: () => ({}),
 });
 
-export const imageUrl = "http://10.0.60.118:5001";
+export const imageUrl = `http://10.0.60.118:${PORT}`;
