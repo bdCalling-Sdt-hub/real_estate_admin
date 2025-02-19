@@ -12,8 +12,9 @@ import {
   useSetAppointmentScheduleMutation,
 } from "../redux/api/ordersApi";
 import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
-export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
+export const EditShedualModal = ({ modal2Open, setModal2Open, schedule }) => {
   const { data: teamMembersData } = useGetTeamMembersQuery({
     page: 1,
     limit: 1000,
@@ -45,7 +46,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
   };
   return (
     <Modal
-      title="Appointment Schedule"
+      title={schedule?.date ? "Edit Appointment" : "Schedule Appointment"}
       centered
       open={modal2Open}
       onCancel={() => setModal2Open(false)}
@@ -61,7 +62,10 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
             label="Select Date:"
             rules={[{ required: true, message: "Please select a date" }]}
           >
-            <DatePicker className="w-full" />
+            <DatePicker
+              defaultValue={schedule?.date ? dayjs(schedule?.date) : null}
+              className="w-full"
+            />
           </Form.Item>
 
           {/* Time Selection */}
@@ -71,7 +75,15 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
             label="Select Time:"
             rules={[{ required: true, message: "Please select a time" }]}
           >
-            <TimePicker.RangePicker className="w-full" format="h:mm A" />
+            <TimePicker.RangePicker
+              defaultValue={
+                schedule?.start_time && schedule?.end_time
+                  ? [dayjs(schedule?.start_time), dayjs(schedule?.end_time)]
+                  : []
+              }
+              className="w-full"
+              format="h:mm A"
+            />
           </Form.Item>
         </div>
 
@@ -85,6 +97,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
             className="w-full"
             mode="multiple"
             placeholder="Select Team Members"
+            defaultValue={schedule?.memberId ? schedule?.memberId : []}
             options={
               teamMembersData?.data?.result?.length > 0
                 ? teamMembersData?.data?.result?.map((member) => ({

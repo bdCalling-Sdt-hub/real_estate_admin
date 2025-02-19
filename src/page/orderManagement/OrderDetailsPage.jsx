@@ -239,7 +239,11 @@ export const OrderDetailsPage = () => {
         <PurchasedPackageSection tasks={data?.data?.taskIds} />
         <MassageBox files={data?.data?.uploadFiles} />
       </div>
-      <EditShedualModal setModal2Open={setModal2Open} modal2Open={modal2Open} />
+      <EditShedualModal
+        setModal2Open={setModal2Open}
+        modal2Open={modal2Open}
+        schedule={data?.data?.schedule}
+      />
     </div>
   );
 };
