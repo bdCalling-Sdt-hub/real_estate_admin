@@ -53,7 +53,7 @@ export const MassageBox = ({ files }) => {
           />
         </div>
       </div>
-      <div>
+      <div style={{ display: files?.length > 0 ? "block" : "none" }}>
         <h1 className="mt-8 ">Upload File</h1>
         <div className="grid grid-cols-4 gap-4 mt-5">
           {files?.length > 0 &&

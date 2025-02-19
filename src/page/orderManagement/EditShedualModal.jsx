@@ -1,16 +1,51 @@
-import React from "react";
-import { Modal, Form, Input, Select, Button, DatePicker, TimePicker } from "antd";
-
-const { Option } = Select;
+import {
+  Modal,
+  Form,
+  Select,
+  Button,
+  DatePicker,
+  TimePicker,
+  message,
+} from "antd";
+import {
+  useGetTeamMembersQuery,
+  useSetAppointmentScheduleMutation,
+} from "../redux/api/ordersApi";
+import { useParams } from "react-router-dom";
 
 export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
-  const handleFinish = (values) => {
-    console.log("Form Submitted:", values);
-  };
+  const { data: teamMembersData } = useGetTeamMembersQuery({
+    page: 1,
+    limit: 1000,
+    searchTerm: "",
+  });
 
+  const { id } = useParams();
+
+  const [setAppointmentSchedule] = useSetAppointmentScheduleMutation();
+
+  const handleFinish = async (values) => {
+    const body = {
+      date: values.date,
+      start_time: values.time[0],
+      end_time: values.time[1],
+      memberId: values.teamMembers,
+    };
+    try {
+      const response = await setAppointmentSchedule({
+        id,
+        data: body,
+      }).unwrap();
+      console.log(response);
+      message.success(response?.data);
+      setModal2Open(false);
+    } catch (error) {
+      message.error(error?.data?.message);
+    }
+  };
   return (
     <Modal
-      title="Edit Schedule"
+      title="Appointment Schedule"
       centered
       open={modal2Open}
       onCancel={() => setModal2Open(false)}
@@ -18,62 +53,63 @@ export const EditShedualModal = ({ modal2Open, setModal2Open }) => {
       width={600}
     >
       <Form layout="vertical" onFinish={handleFinish}>
-        {/* Time Zone Selection */}
-        
+        <div className="flex gap-4">
+          {/* Calendar Section */}
+          <Form.Item
+            className="w-full"
+            name="date"
+            label="Select Date:"
+            rules={[{ required: true, message: "Please select a date" }]}
+          >
+            <DatePicker className="w-full" />
+          </Form.Item>
 
-        {/* Calendar Section */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold">Jan 2025</h3>
-          <div className="grid grid-cols-7 gap-2 mt-4 text-center">
-            {Array.from({ length: 31 }, (_, i) => (
-              <div
-                key={i}
-                className={`py-2 px-3 rounded-lg border cursor-pointer ${
-                  i === 25
-                    ? "bg-[#2A216D] text-white"
-                    : "hover:border-purple-500 text-gray-700"
-                }`}
-              >
-                {i + 1}
-              </div>
-            ))}
-          </div>
+          {/* Time Selection */}
+          <Form.Item
+            className="w-full"
+            name="time"
+            label="Select Time:"
+            rules={[{ required: true, message: "Please select a time" }]}
+          >
+            <TimePicker.RangePicker className="w-full" format="h:mm A" />
+          </Form.Item>
         </div>
 
-        {/* Time Selection */}
         <Form.Item
-  name="selectTime"
-  label="Select Time:"
-  rules={[{ required: true, message: "Please select a time" }]}
->
-  <TimePicker use12Hours={false} format="HH:mm" />
-</Form.Item>
-
-
-        {/* Team Member Section */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Team Member</h3>
-          <div className="flex items-center gap-2">
-            <Input placeholder="Search Team Member" />
-            <Button className="bg-[#2A216D]" type="primary">Add</Button>
-          </div>
-          <div className="mt-4">
-            <div className="flex justify-between items-center">
-              <span>John Smith</span>
-              <Button type="link" className="text-red-500">
-                Remove
-              </Button>
-            </div>
-          </div>
-        </div>
+          className="w-full"
+          name="teamMembers"
+          label="Select Team Members:"
+          rules={[{ required: true, message: "Please select a member" }]}
+        >
+          <Select
+            className="w-full"
+            mode="multiple"
+            placeholder="Select Team Members"
+            options={
+              teamMembersData?.data?.result?.length > 0
+                ? teamMembersData?.data?.result?.map((member) => ({
+                    label: member.name,
+                    value: member._id,
+                  }))
+                : []
+            }
+          />
+        </Form.Item>
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-6">
-          <Button className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
+          <Button
+            className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+            onClick={() => setModal2Open(false)}
+          >
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" className="px-6 py-2 rounded-lg bg-[#2A216D] text-white hover:bg-purple-800">
-            Confirm Reschedule
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="px-6 py-2 rounded-lg bg-[#2A216D] text-white hover:bg-purple-800"
+          >
+            Confirm
           </Button>
         </div>
       </Form>

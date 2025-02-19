@@ -28,6 +28,25 @@ const ordersApi = baseApi.injectEndpoints({
     getOrderById: builder.query({
       query: (id) => `/orders/get/${id}`,
     }),
+    getTeamMembers: builder.query({
+      query: ({ page = 1, limit = 1000, searchTerm = "" }) => {
+        const queryParams = new URLSearchParams();
+        if (page) queryParams.append("page", page);
+        if (limit) queryParams.append("limit", limit);
+        if (searchTerm) queryParams.append("searchTerm", searchTerm);
+        return `/member/get-team-member?${queryParams.toString()}`;
+      },
+    }),
+    setAppointmentSchedule: builder.mutation({
+      query: ({ id, data }) => {
+        console.log(id, data);
+        return {
+          url: `/orders/set-scheduled-time/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -37,4 +56,6 @@ export const {
   useCreateOrderMutation,
   useGetAllOrdersQuery,
   useGetOrderByIdQuery,
+  useGetTeamMembersQuery,
+  useSetAppointmentScheduleMutation,
 } = ordersApi;

@@ -11,6 +11,7 @@ import { useGetOrderByIdQuery } from "../redux/api/ordersApi";
 import Loading from "../../components/Loading";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { imageUrl } from "../redux/api/baseApi";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 export const OrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -90,16 +91,22 @@ export const OrderDetailsPage = () => {
               </div>
             </div>
 
-            <div className="border flex justify-between p-3 rounded-md items-center">
+            <div className="border flex justify-between p-3 rounded-md">
               <p className="font-semibold">Appointment</p>
-              <button
-                onClick={() => setModal2Open(true)}
-                className="border border-[#F38E0A] text-[#F38E0A] py-2 px-4 rounded-md "
-              >
-                Schedule An Appointment
-              </button>
+              <div className="ml-auto flex flex-col gap-2">
+                {data?.data?.schedule?.date && (
+                  <p className="mb-2">{formatDateTime(data?.data?.schedule)}</p>
+                )}
+                <button
+                  onClick={() => setModal2Open(true)}
+                  className="border border-[#F38E0A] text-[#F38E0A] ml-auto py-2 px-4 rounded-md w-max"
+                >
+                  {data?.data?.schedule?.date
+                    ? "Edit Appointment"
+                    : "Schedule An Appointment"}
+                </button>
+              </div>
             </div>
-
             <div className="mt-6">
               <h3 className="text-lg font-semibold">Description</h3>
               <p className="text-gray-600">{data?.data?.descriptions}</p>
@@ -137,10 +144,10 @@ export const OrderDetailsPage = () => {
               <h3 className="text-lg font-semibold">Order Placed By:</h3>
               <div className="flex items-center gap-2">
                 <Avatar
-                  src={`${imageUrl}/${data?.data?.orderPlaced.userId.profile_image}`}
+                  src={`${imageUrl}/${data?.data?.orderPlaced?.userId?.profile_image}`}
                 />
                 <p className="text-gray-600">
-                  {data?.data?.orderPlaced.userId.name}
+                  {data?.data?.orderPlaced?.userId?.name}
                 </p>
               </div>
             </div>
@@ -179,13 +186,15 @@ export const OrderDetailsPage = () => {
                     </p>
                     <ul className="text-gray-600 mt-2 space-y-1">
                       <li>
-                        <strong>Name:</strong> Robert Smith
+                        <strong>Name:</strong> {data?.data?.contactInfo?.name1}
                       </li>
                       <li>
-                        <strong>Email:</strong> smith24@gmail.com
+                        <strong>Email:</strong>{" "}
+                        {data?.data?.contactInfo?.email1}
                       </li>
                       <li>
-                        <strong>Phone Number:</strong> +456636646004
+                        <strong>Phone Number:</strong>{" "}
+                        {data?.data?.contactInfo?.phone1}
                       </li>
                     </ul>
                   </div>
@@ -195,13 +204,15 @@ export const OrderDetailsPage = () => {
                     </p>
                     <ul className="text-gray-600 mt-2 space-y-1">
                       <li>
-                        <strong>Name:</strong> Robert Smith
+                        <strong>Name:</strong> {data?.data?.contactInfo?.name2}
                       </li>
                       <li>
-                        <strong>Email:</strong> smith24@gmail.com
+                        <strong>Email:</strong>{" "}
+                        {data?.data?.contactInfo?.email2}
                       </li>
                       <li>
-                        <strong>Phone Number:</strong> +456636646004
+                        <strong>Phone Number:</strong>{" "}
+                        {data?.data?.contactInfo?.phone2}
                       </li>
                     </ul>
                   </div>

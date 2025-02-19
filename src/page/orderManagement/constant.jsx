@@ -67,7 +67,13 @@ const columns = [
     dataIndex: "appointment",
     key: "appointment",
     width: "15%",
-    render: (appointment) => appointment || "N/A",
+    render: (appointment) => {
+      if (appointment) {
+        return appointment;
+      } else {
+        return "N/A";
+      }
+    },
   },
   {
     title: "Status",
