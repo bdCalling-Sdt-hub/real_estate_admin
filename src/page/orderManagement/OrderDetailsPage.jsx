@@ -235,7 +235,7 @@ export const OrderDetailsPage = () => {
             </div>
           </div>
         </div>
-        <DetailsNote />
+        <DetailsNote notes={data?.data?.notes} />
         <PurchasedPackageSection tasks={data?.data?.taskIds} />
         <MassageBox files={data?.data?.uploadFiles} />
       </div>
