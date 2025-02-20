@@ -1,4 +1,4 @@
-import { Avatar, Tag } from "antd";
+import { Avatar, Menu, Tag } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -117,4 +117,28 @@ const columns = [
   },
 ];
 
-export { columns };
+const menu = (id, setModal2Open, setRemoveModalOpen) => (
+  <Menu>
+    <Menu.Item key="1">
+      <Link to={`/dashboard/order-management/order-details/edit-order/${id}`}>
+        Edit Order
+      </Link>
+    </Menu.Item>
+
+    <Menu.Item key="2">
+      <Link to={`/dashboard/order-management/order-details/edit-services/${id}`}>
+        Edit Services
+      </Link>
+    </Menu.Item>
+    <Menu.Item onClick={() => setModal2Open(true)} key="3">
+      Edit Schedule
+    </Menu.Item>
+    {/* <Menu.Item key="4">Set Order On Hold</Menu.Item> */}
+    <Menu.Item key="5" onClick={() => setRemoveModalOpen(true)}>
+      Remove Order
+    </Menu.Item>
+    {/* <Menu.Item key="6">Cancel Order</Menu.Item> */}
+  </Menu>
+);
+
+export { columns, menu };

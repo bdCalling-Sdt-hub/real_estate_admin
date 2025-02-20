@@ -76,11 +76,11 @@ export const router = createBrowserRouter([
         element: <OrderDetailsPage></OrderDetailsPage>
       },
       {
-        path: "/dashboard/order-management/order-details/edit-order",
+        path: "/dashboard/order-management/order-details/edit-order/:id",
         element: <EditOrder></EditOrder>
       },
       {
-        path: "/dashboard/order-management/order-details/edit-services",
+        path: "/dashboard/order-management/order-details/edit-services/:id",
         element: <EditServices></EditServices>
       },
       {

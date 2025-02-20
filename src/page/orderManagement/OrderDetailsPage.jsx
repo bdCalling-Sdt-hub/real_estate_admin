@@ -15,6 +15,7 @@ import Loading from "../../components/Loading";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { imageUrl } from "../redux/api/baseApi";
 import { formatDateTime } from "../../utils/formatDateTime";
+import { menu } from "./constant";
 
 export const OrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -26,29 +27,7 @@ export const OrderDetailsPage = () => {
     await removeOrder(id);
     navigate("/dashboard/order-management/all");
   };
-  const menu = (
-    <Menu>
-      <Menu.Item key="1">
-        <Link to={"/dashboard/order-management/order-details/edit-order"}>
-          Edit Order
-        </Link>
-      </Menu.Item>
 
-      <Menu.Item key="2">
-        <Link to={"/dashboard/order-management/order-details/edit-services"}>
-          Edit Services
-        </Link>
-      </Menu.Item>
-      <Menu.Item onClick={() => setModal2Open(true)} key="3">
-        Edit Schedule
-      </Menu.Item>
-      <Menu.Item key="4">Set Order On Hold</Menu.Item>
-      <Menu.Item key="5" onClick={() => setRemoveModalOpen(true)}>
-        Remove Order
-      </Menu.Item>
-      <Menu.Item key="6">Cancel Order</Menu.Item>
-    </Menu>
-  );
   const { id } = useParams();
 
   const { data, isLoading } = useGetOrderByIdQuery(id);
@@ -69,7 +48,10 @@ export const OrderDetailsPage = () => {
           </button>
           <span className="text-lg font-semibold">Order Details</span>
         </h1>
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown
+          overlay={() => menu(id, setModal2Open, setRemoveModalOpen)}
+          trigger={["click"]}
+        >
           <Button
             className="border border-black rounded-full text-black flex items-center"
             onClick={(e) => e.preventDefault()}

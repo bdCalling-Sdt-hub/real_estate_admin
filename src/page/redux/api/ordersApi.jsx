@@ -62,6 +62,13 @@ const ordersApi = baseApi.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    updateOrder: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/orders/update-order/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -75,4 +82,5 @@ export const {
   useSetAppointmentScheduleMutation,
   useAddNoteMutation,
   useRemoveOrderMutation,
+  useUpdateOrderMutation,
 } = ordersApi;
