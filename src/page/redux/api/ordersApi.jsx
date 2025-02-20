@@ -75,6 +75,17 @@ const ordersApi = baseApi.injectEndpoints({
         };
       },
     }),
+    updateTaskStatus: builder.mutation({
+      query: ({ status, taskId }) => {
+        const params = new URLSearchParams();
+        params.append("status", status);
+        params.append("taskId", taskId);
+        return {
+          url: `/task/update-status?${params.toString()}`,
+          method: "PATCH",
+        };
+      },
+    }),
   }),
 });
 
@@ -89,4 +100,5 @@ export const {
   useAddNoteMutation,
   useRemoveOrderMutation,
   useUpdateOrderMutation,
+  useUpdateTaskStatusMutation,
 } = ordersApi;

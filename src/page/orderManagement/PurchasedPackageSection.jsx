@@ -1,12 +1,16 @@
-import React from "react";
+import { useState } from "react";
 import { LuDownload, LuFileCheck, LuFileCheck2 } from "react-icons/lu";
 import { MdLink } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { TfiReload } from "react-icons/tfi";
 import { PiFileImageDuotone } from "react-icons/pi";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
+import { useUpdateTaskStatusMutation } from "../redux/api/ordersApi";
+import { message } from "antd";
 
-export const PurchasedPackageSection = ({ tasks }) => {
+export const PurchasedPackageSection = ({ tasks: initialTasks }) => {
+  const [tasks, setTasks] = useState(initialTasks);
+
   const handleDownload = (files) => {
     files.forEach((file) => {
       const link = document.createElement("a");
@@ -54,7 +58,7 @@ export const PurchasedPackageSection = ({ tasks }) => {
                 </div>
               </div>
 
-              <TaskStatuses status={service.status} />
+              <TaskStatuses service={service} setTasks={setTasks} />
             </div>
           ))}
         </div>
@@ -63,40 +67,74 @@ export const PurchasedPackageSection = ({ tasks }) => {
   );
 };
 
-const TaskStatuses = ({ status }) => {
+const TaskStatuses = ({ service, setTasks }) => {
   const getStatusColor = (field) => {
-    if (field === status) {
+    if (field === service.status) {
       return "text-[#2A216D]";
     } else {
       return "text-[#BDBAD2]";
     }
   };
 
+  const [updateTaskStatus, { isLoading }] = useUpdateTaskStatusMutation();
+
+  const handleUpdateTaskStatus = (status) => {
+    try {
+      updateTaskStatus({ status, taskId: service._id });
+      message.success("Status updated successfully");
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === service._id ? { ...task, status } : task
+        )
+      );
+    } catch (error) {
+      message.error("Failed to update status");
+    }
+  };
+
   return (
     <div className="flex items-center space-x-2 border justify-between ml-4 px-5 py-3 rounded-md">
-      <button className="relative text-black text-[26px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Submitted")}
+        className="relative text-black text-[26px] group"
+      >
         <LuFileCheck className={getStatusColor("Submitted")} />
-        <PopOver status="Submitted" activeStatus={status} />
+        <PopOver status="Submitted" activeStatus={service.status} />
       </button>
-      <button className="relative text-black text-[26px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Scheduled")}
+        className="relative text-black text-[26px] group"
+      >
         <SlCalender className={getStatusColor("Scheduled")} />
-        <PopOver status="Scheduled" activeStatus={status} />
+        <PopOver status="Scheduled" activeStatus={service.status} />
       </button>
-      <button className="relative text-red-300 text-[24px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Pending")}
+        className="relative text-red-300 text-[24px] group"
+      >
         <TfiReload className={getStatusColor("Pending")} />
-        <PopOver status="Pending" activeStatus={status} />
+        <PopOver status="Pending" activeStatus={service.status} />
       </button>
-      <button className="relative text-black text-[26px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Delivered")}
+        className="relative text-black text-[26px] group"
+      >
         <LuFileCheck2 className={getStatusColor("Delivered")} />
-        <PopOver status="Delivered" activeStatus={status} />
+        <PopOver status="Delivered" activeStatus={service.status} />
       </button>
-      <button className="relative text-black text-[26px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Revisions")}
+        className="relative text-black text-[26px] group"
+      >
         <PiFileImageDuotone className={getStatusColor("Revisions")} />
-        <PopOver status="Revisions" activeStatus={status} />
+        <PopOver status="Revisions" activeStatus={service.status} />
       </button>
-      <button className="relative text-black text-[26px] group">
+      <button
+        onClick={() => handleUpdateTaskStatus("Completed")}
+        className="relative text-black text-[26px] group"
+      >
         <IoCheckmarkDoneCircleSharp className={getStatusColor("Completed")} />
-        <PopOver status="Completed" activeStatus={status} />
+        <PopOver status="Completed" activeStatus={service.status} />
       </button>
     </div>
   );
