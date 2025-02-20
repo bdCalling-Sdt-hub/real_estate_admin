@@ -127,18 +127,21 @@ const CreateServices = () => {
     formDataForAPI.append("uploadFiles", formData.uploadFiles);
     formDataForAPI.append("data", JSON.stringify(data));
 
-    createOrder(formDataForAPI);
+    try {
+      createOrder(formDataForAPI);
+      message.success("Order created successfully");
+      // Reset form data
+      setFormData({
+        serviceIds: [],
+        services: [],
+        contactAgent: "false",
+      });
 
-    message.success("Order created successfully");
-
-    // Reset form data
-    setFormData({
-      serviceIds: [],
-      services: [],
-      contactAgent: "false",
-    });
-
-    navigate("/");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      message.error("Something went wrong");
+    }
   };
   return (
     <div className="bg-white p-4">

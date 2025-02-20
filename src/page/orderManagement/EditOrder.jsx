@@ -1,23 +1,53 @@
-import React, { useState } from "react";
-import { Form, Input, Radio, Checkbox, Button, Upload, Dropdown } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Form,
+  Input,
+  Radio,
+  Checkbox,
+  Button,
+  Upload,
+  Dropdown,
+  message,
+} from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { menu } from "./constant";
-import { useGetOrderByIdQuery } from "../redux/api/ordersApi";
+import {
+  useGetOrderByIdQuery,
+  useGetClientAgentsQuery,
+  useUpdateOrderMutation,
+} from "../redux/api/ordersApi";
 import Loading from "../../components/Loading";
+import { imageUrl } from "../redux/api/baseApi";
 
 export const EditOrder = () => {
-  const [contactAgent, setContactAgent] = useState("no");
+  const [contactAgent, setContactAgent] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
   const [fileList, setFileList] = useState([]);
   const { data, isLoading } = useGetOrderByIdQuery(id);
+  const { data: agents } = useGetClientAgentsQuery(data?.data?.clientId?._id);
+  const [updateOrder, { isLoading: isUpdating }] = useUpdateOrderMutation();
+
+  useEffect(() => {
+    if (data?.data) {
+      setContactAgent(data.data.contactAgent ? "yes" : "no");
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.data?.uploadFiles) {
+      setFileList(
+        data?.data?.uploadFiles.map((file) => ({
+          url: file,
+        }))
+      );
+    }
+  }, [data]);
+
   if (isLoading) return <Loading />;
-  console.log(data);
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
+
   const onPreview = async (file) => {
     let src = file.url;
     if (!src) {
@@ -32,23 +62,44 @@ export const EditOrder = () => {
     const imgWindow = window.open(src);
     imgWindow?.document.write(image.outerHTML);
   };
-  const onFinish = (values) => {
-    console.log(values);
-    const data = {
+  const onFinish = async (values) => {
+    const formData = new FormData();
+    const selectedPrevFiles = fileList
+      .filter((file) => data?.data?.uploadFiles?.includes(file.url))
+      .map((file) => file.url);
+    const newFiles = fileList.filter((file) => file.name);
+    const formJSON = {
       pickupKeyOffice: values.pickupKeys === "yes" ? true : false,
-      contactAgent: values.contactAgent,
-      contactOwner: values.contactAgent === "false" ? true : false,
-      address: values.address,
-      contactInfo: values.contactInfo,
-      // linkedAgents:
-      //   values.contactAgent === "true" ? [values.linkedAgents._id] : [],
+      contactAgent: values.contactAgent === "yes" ? true : false,
+      contactOwner: values.contactAgent === "no" ? true : false,
+      address: {
+        zipCode: values.zipCode,
+        city: values.city,
+        streetAddress: values.streetAddress,
+        streetNumber: values.streetNumber,
+        streetName: values.streetNumber,
+      },
+      contactInfo: {
+        name1: values.propertyOwnerName,
+        email1: values.email,
+        phone1: values.mobilePhone,
+      },
+      linkedAgents: values.linkedAgents,
       descriptions: values.description,
-      // totalAmount: values.services.reduce((acc, curr) => acc + curr.price, 0),
-      // serviceIds: serviceIds,
-      // packageIds: packageIds,
+      uploadFiles: selectedPrevFiles,
     };
-    // formDataForAPI.append("uploadFiles", formData.uploadFiles);
-    // formDataForAPI.append("data", JSON.stringify(data));
+    formData.append("uploadFiles", newFiles);
+    formData.append("data", JSON.stringify(formJSON));
+
+    try {
+      const res = await updateOrder({ id, data: formData });
+      if (res.data) {
+        message.success("Order updated successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Something went wrong");
+    }
   };
   return (
     <div className="bg-white p-4">
@@ -127,7 +178,7 @@ export const EditOrder = () => {
           <Form.Item
             name="pickupKeys"
             label="Pickup keys at real estate office?"
-            initialValue={data?.data?.pickupKeyOffice}
+            initialValue={data?.data?.pickupKeyOffice ? "yes" : "no"}
           >
             <Radio.Group>
               <Radio value="yes">Yes</Radio>
@@ -137,11 +188,11 @@ export const EditOrder = () => {
 
           {/* Contact Info */}
           <h3 className="font-semibold text-lg mb-4">Contact Info</h3>
-          <Form.Item name="contactPreference">
+          <Form.Item name="contactAgent">
             <Radio.Group
               onChange={(e) => setContactAgent(e.target.value)}
               value={contactAgent}
-              defaultValue={contactAgent}
+              defaultValue={data?.data?.contactAgent ? "yes" : "no"}
             >
               <Radio value="no">Please Contact Property Owner</Radio>
               <Radio value="yes">Please Contact Real Estate Agent</Radio>
@@ -150,13 +201,25 @@ export const EditOrder = () => {
           {contactAgent === "no" && (
             <>
               <h4 className="font-semibold mb-2">Property Owner Details</h4>
-              <Form.Item name="propertyOwnerName" label="Name Property Owner">
+              <Form.Item
+                name="propertyOwnerName"
+                label="Name Property Owner"
+                initialValue={data?.data?.contactInfo?.name1}
+              >
                 <Input placeholder="Input here" />
               </Form.Item>
-              <Form.Item name="email" label="Email">
+              <Form.Item
+                name="email"
+                label="Email"
+                initialValue={data?.data?.contactInfo?.email1}
+              >
                 <Input placeholder="Input here" />
               </Form.Item>
-              <Form.Item name="mobilePhone" label="Mobile Phone">
+              <Form.Item
+                name="mobilePhone"
+                label="Mobile Phone"
+                initialValue={data?.data?.contactInfo?.phone1}
+              >
                 <Input placeholder="Input here" />
               </Form.Item>
             </>
@@ -167,49 +230,32 @@ export const EditOrder = () => {
               <h3 className="font-semibold text-lg mb-4">
                 Linked Real Estate Agent
               </h3>
-              <Form.Item name="linkedAgents">
+              <Form.Item
+                name="linkedAgents"
+                initialValue={
+                  data?.data?.linkedAgents?.length > 0 &&
+                  data?.data?.linkedAgents?.map((agent) => agent._id)
+                }
+              >
                 <Checkbox.Group>
                   <div className="grid grid-cols-2 gap-4">
-                    <Checkbox value="Darlene Robertson">
-                      <div className="flex items-center">
-                        <img
-                          src="https://i.pravatar.cc/40?img=1"
-                          alt="Darlene Robertson"
-                          className="w-8 h-8 rounded-full mr-2"
-                        />
-                        Darlene Robertson
-                      </div>
-                    </Checkbox>
-                    <Checkbox value="Jerome Bell">
-                      <div className="flex items-center">
-                        <img
-                          src="https://i.pravatar.cc/40?img=2"
-                          alt="Jerome Bell"
-                          className="w-8 h-8 rounded-full mr-2"
-                        />
-                        Jerome Bell
-                      </div>
-                    </Checkbox>
-                    <Checkbox value="Dianne Russell">
-                      <div className="flex items-center">
-                        <img
-                          src="https://i.pravatar.cc/40?img=3"
-                          alt="Dianne Russell"
-                          className="w-8 h-8 rounded-full mr-2"
-                        />
-                        Dianne Russell
-                      </div>
-                    </Checkbox>
-                    <Checkbox value="Cameron Williamson">
-                      <div className="flex items-center">
-                        <img
-                          src="https://i.pravatar.cc/40?img=4"
-                          alt="Cameron Williamson"
-                          className="w-8 h-8 rounded-full mr-2"
-                        />
-                        Cameron Williamson
-                      </div>
-                    </Checkbox>
+                    {agents?.data?.length > 0 &&
+                      agents?.data?.map((agent) => (
+                        <Checkbox value={agent._id}>
+                          <div className="flex items-center">
+                            <img
+                              src={
+                                agent?.profile_image
+                                  ? `${imageUrl}/${agent?.profile_image}`
+                                  : `https://ui-avatars.com/api/?name=${agent?.name}`
+                              }
+                              alt={agent?.name}
+                              className="w-8 h-8 rounded-full mr-2"
+                            />
+                            {agent.name}
+                          </div>
+                        </Checkbox>
+                      ))}
                   </div>
                 </Checkbox.Group>
               </Form.Item>
@@ -222,10 +268,9 @@ export const EditOrder = () => {
             <div className="flex gap-4 items-center">
               <div>
                 <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                   listType="picture-card"
                   fileList={fileList}
-                  onChange={onChange}
+                  onChange={({ fileList }) => setFileList(fileList)}
                   onPreview={onPreview}
                 >
                   {fileList.length < 5 && "+ Upload"}
@@ -233,7 +278,11 @@ export const EditOrder = () => {
               </div>
             </div>
           </Form.Item>
-          <Form.Item name="description" label="Description">
+          <Form.Item
+            name="description"
+            label="Description"
+            initialValue={data?.data?.descriptions}
+          >
             <Input.TextArea rows={4} placeholder="Input here" />
           </Form.Item>
 

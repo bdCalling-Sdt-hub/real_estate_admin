@@ -63,11 +63,17 @@ const ordersApi = baseApi.injectEndpoints({
       }),
     }),
     updateOrder: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/orders/update-order/${id}`,
-        method: "PATCH",
-        body: data,
-      }),
+      query: ({ id, data }) => {
+        for (const value of data.values()) {
+          console.log(typeof value);
+        }
+
+        return {
+          url: `/orders/update-order/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
     }),
   }),
 });
