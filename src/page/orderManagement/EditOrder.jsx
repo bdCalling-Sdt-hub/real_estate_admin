@@ -88,7 +88,9 @@ export const EditOrder = () => {
       descriptions: values.description,
       uploadFiles: selectedPrevFiles,
     };
-    formData.append("uploadFiles", newFiles);
+    newFiles.forEach((file) => {
+      formData.append("uploadFiles", file.originFileObj);
+    });
     formData.append("data", JSON.stringify(formJSON));
 
     try {
