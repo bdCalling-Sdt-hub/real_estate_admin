@@ -1,54 +1,40 @@
-import React, { useState } from "react";
-import { Table, Avatar, Button, Input } from "antd";
-import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
-import { ArrowRightOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { AddClientModal } from "./AddClientModal";
-import { EditClientModal } from "./EditClientModal";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Table, Avatar, Button, Input, Pagination } from "antd";
+import { FaArrowLeft } from "react-icons/fa";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
 import { AddAgentModal } from "./AddAgentModal";
 import { EditAgent } from "./EditAgent";
+import { useGetSingleClientManagementQuery } from "../redux/api/clientManageApi";
+import { imageUrl } from "../redux/api/baseApi";
 
 export const Agent = () => {
+  const { id } = useParams();
+  const { data: singleClientAgentData, isLoading, error } = useGetSingleClientManagementQuery(
+    { id },
+    { refetchOnMountOrArgChange: true }
+  );
+  console.log(singleClientAgentData);
   const [openAddModal, setOpenAddModal] = useState(false);
-  const [openAddModal1, setOpenAddModal1] = useState(false);
-  const navigate = useNavigate()
-  const data = [
-    {
-      key: "1",
-      slNo: "#1233",
-      company: {
-        logo: "https://i.pravatar.cc/40?img=1",
-        name: "Louis Vuitton",
-      },
-      address: "2464 Royal Ln. Mesa, New Jersey 45463",
-      phone: "(201) 555-0124",
-    },
-    {
-      key: "2",
-      slNo: "#1233",
-      company: {
-        logo: "https://i.pravatar.cc/40?img=2",
-        name: "Bank of America",
-      },
-      address: "2972 Westheimer Rd. Santa Ana, Illinois 85486",
-      phone: "(219) 555-0114",
-    },
-    {
-      key: "3",
-      slNo: "#1233",
-      company: { logo: "https://i.pravatar.cc/40?img=3", name: "Nintendo" },
-      address: "4517 Washington Ave. Manchester, Kentucky 39495",
-      phone: "(316) 555-0116",
-    },
-    {
-      key: "4",
-      slNo: "#1233",
-      company: { logo: "https://i.pravatar.cc/40?img=4", name: "McDonald's" },
-      address: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-      phone: "(907) 555-0101",
-    },
-    // Add more rows as necessary
-  ];
+    const [openAddModal1, setOpenAddModal1] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+  const navigate = useNavigate();
+
+  const data = singleClientAgentData?.data?.map((agent, index) => ({
+    key: agent._id,
+    slNo: `#${index + 1}`,
+    name: agent.name,
+    authId: agent.authId,
+    email:agent.email,
+    phone: agent.phone_number,
+    address: agent.address,
+    profile_image: agent.profile_image,
+  })) || [];
+
+  const handleEdit = (record) => {
+    setSelectedCategory(record);
+    setOpenAddModal1(true);
+  };
 
   const columns = [
     {
@@ -58,13 +44,13 @@ export const Agent = () => {
       width: "8%",
     },
     {
-      title: "Company/Client Name",
-      dataIndex: "company",
-      key: "company",
-      render: (company) => (
+      title: "Agent Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
         <div className="flex items-center">
-          <Avatar src={company.logo} alt={company.name} />
-          <span style={{ marginLeft: 8 }}>{company.name}</span>
+          <Avatar src={`${imageUrl}/${record.profile_image}`} alt={record.name} />
+          <span style={{ marginLeft: 8 }}>{record.name}</span>
         </div>
       ),
       width: "20%",
@@ -81,14 +67,13 @@ export const Agent = () => {
       key: "phone",
       width: "15%",
     },
-    
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (record) => (
         <div>
           <button
-          onClick={() => setOpenAddModal1(true)}
+            onClick={() => handleEdit(record)}
             shape="circle"
             className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
           >
@@ -144,14 +129,9 @@ export const Agent = () => {
         bordered
       />
 
-      {/* <AddClientModal openAddModal={openAddModal}
-        setOpenAddModal={setOpenAddModal}></AddClientModal>
-        <EditClientModal openAddModal={openAddModal1}
-        setOpenAddModal={setOpenAddModal1}></EditClientModal> */}
-        <AddAgentModal openAddModal={openAddModal}
-        setOpenAddModal={setOpenAddModal}></AddAgentModal>
-        <EditAgent openAddModal={openAddModal1}
-        setOpenAddModal={setOpenAddModal1}></EditAgent>
+      <AddAgentModal singleClientAgentData={singleClientAgentData} openAddModal={openAddModal} setOpenAddModal={setOpenAddModal}></AddAgentModal>
+      <EditAgent openAddModal={openAddModal1}
+  setOpenAddModal={setOpenAddModal1}  selectAgentManagement={selectedCategory}></EditAgent>
     </div>
   );
 };
