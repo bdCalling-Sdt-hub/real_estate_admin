@@ -45,6 +45,9 @@ const taskApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getComments: builder.query({
+      query: (id) => `/task/get-comment?taskId=${id}`,
+    }),
   }),
 });
 
@@ -57,4 +60,5 @@ export const {
   useRejectTaskMutation,
   useGetTaskDetailsQuery,
   useDeleteFileMutation,
+  useGetCommentsQuery,
 } = taskApi;

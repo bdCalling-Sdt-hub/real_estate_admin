@@ -2,7 +2,12 @@ import React from "react";
 import { IoSendOutline } from "react-icons/io5";
 import { VscReply } from "react-icons/vsc";
 import { RiGalleryLine } from "react-icons/ri";
+import { useGetCommentsQuery } from "../redux/api/taskApi";
+import { useParams } from "react-router-dom";
 export const FinishedFileComnt = () => {
+  const { id } = useParams();
+  const { data, isLoading } = useGetCommentsQuery(id);
+  console.log(data);
   return (
     <div>
       {/* Right Comments Section */}
@@ -18,7 +23,7 @@ export const FinishedFileComnt = () => {
               rows={4}
             />
             <button className="absolute flex gap-3 bottom-6 left-[5px] text-2xl">
-            <RiGalleryLine />
+              <RiGalleryLine />
             </button>
             <button className="absolute flex gap-3 bottom-6 right-[5px] bg-[#2A216D] text-white px-4 py-2 rounded-md hover:bg-purple-600">
               Send
