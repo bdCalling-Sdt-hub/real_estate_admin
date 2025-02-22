@@ -130,9 +130,7 @@ export const TaskManagementPage = () => {
                             </button>
                           )}
                           <Link
-                            to={
-                              "/dashboard/task-management/all-Services/project-file"
-                            }
+                            to={`/dashboard/task-management/all-Services/project-file/${item._id}`}
                           >
                             <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
                               <EyeOutlined />
@@ -189,9 +187,13 @@ export const TaskManagementPage = () => {
                           >
                             Take
                           </button>
-                          <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
-                            <EyeOutlined />
-                          </button>
+                          <Link
+                            to={`/dashboard/task-management/all-Services/project-file/${item._id}`}
+                          >
+                            <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
+                              <EyeOutlined />
+                            </button>
+                          </Link>
                           <button
                             onClick={() => setModal2Open(item._id)}
                             className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"

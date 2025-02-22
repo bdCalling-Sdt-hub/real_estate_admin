@@ -39,7 +39,6 @@ const ordersApi = baseApi.injectEndpoints({
     }),
     setAppointmentSchedule: builder.mutation({
       query: ({ id, data }) => {
-        console.log(id, data);
         return {
           url: `/orders/set-scheduled-time/${id}`,
           method: "PATCH",
@@ -64,10 +63,6 @@ const ordersApi = baseApi.injectEndpoints({
     }),
     updateOrder: builder.mutation({
       query: ({ id, data }) => {
-        for (const value of data.values()) {
-          console.log(typeof value);
-        }
-
         return {
           url: `/orders/update-order/${id}`,
           method: "PATCH",

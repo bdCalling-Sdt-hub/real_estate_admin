@@ -144,7 +144,7 @@ export const router = createBrowserRouter([
         element: <AllServiceTask></AllServiceTask>
       },
       {
-        path: "/dashboard/task-management/all-Services/project-file",
+        path: "/dashboard/task-management/all-Services/project-file/:id",
         element: <ProjectFile></ProjectFile>
       },
       {
