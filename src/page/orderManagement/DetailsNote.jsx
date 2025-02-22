@@ -1,10 +1,17 @@
-import { Form, Input, Modal } from "antd";
-import React, { useState } from "react";
+import { Form, Input, Modal, message } from "antd";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { useAddNoteMutation } from "../redux/api/ordersApi";
+import { useParams } from "react-router-dom";
 
-export const DetailsNote = () => {
+export const DetailsNote = ({ notes }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
-  const onFinish = async (values) => {
-    console.log(values);
+  const [addNote, { isLoading }] = useAddNoteMutation();
+  const { id } = useParams();
+  const onFinish = async ({ text }) => {
+    await addNote({ id: id, data: { text } });
+    setOpenAddModal(false);
+    message.success("Note added successfully");
   };
   return (
     <div className="mt-6">
@@ -22,16 +29,17 @@ export const DetailsNote = () => {
           + Add Note
         </button>
       </div>
-      <div className="mt-2 bg-gray-100 p-4 rounded-md">
-        <p className="text-gray-600">
-          <strong>Neils</strong>{" "}
-          <span className="text-gray-400 text-sm">24/01/25 | 16:36</span>
-        </p>
-        <p className="mt-2 text-gray-600">
-          Please call the property owner to make an appointment, take some
-          pictures and videos of the property location.
-        </p>
-      </div>
+      {notes?.map((note) => (
+        <div className="mt-2 bg-gray-100 p-4 rounded-md">
+          <p className="text-gray-600">
+            <strong>{note?.memberId?.name}</strong>{" "}
+            <span className="text-gray-400 text-sm">
+              {dayjs(note?.date).format("DD/MM/YYYY hh:mm A")}
+            </span>
+          </p>
+          <p className="mt-2 text-gray-600">{note?.text}</p>
+        </div>
+      ))}
       <Modal
         centered
         open={openAddModal}
@@ -44,7 +52,7 @@ export const DetailsNote = () => {
           <Form layout="vertical" onFinish={onFinish}>
             <Form.Item
               label="Description"
-              name="description"
+              name="text"
               rules={[
                 { required: true, message: "Please enter a description" },
               ]}
@@ -52,7 +60,9 @@ export const DetailsNote = () => {
               <Input.TextArea rows={7} placeholder="Enter description" />
             </Form.Item>
             <div className="flex justify-center">
-              <button className="bg-[#2A216D] py-2 px-6 rounded text-white">Add</button>
+              <button className="bg-[#2A216D] py-2 px-6 rounded text-white">
+                Add
+              </button>
             </div>
           </Form>
         </div>

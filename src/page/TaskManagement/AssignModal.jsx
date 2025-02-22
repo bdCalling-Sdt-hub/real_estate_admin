@@ -1,50 +1,65 @@
-import React from 'react'
-import { Modal, Form, Input, Button, Select } from "antd";
-export const AssignModal = ({setModal2Open,modal2Open}) => {
-    const handleFinish = async (values) => {
-        console.log(values);
-      };
-    
+import { Modal, Form, Button, Select, message } from "antd";
+import {
+  useGetAllTeamMembersQuery,
+  useAssignTaskMutation,
+} from "../redux/api/taskApi";
+
+export const AssignModal = ({ setModal2Open, modal2Open, refetchTasks }) => {
+  const { data: teamMembers } = useGetAllTeamMembersQuery();
+  const [assignTask, { isLoading }] = useAssignTaskMutation();
+
+  const handleFinish = async ({ member }) => {
+    try {
+      await assignTask({ taskId: modal2Open, memberId: member });
+      setModal2Open(false);
+      message.success("Task assigned successfully");
+      refetchTasks();
+    } catch (error) {
+      console.log(error);
+      message.error("Task assignment failed");
+      refetchTasks();
+    }
+  };
+
   return (
-    <Modal
-      title="Assign Team Member"
-      centered
-      open={modal2Open}
-      onCancel={() => setModal2Open(false)}
-      bodyStyle={{
-        maxHeight: "70vh",
-        overflowY: "auto",
-      }}
-      footer={[
-        <Button key="discard" onClick={() => setModal2Open(false)}>
-          Cancel
-        </Button>,
-        <Button className='bg-[#2A216D]' key="send" type="primary" form="emailForm" htmlType="submit">
-          Add
-        </Button>,
-      ]}
-    >
-      <Form
-        layout="vertical"
-        id="emailForm"
-        onFinish={handleFinish}
+    <Form id="memberForm" onFinish={handleFinish}>
+      <Modal
+        title="Assign Team Member"
+        centered
+        open={modal2Open}
+        onCancel={() => setModal2Open(false)}
+        footer={[
+          <Button key="discard" onClick={() => setModal2Open(false)}>
+            Cancel
+          </Button>,
+          <Button
+            className="bg-[#2A216D]"
+            key="send"
+            type="primary"
+            htmlType="submit"
+            form="memberForm"
+            loading={isLoading}
+          >
+            Add
+          </Button>,
+        ]}
       >
         <Form.Item
-  name="member"
-  label="Team Member"
-  rules={[{ required: true, message: "Recipient is required" }]}
->
-  <Select placeholder="Select a team member">
-    <Select.Option value="member1">John Doe</Select.Option>
-    <Select.Option value="member2">Jane Smith</Select.Option>
-    <Select.Option value="member3">Sophie Ramirez</Select.Option>
-    {/* Add more team members here */}
-  </Select>
-</Form.Item>
-
-
-        
-      </Form>
-    </Modal>
-  )
-}
+          name="member"
+          label="Team Member"
+          rules={[{ required: true, message: "Recipient is required" }]}
+          layout="vertical"
+        >
+          <Select placeholder="Select a team member">
+            {teamMembers?.data?.length > 0 &&
+              teamMembers?.data?.map((member) => (
+                <Select.Option key={member._id} value={member._id}>
+                  {member.name}
+                </Select.Option>
+              ))}
+          </Select>
+        </Form.Item>
+      </Modal>
+    </Form>
+  );
+};

@@ -37,7 +37,6 @@ const ProtectedRoute = ({ children }) => {
   // return children;
   
   const {token} = useSelector((state) => state.logInUser)
-  console.log(token)
   const { pathname } = useLocation();
 
   if (!token) {

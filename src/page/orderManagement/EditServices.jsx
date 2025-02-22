@@ -11,22 +11,10 @@ import { EditServicesVideo } from "./EditServicesVideo";
 import { Button, Dropdown, Menu } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { menu } from "./constant";
 
 export const EditServices = () => {
-  const navigate = useNavigate()
-  const menu = (
-      <Menu>
-    
-          <Menu.Item key="1"><Link to={"/dashboard/order-management/order-details/edit-order"}>Edit Order</Link></Menu.Item>
-    
-        <Menu.Item key="2"><Link to={'/dashboard/order-management/order-details/edit-services'} >Edit Services</Link></Menu.Item>
-        <Menu.Item key="3">Edit Schedule</Menu.Item>
-              <Menu.Item key="4">Set Order On Hold</Menu.Item>
-              <Menu.Item key="5">Remove Order</Menu.Item>
-              <Menu.Item key="6">Cancel Order</Menu.Item>
-        
-      </Menu>
-    );
+  const navigate = useNavigate();
   // Data for packages, photos, and videos
   const packageData = [
     {
@@ -42,14 +30,9 @@ export const EditServices = () => {
       description: "Includes essential services for your property:",
       features: ["Photos", "Floor Plan"],
       price: 15,
-     images: [img1, img2, img3],
+      images: [img1, img2, img3],
     },
   ];
-
-  
-
-  
-  
 
   return (
     <div className="bg-white p-4">
@@ -95,7 +78,6 @@ export const EditServices = () => {
           <h3 className="text-lg font-semibold mb-4">Package</h3>
           <div className="grid grid-cols-3 gap-4">
             {packageData.map((pkg, index) => (
-             
               <EditServicesCard pkg={pkg} key={index}></EditServicesCard>
             ))}
           </div>

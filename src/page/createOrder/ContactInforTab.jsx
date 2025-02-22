@@ -1,253 +1,167 @@
-import React, { useState } from 'react';
-import { Form, Input, Radio, Checkbox, Typography } from 'antd';
-import img1 from "../../assets/header/1.png";
-import img2 from "../../assets/header/2.png";
-import img3 from "../../assets/header/3.png";
-import img4 from "../../assets/header/4.png";
-import img5 from "../../assets/header/5.png";
-import img6 from "../../assets/header/6.png";
-import img7 from "../../assets/header/7.png";
-import img8 from "../../assets/header/8.png";
-export const ContactInforTab = () => {
-    // const [selectedTab, setSelectedTab] = useState("all");
-    const [selectedTab, setSelectedTab] = useState("owner");
+import { Form, Input, Radio, Checkbox, Typography } from "antd";
+import { useGetClientAgentsQuery } from "../redux/api/ordersApi";
+import { imageUrl } from "../redux/api/baseApi";
+
+export const ContactInforTab = ({ formData, setFormData }) => {
+  const agents = useGetClientAgentsQuery(formData.client);
+  const selectedAgent = formData?.linkedAgents;
+  const handleFinish = (_, allValues) => {
+    setFormData({ ...formData, contactInfo: allValues });
+  };
+
+  const handleCheckboxChange = (checkedValues) => {
+    setFormData((prev) => ({
+      ...prev,
+      linkedAgents: checkedValues,
+    }));
+  };
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto', textAlign: 'center' }}>
+    <div style={{ maxWidth: "800px", margin: "auto", textAlign: "center" }}>
       <Typography.Title level={3}>Contact Info</Typography.Title>
       <Radio.Group
-      value={selectedTab} // Bind the value to the state
-      onChange={(e) => setSelectedTab(e.target.value)} // Update the state on change
-    >
-      <Radio value="owner">Please Contact Property Owner</Radio>
-      <Radio value="agent">Please Contact Real Estate Agent</Radio>
-    </Radio.Group>
+        value={formData?.contactAgent}
+        onChange={(e) =>
+          setFormData((prev) => ({
+            ...prev,
+            contactAgent: e.target.value,
+          }))
+        }
+      >
+        <Radio value="false">Please Contact Property Owner</Radio>
+        <Radio value="true">Please Contact Real Estate Agent</Radio>
+      </Radio.Group>
 
-    {selectedTab === "owner" && (
-                <div>
-                  <Form layout="vertical">
-        <Form.Item name="contactPreference" label="" initialValue="owner">
-          
-        </Form.Item>
+      <div>
+        <Form
+          initialValues={formData.contactInfo}
+          onValuesChange={handleFinish}
+          layout="vertical"
+        >
+          {formData?.contactAgent === "false" && (
+            <>
+              <Typography.Title
+                level={5}
+                style={{ textAlign: "left", marginTop: "20px" }}
+              >
+                Owner Details - 01
+              </Typography.Title>
+              <Form.Item
+                label="Name Property Owner"
+                name="name1"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the name of the property owner!",
+                  },
+                ]}
+              >
+                <Input placeholder="Input here" />
+              </Form.Item>
+              <Form.Item
+                label="Email"
+                name="email1"
+                rules={[
+                  {
+                    type: "email",
+                    message: "Please enter a valid email address!",
+                  },
+                ]}
+              >
+                <Input placeholder="Input here" />
+              </Form.Item>
+              <Form.Item
+                label="Mobile Phone"
+                name="phone1"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the mobile phone number!",
+                  },
+                ]}
+              >
+                <Input placeholder="Input here" />
+              </Form.Item>
 
-        
+              <Typography.Title
+                level={5}
+                style={{ textAlign: "left", marginTop: "20px" }}
+              >
+                Owner Details - 02
+              </Typography.Title>
+              <Form.Item label="Name Property Owner" name="name2">
+                <Input placeholder="Input here" />
+              </Form.Item>
+              <Form.Item
+                label="Email"
+                name="email2"
+                rules={[
+                  {
+                    type: "email",
+                    message: "Please enter a valid email address!",
+                  },
+                ]}
+              >
+                <Input placeholder="Input here" />
+              </Form.Item>
+              <Form.Item label="Mobile Phone" name="phone2">
+                <Input placeholder="Input here" />
+              </Form.Item>
+            </>
+          )}
 
-        <Typography.Title level={5} style={{ textAlign: 'left', marginTop: '20px' }}>
-          Owner Details - 01
-        </Typography.Title>
-        <Form.Item
-          label="Name Property Owner"
-          name="owner1Name"
-          rules={[{ required: true, message: 'Please input the name of the property owner!' }]}
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="owner1Email"
-          rules={[{ type: 'email', message: 'Please enter a valid email address!' }]}
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-        <Form.Item
-          label="Mobile Phone"
-          name="owner1Phone"
-          rules={[{ required: true, message: 'Please input the mobile phone number!' }]}
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-
-        <Typography.Title level={5} style={{ textAlign: 'left', marginTop: '20px' }}>
-          Owner Details - 02
-        </Typography.Title>
-        <Form.Item
-          label="Name Property Owner"
-          name="owner2Name"
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="owner2Email"
-          rules={[{ type: 'email', message: 'Please enter a valid email address!' }]}
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-        <Form.Item
-          label="Mobile Phone"
-          name="owner2Phone"
-        >
-          <Input placeholder="Input here" />
-        </Form.Item>
-
-        <Typography.Title level={5} style={{ textAlign: 'left', marginTop: '20px' }}>
-          Linked real estate agent
-        </Typography.Title>
-        <Form.Item name="linkedAgents">
-          <Checkbox.Group style={{ width: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img1} alt="" />
-            <span className="font-semibold">Summit Realty Group</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img2} alt="" />
-            <span className="font-semibold">Golden Key Properties</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img3} alt="" />
-            <span className="font-semibold">Pinnacle Estates Co.</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img4} alt="" />
-            <span className="font-semibold">Urban Oasis Realty</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img5} alt="" />
-            <span className="font-semibold">Horizon Land Ventures</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img6} alt="" />
-            <span className="font-semibold">True North Homes</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img7} alt="" />
-            <span className="font-semibold">Evergreen Property Partners</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img8} alt="" />
-            <span className="font-semibold">Cornerstone Realty Solutions</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img8} alt="" />
-            <span className="font-semibold">Cornerstone Realty Solutions</span>
-          </div>
-        </Checkbox>
-        <Checkbox>
-          {" "}
-          <div className="flex items-center gap-5">
-            <img className="w-[30px]" src={img8} alt="" />
-            <span className="font-semibold">Cornerstone Realty Solutions</span>
-          </div>
-        </Checkbox>
-            </div>
-          </Checkbox.Group>
-        </Form.Item>
-      </Form>
-                </div>
-              )}
-              {selectedTab === "agent" && (
-                <div>
-                  <Form>
-                  <Typography.Title level={5} style={{ textAlign: 'left', marginTop: '20px' }}>
-          Linked real estate agent
-        </Typography.Title>
-        <Form.Item name="linkedAgents">
-          <Checkbox.Group style={{ width: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-              <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img1} alt="" />
-                          <span className="font-semibold">Summit Realty Group</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img2} alt="" />
-                          <span className="font-semibold">Golden Key Properties</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img3} alt="" />
-                          <span className="font-semibold">Pinnacle Estates Co.</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img4} alt="" />
-                          <span className="font-semibold">Urban Oasis Realty</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img5} alt="" />
-                          <span className="font-semibold">Horizon Land Ventures</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img6} alt="" />
-                          <span className="font-semibold">True North Homes</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img7} alt="" />
-                          <span className="font-semibold">Evergreen Property Partners</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img8} alt="" />
-                          <span className="font-semibold">Cornerstone Realty Solutions</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img8} alt="" />
-                          <span className="font-semibold">Cornerstone Realty Solutions</span>
-                        </div>
-                      </Checkbox>
-                      <Checkbox>
-                        {" "}
-                        <div className="flex items-center gap-5">
-                          <img className="w-[30px]" src={img8} alt="" />
-                          <span className="font-semibold">Cornerstone Realty Solutions</span>
-                        </div>
-                      </Checkbox>
-            </div>
-          </Checkbox.Group>
-        </Form.Item>
-                    </Form>
-                </div>
-              )}
-
-      
+          {formData?.contactAgent === "true" && (
+            <>
+              <Typography.Title
+                level={5}
+                style={{ textAlign: "left", marginTop: "20px" }}
+              >
+                Linked real estate agent
+              </Typography.Title>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                {agents.data?.data?.length > 0 &&
+                  agents.data?.data?.map((agent) => (
+                    <AgentCheckbox
+                      key={agent?._id}
+                      agent={agent}
+                      handleCheckboxChange={handleCheckboxChange}
+                      selectedAgent={selectedAgent}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+        </Form>
+      </div>
     </div>
+  );
+};
+
+const AgentCheckbox = ({ agent, handleCheckboxChange, selectedAgent }) => {
+  return (
+    <Checkbox
+      checked={selectedAgent?._id === agent?._id}
+      onChange={() => handleCheckboxChange(agent)}
+      key={agent?._id}
+      value={agent?._id}
+    >
+      <div className="flex items-center gap-5">
+        <img
+          className="w-[30px] rounded-full"
+          src={
+            agent.profile_image
+              ? `${imageUrl}${agent.profile_image}`
+              : `https://ui-avatars.com/api/?name=${agent.name}`
+          }
+          alt={agent.name}
+        />
+        <span className="font-semibold">{agent.name}</span>
+      </div>
+    </Checkbox>
   );
 };

@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const baseUrl = import.meta.env.VITE_API_URL;
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.0.60.118:5000",
+  baseUrl: baseUrl,
   // prepareHeaders: (headers) => {
   //   const token = localStorage.getItem("accessToken");
   //   console.log(token);
@@ -13,10 +14,9 @@ const baseQuery = fetchBaseQuery({
   //   // }
   //   return headers;
   // },
-  
+
   prepareHeaders: (headers, { getState }) => {
     const token = getState().logInUser.token;
-    console.log("from baseApi", token);
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
@@ -31,4 +31,4 @@ export const baseApi = createApi({
   endpoints: () => ({}),
 });
 
-export const imageUrl = "http://10.0.60.118:5000";
+export const imageUrl = `${baseUrl}`;
