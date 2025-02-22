@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { message, Spin } from "antd";
 
-export const FinishedFileComnt = () => {
+export const FinishedFileComnt = ({ fileId, type }) => {
   const { id } = useParams();
   const { data, isLoading, refetch } = useGetCommentsQuery(id);
   const [isReply, setIsReply] = useState(null);
@@ -21,20 +21,27 @@ export const FinishedFileComnt = () => {
     return <Loading />;
   }
 
-  const commentsWithReplies = data?.data?.reduce((acc, comment) => {
-    if (comment?.replayId) {
-      const parentComment = acc.find(
-        (item) => item._id === comment.replayId._id
-      );
-      if (parentComment) {
-        parentComment.replies = parentComment.replies || [];
-        parentComment.replies.push(comment);
+  const commentsWithReplies = data?.data
+    ?.filter((comment) => {
+      if (fileId) {
+        return comment.fileId === fileId;
       }
-    } else {
-      acc.push({ ...comment, replies: [] });
-    }
-    return acc;
-  }, []);
+      return !comment.fileId;
+    })
+    ?.reduce((acc, comment) => {
+      if (comment?.replayId) {
+        const parentComment = acc.find(
+          (item) => item._id === comment.replayId._id
+        );
+        if (parentComment) {
+          parentComment.replies = parentComment.replies || [];
+          parentComment.replies.push(comment);
+        }
+      } else {
+        acc.push({ ...comment, replies: [] });
+      }
+      return acc;
+    }, []);
 
   const handleReplyToggle = (commentId) => {
     setIsReply(isReply === commentId ? null : commentId);
@@ -46,6 +53,7 @@ export const FinishedFileComnt = () => {
         taskId: id,
         comment: replayId ? reply : comment,
         replayId: replayId ? replayId : null,
+        fileId: fileId ? fileId : null,
       });
       setComment("");
       setReply("");

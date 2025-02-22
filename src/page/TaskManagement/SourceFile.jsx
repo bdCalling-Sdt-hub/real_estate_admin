@@ -256,7 +256,10 @@ export const SourceFile = ({ sourceFiles, refetch }) => {
             </div>
           </div>
           <div className="col-span-3">
-            <FinishedFileComnt />
+            <FinishedFileComnt
+              fileId={modalImages[currentImageIndex]?._id}
+              type="sourceFile"
+            />
           </div>
         </div>
       </Modal>
