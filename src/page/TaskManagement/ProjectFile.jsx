@@ -7,7 +7,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { FinishedFileComnt } from "./FinishedFileComnt";
 import { useGetTaskDetailsQuery } from "../redux/api/taskApi";
 import Loading from "../../components/Loading";
-import { message, Upload } from "antd";
+import { message, Spin, Upload } from "antd";
 import handleFileUpload from "../../utils/handleFileUpload";
 import { useSelector } from "react-redux";
 
@@ -16,6 +16,7 @@ export const ProjectFile = () => {
   const [selectedTab, setSelectedTab] = useState("source");
   const { id } = useParams();
   const { data, isLoading, refetch } = useGetTaskDetailsQuery(id);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const token = useSelector((state) => state.logInUser.token);
 
@@ -24,6 +25,7 @@ export const ProjectFile = () => {
     accept: "image/*, video/*",
     itemRender() {},
     customRequest: async (options) => {
+      setUploadLoading(true);
       try {
         const formData = new FormData();
         formData.append("sourceFile", options.file);
@@ -38,6 +40,8 @@ export const ProjectFile = () => {
       } catch (error) {
         console.log(error);
         message.error("File upload failed");
+      } finally {
+        setUploadLoading(false);
       }
     },
   };
@@ -93,16 +97,22 @@ export const ProjectFile = () => {
             {selectedTab === "source" && (
               <div>
                 <Upload {...uploadProps}>
-                  <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
-                    <MdOutlineFileUpload className="text-xl" /> Upload
-                  </button>
+                  {uploadLoading ? (
+                    <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
+                      <Spin />
+                    </button>
+                  ) : (
+                    <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
+                      <MdOutlineFileUpload className="text-xl" /> Upload
+                    </button>
+                  )}
                 </Upload>
               </div>
             )}
           </div>
-          {selectedTab === "finished" && (
+          {selectedTab === "finished" && data?.data?.finishFile.length > 0 && (
             <div>
-              <FinishedFile></FinishedFile>
+              <FinishedFile finishedFiles={data?.data?.finishFile} />
             </div>
           )}
         </div>
@@ -128,10 +138,7 @@ export const ProjectFile = () => {
       </div> */}
       {selectedTab === "source" && data?.data?.sourceFile.length > 0 && (
         <div>
-          <SourceFile
-            sourceFiles={data?.data?.sourceFile}
-            refetch={refetch}
-          />
+          <SourceFile sourceFiles={data?.data?.sourceFile} refetch={refetch} />
         </div>
       )}
     </div>

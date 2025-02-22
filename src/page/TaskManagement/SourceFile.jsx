@@ -57,8 +57,8 @@ export const SourceFile = ({ sourceFiles, refetch }) => {
   };
 
   const { id } = useParams();
-  const handleDelete = () => {
-    deleteFile({
+  const handleDelete = async () => {
+    await deleteFile({
       taskId: id,
       fileId: deleteModalOpen,
       type: "sourceFile",
@@ -87,6 +87,7 @@ export const SourceFile = ({ sourceFiles, refetch }) => {
                     className="w-full h-[200px] object-cover"
                     src={sourceFile.url}
                     controls
+                    onClick={() => openModal(sourceFiles)}
                   />
                 ) : (
                   <img
@@ -271,6 +272,7 @@ export const SourceFile = ({ sourceFiles, refetch }) => {
             backgroundColor: "red",
             color: "white",
           },
+          loading: isLoading,
         }}
       >
         <h1 className="font-semibold">
