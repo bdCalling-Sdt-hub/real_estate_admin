@@ -36,7 +36,7 @@ export const PurchasedPackageSection = ({ tasks: initialTasks }) => {
               className="grid grid-cols-2 border border-gray-200 rounded-md p-4 mb-6"
             >
               <div className="flex justify-between items-center">
-                <span className="text-gray-700">{service.serviceId.title}</span>
+                <span className="text-gray-700">{service.serviceId?.title}</span>
                 <div className="flex gap-2">
                   <button className="relative bg-[#2A216D] text-white w-[40px] h-[40px] items-center text-xl rounded pl-[10px] group">
                     <MdLink />

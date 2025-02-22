@@ -1,39 +1,46 @@
-import React from "react";
-import img from "../../assets/header/11.png";
-import img1 from "../../assets/header/22.png";
-import img2 from "../../assets/header/33.png";
-import img3 from "../../assets/header/44.png";
-import img4 from "../../assets/header/55.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { EditServicesCard } from "./EditServicesCard";
 import { EditServicesPhotoSection } from "./EditServicesPhotoSection";
 import { EditServicesVideo } from "./EditServicesVideo";
-import { Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown, message } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { menu } from "./constant";
+import {
+  useGetServicesOfOrderQuery,
+  useUpdateServicesOfOrderMutation,
+} from "../redux/api/ordersApi";
+import Loading from "../../components/Loading";
 
 export const EditServices = () => {
   const navigate = useNavigate();
-  // Data for packages, photos, and videos
-  const packageData = [
-    {
-      title: "Luxury Packages",
-      description:
-        "Our most popular package including our most popular service:",
-      features: ["Photos", "Videos", "Floor Plan"],
-      price: 25,
-      images: [img1, img2, img3],
-    },
-    {
-      title: "Standard Packages",
-      description: "Includes essential services for your property:",
-      features: ["Photos", "Floor Plan"],
-      price: 15,
-      images: [img1, img2, img3],
-    },
-  ];
+  const { id } = useParams();
+  const { data, isLoading, refetch } = useGetServicesOfOrderQuery(id);
+  const [updateServicesOfOrder] = useUpdateServicesOfOrderMutation();
+  if (isLoading) return <Loading />;
+  console.log({ data });
 
+  const handleRemovePackage = async ({ id: pkgId, type }) => {
+    const body = {
+      packageIds: data?.data?.packageIds,
+      serviceIds: data?.data?.serviceIds,
+    };
+    if (type === "package") {
+      body.packageIds = body.packageIds.filter((pkg) => pkg._id !== pkgId);
+    } else {
+      body.serviceIds = body.serviceIds.filter(
+        (service) => service._id !== pkgId
+      );
+    }
+    try {
+      await updateServicesOfOrder({ orderId: id, data: body });
+      message.success("Package removed successfully");
+      refetch();
+    } catch (error) {
+      console.log(error);
+      message.error("Failed to remove package");
+    }
+  };
   return (
     <div className="bg-white p-4">
       <div
@@ -50,7 +57,7 @@ export const EditServices = () => {
           </button>
           <span className="text-lg font-semibold">Edit Services</span>
         </h1>
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown overlay={() => menu(id)} trigger={["click"]}>
           <Button
             className="border border-black rounded-full text-black flex items-center"
             onClick={(e) => e.preventDefault()}
@@ -77,58 +84,40 @@ export const EditServices = () => {
         <div className="mb-8">
           <h3 className="text-lg font-semibold mb-4">Package</h3>
           <div className="grid grid-cols-3 gap-4">
-            {packageData.map((pkg, index) => (
-              <EditServicesCard pkg={pkg} key={index}></EditServicesCard>
-            ))}
+            {data?.data?.packageIds?.length > 0
+              ? data?.data?.packageIds?.map((pkg, index) => (
+                  <EditServicesCard
+                    pkg={pkg}
+                    key={index}
+                    handleRemovePackage={handleRemovePackage}
+                  />
+                ))
+              : "No packages found"}
           </div>
         </div>
 
-        {/* Photos Section */}
-        {/* <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-4">Photos</h3>
-          <div className="grid grid-cols-3 gap-6">
-            {photosData.map((photo, index) => (
-              <div
-                key={index}
-                className="border rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={photo.image}
-                  alt={photo.title}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-xl font-semibold">{photo.title}</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {photo.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-red-500">
-                      Price: ${photo.price}
-                    </span>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600">
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
-        <EditServicesPhotoSection></EditServicesPhotoSection>
+        <EditServicesPhotoSection />
 
         {/* Videos Section */}
-        <EditServicesVideo></EditServicesVideo>
+        <EditServicesVideo />
 
         {/* Total Amount */}
         <div className="flex justify-between items-center text-lg font-semibold mb-6">
           <span>Total Amount</span>
-          <span>$2550</span>
+          <span>
+            {Number(data?.data?.totalAmount).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
         </div>
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4">
-          <button className="px-6 py-2 w-[200px] rounded border border-gray-300 text-gray-700 hover:bg-gray-100">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-6 py-2 w-[200px] rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+          >
             Cancel
           </button>
           <button className="px-6 py-2 w-[200px] rounded bg-[#2A216D] text-white hover:bg-purple-800">
