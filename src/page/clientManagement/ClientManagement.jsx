@@ -1,52 +1,78 @@
 import React, { useState } from "react";
-import { Table, Avatar, Button, Input } from "antd";
+import { Table, Avatar, Button, Input, Pagination } from "antd";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
 import { ArrowRightOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { AddClientModal } from "./AddClientModal";
 import { EditClientModal } from "./EditClientModal";
 import { Link, useNavigate } from "react-router-dom";
+import { useGetAllClientManagementQuery } from "../redux/api/clientManageApi";
+import { imageUrl } from "../redux/api/baseApi";
 
 export const ClientManagement = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openAddModal1, setOpenAddModal1] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { data: clientManagementData } = useGetAllClientManagementQuery();
+  console.log(clientManagementData);
   const navigate = useNavigate()
-  const data = [
-    {
-      key: "1",
-      slNo: "#1233",
-      company: {
-        logo: "https://i.pravatar.cc/40?img=1",
-        name: "Louis Vuitton",
-      },
-      address: "2464 Royal Ln. Mesa, New Jersey 45463",
-      phone: "(201) 555-0124",
-    },
-    {
-      key: "2",
-      slNo: "#1233",
-      company: {
-        logo: "https://i.pravatar.cc/40?img=2",
-        name: "Bank of America",
-      },
-      address: "2972 Westheimer Rd. Santa Ana, Illinois 85486",
-      phone: "(219) 555-0114",
-    },
-    {
-      key: "3",
-      slNo: "#1233",
-      company: { logo: "https://i.pravatar.cc/40?img=3", name: "Nintendo" },
-      address: "4517 Washington Ave. Manchester, Kentucky 39495",
-      phone: "(316) 555-0116",
-    },
-    {
-      key: "4",
-      slNo: "#1233",
-      company: { logo: "https://i.pravatar.cc/40?img=4", name: "McDonald's" },
-      address: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-      phone: "(907) 555-0101",
-    },
-    // Add more rows as necessary
-  ];
+
+  const handleEdit = (record) => {
+    
+    setSelectedCategory(record);
+    setOpenAddModal1(true);
+  };
+
+  const data = clientManagementData?.data?.result?.map((client, index) => ({
+    key: client._id,
+    authId:client.authId,
+    slNo: `#${index + 1}`,
+    email:client.email,
+    email_notifications: client.email_notifications,
+    email_invoice: client.email_invoice,
+    name: client.name,
+    phone: client.phone_number,
+    address: client.address,
+    profile_image: client.profile_image,
+
+
+  })) || [];
+  // const data = [
+  //   {
+  //     key: "1",
+  //     slNo: "#1233",
+  //     company: {
+  //       logo: "https://i.pravatar.cc/40?img=1",
+  //       name: "Louis Vuitton",
+  //     },
+  //     address: "2464 Royal Ln. Mesa, New Jersey 45463",
+  //     phone: "(201) 555-0124",
+  //   },
+  //   {
+  //     key: "2",
+  //     slNo: "#1233",
+  //     company: {
+  //       logo: "https://i.pravatar.cc/40?img=2",
+  //       name: "Bank of America",
+  //     },
+  //     address: "2972 Westheimer Rd. Santa Ana, Illinois 85486",
+  //     phone: "(219) 555-0114",
+  //   },
+  //   {
+  //     key: "3",
+  //     slNo: "#1233",
+  //     company: { logo: "https://i.pravatar.cc/40?img=3", name: "Nintendo" },
+  //     address: "4517 Washington Ave. Manchester, Kentucky 39495",
+  //     phone: "(316) 555-0116",
+  //   },
+  //   {
+  //     key: "4",
+  //     slNo: "#1233",
+  //     company: { logo: "https://i.pravatar.cc/40?img=4", name: "McDonald's" },
+  //     address: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
+  //     phone: "(907) 555-0101",
+  //   },
+  //   // Add more rows as necessary
+  // ];
 
   const columns = [
     {
@@ -56,13 +82,13 @@ export const ClientManagement = () => {
       width: "8%",
     },
     {
-      title: "Company/Client Name",
-      dataIndex: "company",
-      key: "company",
-      render: (company) => (
+      title: "Client Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
         <div className="flex items-center">
-          <Avatar src={company.logo} alt={company.name} />
-          <span style={{ marginLeft: 8 }}>{company.name}</span>
+          <Avatar src={`${imageUrl}/${record.profile_image}`} alt={record.name} />
+          <span style={{ marginLeft: 8 }}>{record.name}</span>
         </div>
       ),
       width: "20%",
@@ -77,13 +103,13 @@ export const ClientManagement = () => {
       title: "Phone Number",
       dataIndex: "phone",
       key: "phone",
-      width: "15%",
+      width: "20%",
     },
     {
       title: "Agent",
       key: "agent",
-      render: () => (
-        <Link to={'/dashboard/client-management/agent-client'}><Button
+      render: (record) => (
+        <Link to={`/dashboard/client-management/agent-client/${record.key}`}><Button
         icon={<ArrowRightOutlined />}
         style={{
           borderColor: "#2A216D",
@@ -96,10 +122,10 @@ export const ClientManagement = () => {
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (record) => (
         <div>
           <button
-          onClick={() => setOpenAddModal1(true)}
+          onClick={() => handleEdit(record)}
             shape="circle"
             className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
           >
@@ -147,18 +173,20 @@ export const ClientManagement = () => {
       <Table
         dataSource={data}
         columns={columns}
-        pagination={{
-          pageSize: 5,
-          showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "20"],
-        }}
-        bordered
+        
+        
       />
+      <div className="mt-4 flex justify-end">
+                <Pagination
+                  
+                  showSizeChanger={false}
+                />
+              </div>
 
       <AddClientModal openAddModal={openAddModal}
         setOpenAddModal={setOpenAddModal}></AddClientModal>
         <EditClientModal openAddModal={openAddModal1}
-        setOpenAddModal={setOpenAddModal1}></EditClientModal>
+  setOpenAddModal={setOpenAddModal1}  selectClientManagement={selectedCategory}></EditClientModal>
     </div>
   );
 };

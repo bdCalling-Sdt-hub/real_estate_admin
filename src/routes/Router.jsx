@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
         element: <ClientManagement></ClientManagement>
       },
       {
-        path: "/dashboard/client-management/agent-client",
+        path: "/dashboard/client-management/agent-client/:id",
         element: <Agent></Agent>
       },
       {
