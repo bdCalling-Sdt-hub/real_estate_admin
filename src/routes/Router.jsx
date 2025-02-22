@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";
 import Dashboard from "../components/Dashboard/Dashboard";
 
-
 import ForgetPass from "../Auth/ForgetPass";
 import Verify from "../Auth/Verify";
 import ResetPass from "../Auth/ResetPass";
@@ -36,14 +35,13 @@ import { TaskManagementPage } from "../page/TaskManagement/TaskManagementPage";
 import Settings from "../page/Settings/Settings";
 import ProtectedRoute from "../protectedRoute/ProtectedRoute";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-     
-        <ProtectedRoute><DashboardLayout></DashboardLayout></ProtectedRoute>
-      
+      <ProtectedRoute>
+        <DashboardLayout></DashboardLayout>
+      </ProtectedRoute>
     ),
     children: [
       {
@@ -52,11 +50,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/message-mail",
-        element: <MessageMail></MessageMail>
+        element: <MessageMail></MessageMail>,
       },
       {
         path: "/dashboard/message-mail/user-details",
-        element: <UserDetailsPage></UserDetailsPage>
+        element: <UserDetailsPage></UserDetailsPage>,
       },
       // {
       //   path: "/dashboard/create-new-order",
@@ -64,98 +62,101 @@ export const router = createBrowserRouter([
       // },
       {
         path: "/dashboard/create-new-order",
-        element: <CreateServices></CreateServices>
+        element: <CreateServices></CreateServices>,
       },
       {
         path: "/dashboard/order-management/:tab?",
-        element: <OrderManagement></OrderManagement>
+        element: <OrderManagement></OrderManagement>,
       },
-      
+
       {
         path: "/dashboard/order-management/order-details/:id",
-        element: <OrderDetailsPage></OrderDetailsPage>
+        element: <OrderDetailsPage></OrderDetailsPage>,
       },
       {
         path: "/dashboard/order-management/order-details/edit-order/:id",
-        element: <EditOrder></EditOrder>
+        element: <EditOrder></EditOrder>,
       },
       {
         path: "/dashboard/order-management/order-details/edit-services/:id",
-        element: <EditServices></EditServices>
+        element: <EditServices></EditServices>,
       },
       {
         path: "/dashboard/order-management/order-details/add-services",
-        element: <AddServicePage></AddServicePage>
+        element: <AddServicePage></AddServicePage>,
+      },
+      {
+        path: "/dashboard/order-management/order-details/add-services/:id",
+        element: <AddServicePage></AddServicePage>,
       },
       {
         path: "/dashboard/client-management",
-        element: <ClientManagement></ClientManagement>
+        element: <ClientManagement></ClientManagement>,
       },
       {
         path: "/dashboard/client-management/agent-client/:id",
-        element: <Agent></Agent>
+        element: <Agent></Agent>,
       },
       {
         path: "/dashboard/services",
-        element: <Services></Services>
+        element: <Services></Services>,
       },
       {
         path: "/dashboard/packages",
-        element: <Packeges></Packeges>
+        element: <Packeges></Packeges>,
       },
       {
         path: "/dashboard/service-categories",
-        element: <ServicesCategories></ServicesCategories>
+        element: <ServicesCategories></ServicesCategories>,
       },
       {
         path: "/dashboard/pricing-group",
-        element: <PricingGroup></PricingGroup>
+        element: <PricingGroup></PricingGroup>,
       },
       {
         path: "/dashboard/pricing-group/add-pricing-group",
-        element: <AddPricingPage></AddPricingPage>
+        element: <AddPricingPage></AddPricingPage>,
       },
       {
         path: "/dashboard/pricing-group/edit-pricing-group",
-        element: <EditPricingPage></EditPricingPage>
+        element: <EditPricingPage></EditPricingPage>,
       },
       {
         path: "/dashboard/report",
-        element:<Report></Report>
+        element: <Report></Report>,
       },
       {
         path: "/dashboard/invoice-order",
-        element: <InvoiceOrder></InvoiceOrder>
+        element: <InvoiceOrder></InvoiceOrder>,
       },
       {
         path: "/dashboard/team-member",
-        element: <TeamMember></TeamMember>
+        element: <TeamMember></TeamMember>,
       },
       {
         path: "/dashboard/task-managementPage",
-        element: <TaskManagementPage></TaskManagementPage>
+        element: <TaskManagementPage></TaskManagementPage>,
       },
       {
         path: "/dashboard/task-management",
-        element: <TaskManagement></TaskManagement>
+        element: <TaskManagement></TaskManagement>,
       },
       {
         path: "/dashboard/task-management/all-Services",
-        element: <AllServiceTask></AllServiceTask>
+        element: <AllServiceTask></AllServiceTask>,
       },
       {
         path: "/dashboard/task-management/all-Services/project-file/:id",
-        element: <ProjectFile></ProjectFile>
+        element: <ProjectFile></ProjectFile>,
       },
       {
         path: "/dashboard/settings",
-        element: <Settings></Settings>
+        element: <Settings></Settings>,
       },
       {
         path: "/dashboard/Settings/notification",
-        element: <Notification></Notification>
+        element: <Notification></Notification>,
       },
-      
     ],
   },
 

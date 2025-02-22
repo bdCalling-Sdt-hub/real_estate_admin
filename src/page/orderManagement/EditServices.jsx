@@ -1,7 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { EditServicesCard } from "./EditServicesCard";
-import { EditServicesPhotoSection } from "./EditServicesPhotoSection";
-import { EditServicesVideo } from "./EditServicesVideo";
 import { Button, Dropdown, message } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -18,8 +16,11 @@ export const EditServices = () => {
   const { data, isLoading, refetch } = useGetServicesOfOrderQuery(id);
   const [updateServicesOfOrder] = useUpdateServicesOfOrderMutation();
   if (isLoading) return <Loading />;
-  console.log({ data });
-
+  const services = {};
+  data?.data?.serviceIds?.forEach((service) => {
+    const category = service?.category?.name;
+    services[category] = [...(services[category] || []), service];
+  });
   const handleRemovePackage = async ({ id: pkgId, type }) => {
     const body = {
       packageIds: data?.data?.packageIds,
@@ -70,7 +71,6 @@ export const EditServices = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">
           Edit Services
         </h2>
-
         {/* Add Services Button */}
         <div className="flex justify-end mb-6">
           <Link to={"/dashboard/order-management/order-details/add-services"}>
@@ -79,7 +79,6 @@ export const EditServices = () => {
             </button>
           </Link>
         </div>
-
         {/* Package Section */}
         <div className="mb-8">
           <h3 className="text-lg font-semibold mb-4">Package</h3>
@@ -95,13 +94,22 @@ export const EditServices = () => {
               : "No packages found"}
           </div>
         </div>
-
-        <EditServicesPhotoSection />
-
-        {/* Videos Section */}
-        <EditServicesVideo />
-
-        {/* Total Amount */}
+        {Object.keys(services).map((category) => (
+          <div className="mb-8" key={category}>
+            <h3 className="text-lg font-semibold mb-4">{category}</h3>
+            <div className="grid grid-cols-3 gap-4">
+              {services[category]?.length > 0
+                ? services[category]?.map((service, index) => (
+                    <EditServicesCard
+                      pkg={service}
+                      key={index}
+                      handleRemovePackage={handleRemovePackage}
+                    />
+                  ))
+                : "No packages found"}
+            </div>
+          </div>
+        ))}
         <div className="flex justify-between items-center text-lg font-semibold mb-6">
           <span>Total Amount</span>
           <span>
@@ -111,7 +119,6 @@ export const EditServices = () => {
             })}
           </span>
         </div>
-
         {/* Action Buttons */}
         <div className="flex justify-center gap-4">
           <button
