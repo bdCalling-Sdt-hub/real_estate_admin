@@ -30,7 +30,7 @@ export const PurchasedPackageSection = ({ tasks: initialTasks }) => {
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-4">Package Services</h3>
         <div>
-          {tasks.map((service, index) => (
+          {tasks?.map((service, index) => (
             <div
               key={index}
               className="grid grid-cols-2 border border-gray-200 rounded-md p-4 mb-6"
@@ -83,7 +83,7 @@ const TaskStatuses = ({ service, setTasks }) => {
       updateTaskStatus({ status, taskId: service._id });
       message.success("Status updated successfully");
       setTasks((prevTasks) =>
-        prevTasks.map((task) =>
+        prevTasks?.map((task) =>
           task._id === service._id ? { ...task, status } : task
         )
       );
