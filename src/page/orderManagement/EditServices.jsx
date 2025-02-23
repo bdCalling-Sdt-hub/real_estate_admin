@@ -30,6 +30,17 @@ export const EditServices = () => {
     const category = service?.category?.name;
     services[category] = [...(services[category] || []), service];
   });
+
+  const totalAmount =
+    packagesAndServices?.packageIds?.reduce(
+      (acc, pkg) => acc + Number(pkg.price),
+      0
+    ) +
+    packagesAndServices?.serviceIds?.reduce(
+      (acc, service) => acc + Number(service.price),
+      0
+    );
+
   const handleRemovePackage = async ({ id: pkgId, type }) => {
     if (type === "package") {
       const updatedPackages = packagesAndServices.packageIds.filter(
@@ -141,7 +152,7 @@ export const EditServices = () => {
         <div className="flex justify-between items-center text-lg font-semibold mb-6">
           <span>Total Amount</span>
           <span>
-            {Number(data?.data?.totalAmount).toLocaleString("en-US", {
+            {Number(totalAmount).toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}
