@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { EditServicesCard } from "./EditServicesCard";
-import { Button, Dropdown, message } from "antd";
+import { Button, Dropdown, message, Spin } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { menu } from "./constant";
@@ -9,37 +9,61 @@ import {
   useUpdateServicesOfOrderMutation,
 } from "../redux/api/ordersApi";
 import Loading from "../../components/Loading";
+import { useEffect, useState } from "react";
 
 export const EditServices = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, isLoading, refetch } = useGetServicesOfOrderQuery(id);
-  const [updateServicesOfOrder] = useUpdateServicesOfOrderMutation();
+  const [updateServicesOfOrder, { isLoading: isUpdating }] =
+    useUpdateServicesOfOrderMutation();
+  const [packagesAndServices, setPackagesAndServices] = useState([]);
+
+  useEffect(() => {
+    setPackagesAndServices(data?.data);
+  }, [data]);
+
   if (isLoading) return <Loading />;
+
   const services = {};
-  data?.data?.serviceIds?.forEach((service) => {
+  packagesAndServices?.serviceIds?.forEach((service) => {
     const category = service?.category?.name;
     services[category] = [...(services[category] || []), service];
   });
   const handleRemovePackage = async ({ id: pkgId, type }) => {
-    const body = {
-      packageIds: data?.data?.packageIds,
-      serviceIds: data?.data?.serviceIds,
-    };
     if (type === "package") {
-      body.packageIds = body.packageIds.filter((pkg) => pkg._id !== pkgId);
+      const updatedPackages = packagesAndServices.packageIds.filter(
+        (pkg) => pkg._id !== pkgId
+      );
+      setPackagesAndServices({
+        ...packagesAndServices,
+        packageIds: updatedPackages,
+      });
     } else {
-      body.serviceIds = body.serviceIds.filter(
+      const updatedServices = packagesAndServices.serviceIds.filter(
         (service) => service._id !== pkgId
       );
+      setPackagesAndServices({
+        ...packagesAndServices,
+        serviceIds: updatedServices,
+      });
     }
+  };
+
+  const handleUpdateServices = async () => {
     try {
-      await updateServicesOfOrder({ orderId: id, data: body });
-      message.success("Package removed successfully");
+      await updateServicesOfOrder({
+        orderId: id,
+        data: {
+          packageIds: packagesAndServices?.packageIds,
+          serviceIds: packagesAndServices?.serviceIds,
+        },
+      });
+      message.success("Packages and Services updated successfully");
       refetch();
     } catch (error) {
       console.log(error);
-      message.error("Failed to remove package");
+      message.error("Failed to update packages and services");
     }
   };
   return (
@@ -73,7 +97,9 @@ export const EditServices = () => {
         </h2>
         {/* Add Services Button */}
         <div className="flex justify-end mb-6">
-          <Link to={"/dashboard/order-management/order-details/add-services"}>
+          <Link
+            to={`/dashboard/order-management/order-details/add-services/${id}`}
+          >
             <button className="bg-[#2A216D] text-white px-6 py-2 rounded shadow-md hover:bg-purple-800">
               + Add Services
             </button>
@@ -83,12 +109,13 @@ export const EditServices = () => {
         <div className="mb-8">
           <h3 className="text-lg font-semibold mb-4">Package</h3>
           <div className="grid grid-cols-3 gap-4">
-            {data?.data?.packageIds?.length > 0
-              ? data?.data?.packageIds?.map((pkg, index) => (
+            {packagesAndServices?.packageIds?.length > 0
+              ? packagesAndServices?.packageIds?.map((pkg, index) => (
                   <EditServicesCard
                     pkg={pkg}
                     key={index}
                     handleRemovePackage={handleRemovePackage}
+                    type="package"
                   />
                 ))
               : "No packages found"}
@@ -104,6 +131,7 @@ export const EditServices = () => {
                       pkg={service}
                       key={index}
                       handleRemovePackage={handleRemovePackage}
+                      type="service"
                     />
                   ))
                 : "No packages found"}
@@ -127,9 +155,18 @@ export const EditServices = () => {
           >
             Cancel
           </button>
-          <button className="px-6 py-2 w-[200px] rounded bg-[#2A216D] text-white hover:bg-purple-800">
-            Update
-          </button>
+          {isUpdating ? (
+            <button className="px-6 py-2 w-[200px] rounded bg-[#2A216D] text-white hover:bg-purple-800">
+              <Spin />
+            </button>
+          ) : (
+            <button
+              onClick={handleUpdateServices}
+              className="px-6 py-2 w-[200px] rounded bg-[#2A216D] text-white hover:bg-purple-800"
+            >
+              Update
+            </button>
+          )}
         </div>
       </div>
     </div>
