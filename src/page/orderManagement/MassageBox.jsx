@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
 import { Input, Button } from "antd";
 import { SendOutlined } from "@ant-design/icons";
-import { io } from "socket.io-client";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 import dayjs from "dayjs";
+import parseJWT from "../../utils/parseJWT";
 
 export const MassageBox = ({ files }) => {
   return (
     <div className="">
       <h2 className="text-lg mb-4">Message</h2>
-
-      {/* Chat Container */}
       <Messages />
       <div style={{ display: files?.length > 0 ? "block" : "none" }}>
         <h1 className="mt-8 ">Upload File</h1>
@@ -34,7 +33,7 @@ export const MassageBox = ({ files }) => {
 const Messages = () => {
   const { id } = useParams();
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJwt(token);
+  const { authId } = parseJWT(token);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState(null);
@@ -89,41 +88,45 @@ const Messages = () => {
   return (
     <div className="border rounded-md p-4">
       <div ref={messageContainerRef} className="h-[400px] overflow-y-auto mb-4">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              (msg?.senderId?._id || msg?.senderId) === authId
-                ? "justify-end"
-                : "start"
-            } mb-4 p-4`}
-          >
-            {(msg?.senderId?._id || msg?.senderId) !== authId && (
-              <img
-                src={
-                  msg.senderId.profile_image ||
-                  `https://ui-avatars.com/api/?name=${msg.senderId.name}`
-                }
-                alt="User"
-                className="w-10 h-10 rounded-full mr-3"
-              />
-            )}
-            <div>
-              <div
-                className={`${
-                  (msg?.senderId?._id || msg?.senderId) === authId
-                    ? "bg-[#2A216D] text-white text-right"
-                    : "bg-gray-200 text-gray-700"
-                } p-3 rounded-md max-w-md w-fit`}
-              >
-                {msg.message}
+        {messages.map((msg, index) =>
+          msg.isRevision ? (
+            <RevisionMessage key={index} msg={msg} authId={authId} />
+          ) : (
+            <div
+              key={index}
+              className={`flex ${
+                (msg?.senderId?._id || msg?.senderId) === authId
+                  ? "justify-end"
+                  : "start"
+              } mb-4 p-4`}
+            >
+              {(msg?.senderId?._id || msg?.senderId) !== authId && (
+                <img
+                  src={
+                    msg.senderId.profile_image ||
+                    `https://ui-avatars.com/api/?name=${msg.senderId.name}`
+                  }
+                  alt="User"
+                  className="w-10 h-10 rounded-full mr-3"
+                />
+              )}
+              <div>
+                <div
+                  className={`${
+                    (msg?.senderId?._id || msg?.senderId) === authId
+                      ? "bg-[#2A216D] text-white text-right"
+                      : "bg-gray-200 text-gray-700"
+                  } p-3 rounded-md max-w-md w-fit`}
+                >
+                  {msg.message}
+                </div>
+                <span className="text-gray-400 text-sm mt-1 inline-block">
+                  {dayjs(msg.createdAt).format("DD/MM/YYYY hh:mm A")}
+                </span>
               </div>
-              <span className="text-gray-400 text-sm mt-1 inline-block">
-                {dayjs(msg.createdAt).format("DD/MM/YYYY hh:mm A")}
-              </span>
             </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
 
       <div className="flex items-center mt-4 border-t pt-4">
@@ -145,18 +148,77 @@ const Messages = () => {
   );
 };
 
-function parseJwt(token) {
-  var base64Url = token.split(".")[1];
-  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  var jsonPayload = decodeURIComponent(
-    window
-      .atob(base64)
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
+const RevisionMessage = ({ msg, authId }) => {
+  const [showMore, setShowMore] = useState(false);
+  return (
+    <div
+      className={`flex flex-col m-4 ${
+        (msg?.senderId?._id || msg?.senderId) === authId
+          ? "justify-end ml-auto"
+          : "start"
+      } mb-4 px-2 py-1 border border-[#9D99BC] bg-[#F9F9FF] rounded-md w-fit`}
+    >
+      <div className="flex items-start justify-between gap-12">
+        <div>
+          <p className="text-[#2A216D] font-medium">Revision Request</p>
+          <span className="text-gray-400 text-xs inline-block">
+            {dayjs(msg.createdAt).format("DD/MM/YYYY hh:mm A")}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <img
+            src={
+              msg?.senderId?.profile_image
+                ? `${import.meta.env.VITE_BASE_URL}/${
+                    msg?.senderId?.profile_image
+                  }`
+                : `https://ui-avatars.com/api/?name=${msg?.senderId?.name}`
+            }
+            alt={msg?.senderId?.name}
+            className="w-6 h-6 rounded-full"
+          />
+          <p className="text-gray-900 font-medium">{msg?.senderId?.name}</p>
+        </div>
+      </div>
+      <div className="max-w-[200px] my-2">
+        {msg?.message_img?.includes("video") ? (
+          <video
+            src={msg?.message_img}
+            controls
+            className="rounded-md mb-2 border border-[#9d99bc]"
+          />
+        ) : (
+          <img
+            src={msg?.message_img}
+            alt={msg?.senderId?.name}
+            className="rounded-md mb-2 border border-[#9d99bc]"
+          />
+        )}
+        <p
+          className={`text-gray-600 text-sm pl-1 max-h-[100px] overflow-hidden ${
+            showMore ? "max-h-full" : "max-h-[60px]"
+          }`}
+        >
+          <strong>Message: </strong>
+          {msg?.message}
+        </p>
+        {msg?.message?.length > 100 && (
+          <button
+            onClick={() => setShowMore(!showMore)}
+            className="text-blue-500 text-sm ml-1"
+          >
+            {showMore ? "See Less" : "See More"}
+          </button>
+        )}
+      </div>
+      {msg?.taskId && (
+        <Link
+          to={`/dashboard/task-management/all-Services/project-file/${msg?.taskId}`}
+          className="bg-transparent hover:bg-[#2A216D] text-[#2A216D] font-semibold hover:text-white border border-[#9D99BC] hover:border-transparent rounded text-center my-2"
+        >
+          View Task
+        </Link>
+      )}
+    </div>
   );
-
-  return JSON.parse(jsonPayload);
-}
+};
