@@ -82,7 +82,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open, schedule }) => {
                   : []
               }
               className="w-full"
-              format="h:mm A"
+              format="HH:mm"
             />
           </Form.Item>
         </div>

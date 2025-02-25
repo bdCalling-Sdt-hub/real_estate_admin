@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAddNoteMutation } from "../redux/api/ordersApi";
 import { useParams } from "react-router-dom";
 
-export const DetailsNote = ({ notes }) => {
+export const DetailsNote = ({ notes, refetch }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [addNote, { isLoading }] = useAddNoteMutation();
   const { id } = useParams();
@@ -12,6 +12,7 @@ export const DetailsNote = ({ notes }) => {
     await addNote({ id: id, data: { text } });
     setOpenAddModal(false);
     message.success("Note added successfully");
+    refetch();
   };
   return (
     <div className="mt-6">

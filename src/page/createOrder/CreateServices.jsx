@@ -14,6 +14,10 @@ const CreateServices = () => {
     serviceIds: [],
     services: [],
     contactAgent: "false",
+    address: {
+      lat: 52.3547418,
+      lng: 4.8215606,
+    },
   });
 
   const tabs = ["Services", "Address", "Contact Info", "Confirm"];

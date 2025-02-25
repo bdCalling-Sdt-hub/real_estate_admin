@@ -17,9 +17,8 @@ export const ServicesTab = ({ formData, setFormData }) => {
     searchTerm,
   });
   const { data: services } = useGetAllServicesQuery({
-    category: selectedTab,
-    searchTerm,
-    limit: 100,
+    clientId: formData.client._id,
+    categoryId: selectedTab,
   });
   return (
     <div className="mt-5">
