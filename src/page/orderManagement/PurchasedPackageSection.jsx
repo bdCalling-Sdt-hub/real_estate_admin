@@ -30,13 +30,13 @@ export const PurchasedPackageSection = ({ tasks: initialTasks }) => {
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-4">Package Services</h3>
         <div>
-          {tasks.map((service, index) => (
+          {tasks?.map((service, index) => (
             <div
               key={index}
               className="grid grid-cols-2 border border-gray-200 rounded-md p-4 mb-6"
             >
               <div className="flex justify-between items-center">
-                <span className="text-gray-700">{service.serviceId.title}</span>
+                <span className="text-gray-700">{service.serviceId?.title}</span>
                 <div className="flex gap-2">
                   <button className="relative bg-[#2A216D] text-white w-[40px] h-[40px] items-center text-xl rounded pl-[10px] group">
                     <MdLink />
@@ -83,7 +83,7 @@ const TaskStatuses = ({ service, setTasks }) => {
       updateTaskStatus({ status, taskId: service._id });
       message.success("Status updated successfully");
       setTasks((prevTasks) =>
-        prevTasks.map((task) =>
+        prevTasks?.map((task) =>
           task._id === service._id ? { ...task, status } : task
         )
       );

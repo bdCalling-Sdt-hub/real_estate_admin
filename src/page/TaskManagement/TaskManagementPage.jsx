@@ -114,7 +114,7 @@ export const TaskManagementPage = () => {
                         className="flex justify-between items-center mb-2  pb-2"
                       >
                         <div>
-                          <p className="font-semibold">{item.service.title}</p>
+                          <p className="font-semibold">{item?.service?.title}</p>
                           <p className="text-sm text-gray-600">
                             {formatAddress(item?.order?.address)}
                           </p>
@@ -175,7 +175,7 @@ export const TaskManagementPage = () => {
                         className="flex justify-between items-center mb-2 pb-2"
                       >
                         <div>
-                          <p className="font-semibold">{item.service.title}</p>
+                          <p className="font-semibold">{item?.service?.title}</p>
                           <p className="text-sm text-gray-600">
                             {formatAddress(item?.order?.address)}
                           </p>

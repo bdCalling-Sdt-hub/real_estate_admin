@@ -81,6 +81,16 @@ const ordersApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getServicesOfOrder: builder.query({
+      query: (orderId) => `/orders/services-packages?orderId=${orderId}`,
+    }),
+    updateServicesOfOrder: builder.mutation({
+      query: ({ orderId, data }) => ({
+        url: `/orders/edit-order-service/${orderId}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -96,4 +106,6 @@ export const {
   useRemoveOrderMutation,
   useUpdateOrderMutation,
   useUpdateTaskStatusMutation,
+  useGetServicesOfOrderQuery,
+  useUpdateServicesOfOrderMutation,
 } = ordersApi;

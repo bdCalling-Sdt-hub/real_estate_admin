@@ -88,7 +88,9 @@ export const EditOrder = () => {
       descriptions: values.description,
       uploadFiles: selectedPrevFiles,
     };
-    formData.append("uploadFiles", newFiles);
+    newFiles.forEach((file) => {
+      formData.append("uploadFiles", file.originFileObj);
+    });
     formData.append("data", JSON.stringify(formJSON));
 
     try {
@@ -118,7 +120,7 @@ export const EditOrder = () => {
           <span className="text-lg font-semibold">Edit Order</span>
         </h1>
 
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown overlay={() => menu(id)} trigger={["click"]}>
           <Button
             className="border border-black rounded-full text-black flex items-center"
             onClick={(e) => e.preventDefault()}

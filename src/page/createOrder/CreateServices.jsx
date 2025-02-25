@@ -124,7 +124,9 @@ const CreateServices = () => {
       serviceIds: serviceIds,
       packageIds: packageIds,
     };
-    formDataForAPI.append("uploadFiles", formData.uploadFiles);
+    formData.uploadFiles.forEach((file) => {
+      formDataForAPI.append("uploadFiles", file.originFileObj);
+    });
     formDataForAPI.append("data", JSON.stringify(data));
 
     try {

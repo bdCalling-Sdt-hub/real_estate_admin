@@ -7,7 +7,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { FinishedFileComnt } from "./FinishedFileComnt";
 import { useGetTaskDetailsQuery } from "../redux/api/taskApi";
 import Loading from "../../components/Loading";
-import { message, Upload } from "antd";
+import { message, Spin, Upload } from "antd";
 import handleFileUpload from "../../utils/handleFileUpload";
 import { useSelector } from "react-redux";
 
@@ -16,6 +16,7 @@ export const ProjectFile = () => {
   const [selectedTab, setSelectedTab] = useState("source");
   const { id } = useParams();
   const { data, isLoading, refetch } = useGetTaskDetailsQuery(id);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const token = useSelector((state) => state.logInUser.token);
 
@@ -24,12 +25,20 @@ export const ProjectFile = () => {
     accept: "image/*, video/*",
     itemRender() {},
     customRequest: async (options) => {
+      setUploadLoading(true);
+      const uploadConfig = {
+        field: selectedTab === "source" ? "sourceFile" : "finishFile",
+        action:
+          selectedTab === "source"
+            ? `/task/add-source-file/${id}`
+            : `/task/add-finished-file/${id}`,
+      };
       try {
         const formData = new FormData();
-        formData.append("sourceFile", options.file);
+        formData.append(uploadConfig.field, options.file);
         await handleFileUpload({
           formData: formData,
-          action: `/task/add-source-file/${id}`,
+          action: uploadConfig.action,
           method: "PATCH",
           token: token,
         });
@@ -38,6 +47,8 @@ export const ProjectFile = () => {
       } catch (error) {
         console.log(error);
         message.error("File upload failed");
+      } finally {
+        setUploadLoading(false);
       }
     },
   };
@@ -47,7 +58,11 @@ export const ProjectFile = () => {
   }
   return (
     <div className="bg-white  p-5">
-      <div className="grid gap-4">
+      <div
+        className={`grid gap-4 ${
+          selectedTab === "source" ? "" : "grid-cols-8"
+        }`}
+      >
         <div className="col-span-6">
           <h1 className="flex gap-4 ">
             <button onClick={() => navigate(-1)} className="text-[#EF4849]">
@@ -90,26 +105,33 @@ export const ProjectFile = () => {
                 Finished File
               </div>
             </div>
-            {selectedTab === "source" && (
-              <div>
-                <Upload {...uploadProps}>
+            <div>
+              <Upload {...uploadProps}>
+                {uploadLoading ? (
+                  <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
+                    <Spin />
+                  </button>
+                ) : (
                   <button className="bg-[#2A216D] flex items-center gap-3 text-[white] rounded px-11 py-2.5">
                     <MdOutlineFileUpload className="text-xl" /> Upload
                   </button>
-                </Upload>
-              </div>
-            )}
+                )}
+              </Upload>
+            </div>
           </div>
-          {selectedTab === "finished" && (
+          {selectedTab === "finished" && data?.data?.finishFile.length > 0 && (
             <div>
-              <FinishedFile></FinishedFile>
+              <FinishedFile
+                finishedFiles={data?.data?.finishFile}
+                refetch={refetch}
+              />
             </div>
           )}
         </div>
         <div className="col-span-2">
           {selectedTab === "finished" && (
             <div>
-              <FinishedFileComnt></FinishedFileComnt>
+              <FinishedFileComnt />
             </div>
           )}
         </div>
@@ -128,10 +150,7 @@ export const ProjectFile = () => {
       </div> */}
       {selectedTab === "source" && data?.data?.sourceFile.length > 0 && (
         <div>
-          <SourceFile
-            sourceFiles={data?.data?.sourceFile}
-            refetch={refetch}
-          />
+          <SourceFile sourceFiles={data?.data?.sourceFile} refetch={refetch} />
         </div>
       )}
     </div>

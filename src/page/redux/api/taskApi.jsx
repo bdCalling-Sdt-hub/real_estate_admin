@@ -45,6 +45,26 @@ const taskApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getComments: builder.query({
+      query: (id) => `/task/get-comment?taskId=${id}`,
+    }),
+    postComment: builder.mutation({
+      query: ({ taskId, comment, fileId, replayId }) => {
+        const params = new URLSearchParams();
+        params.append("taskId", taskId);
+        if (fileId) {
+          params.append("fileId", fileId);
+        }
+        if (replayId) {
+          params.append("replayId", replayId);
+        }
+        return {
+          url: `/task/add-comment?${params.toString()}`,
+          method: "PATCH",
+          body: { text: comment },
+        };
+      },
+    }),
   }),
 });
 
@@ -57,4 +77,6 @@ export const {
   useRejectTaskMutation,
   useGetTaskDetailsQuery,
   useDeleteFileMutation,
+  useGetCommentsQuery,
+  usePostCommentMutation,
 } = taskApi;

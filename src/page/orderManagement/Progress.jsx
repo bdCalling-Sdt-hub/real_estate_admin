@@ -17,12 +17,14 @@ export const Progress = ({ search }) => {
       dataSource={orders?.data?.data}
       columns={columns}
       pagination={{
+        current: page,
         pageSize: pageSize,
-        showSizeChanger: true,
-        pageSizeOptions: ["10"],
-        onChange: (page) => {
-          setPage(page);
+        total: orders?.data?.meta?.total,
+        onChange: (newPage) => {
+          setPage(newPage);
         },
+        showSizeChanger: false,
+        showTotal: (total) => `Total ${total} items`,
       }}
       bordered
       style={{ marginTop: "20px" }}
