@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from "antd";
+import { Form, Input, message, Modal, Pagination } from "antd";
 import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,16 @@ import { AddPackageModal } from "./AddPackageModal";
 import { EditPackageModal } from "./EditPackageModal";
 import img from "../../assets/header/11.png";
 import img1 from "../../assets/header/22.png";
-import { useGetAllPackageQuery } from "../redux/api/packageApi";
+import { useDeletePackageMutation, useGetAllPackageQuery } from "../redux/api/packageApi";
+
 
 export const Packeges = () => {
-  const { data: packageData } = useGetAllPackageQuery();
+  const [searchTerm, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const { data: packageData } = useGetAllPackageQuery({searchTerm,page: currentPage,
+    limit: pageSize,});
+const[deletePackage] = useDeletePackageMutation()
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -25,9 +31,33 @@ export const Packeges = () => {
     setOpenDetails(true);
   };
 
+  const handlePageChange = (page) => {
+    console.log("Page Changed to:", page); // Debug to confirm `page` is received
+    setCurrentPage(page);
+  };
+
   const handleEdit = (record) => {
     setSelectedCategory(record);
     setEditModal(true);
+  };
+
+  const handleDelete = async (record) => {
+    console.log(record?.key)
+    Modal.confirm({
+      title: "Are you sure?",
+      content: "This action cannot be undone. Do you want to delete this category?",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      async onOk() {
+        try {
+          const response = await deletePackage(record.key).unwrap();
+          message.success(response.message );
+        } catch (error) {
+          message.error(error?.data?.message);
+        }
+      },
+    });
   };
 
   // Prepare table data from API response
@@ -94,6 +124,7 @@ export const Packeges = () => {
           </button>
           <button
             shape="circle"
+            onClick={() => handleDelete(record)}
             className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
           >
             <DeleteOutlined />
@@ -121,7 +152,7 @@ export const Packeges = () => {
           </button>
           <span className="text-lg font-semibold">Packages</span>
         </h1>
-        <Input placeholder="Search here..." style={{ width: 300 }} />
+        <Input onChange={(e) => setSearch(e.target.value)} placeholder="Search here..." style={{ width: 300 }} />
       </div>
 
       <div className="">
@@ -139,9 +170,18 @@ export const Packeges = () => {
         <Table
           dataSource={tableData}
           columns={columns}
-        
-          bordered
+          pagination={false}
         />
+        <div className="mt-4 flex justify-end">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={packageData?.data.meta?.total || 0}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
+          ;
+        </div>
       </div>
 
       <AddPackageModal

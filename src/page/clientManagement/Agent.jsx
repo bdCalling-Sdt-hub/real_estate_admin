@@ -10,26 +10,32 @@ import { imageUrl } from "../redux/api/baseApi";
 
 export const Agent = () => {
   const { id } = useParams();
-  const { data: singleClientAgentData, isLoading, error } = useGetSingleClientManagementQuery(
+  console.log(id)
+  const {
+    data: singleClientAgentData,
+    isLoading,
+    error,
+  } = useGetSingleClientManagementQuery(
     { id },
     { refetchOnMountOrArgChange: true }
   );
   console.log(singleClientAgentData);
   const [openAddModal, setOpenAddModal] = useState(false);
-    const [openAddModal1, setOpenAddModal1] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+  const [openAddModal1, setOpenAddModal1] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
 
-  const data = singleClientAgentData?.data?.map((agent, index) => ({
-    key: agent._id,
-    slNo: `#${index + 1}`,
-    name: agent.name,
-    authId: agent.authId,
-    email:agent.email,
-    phone: agent.phone_number,
-    address: agent.address,
-    profile_image: agent.profile_image,
-  })) || [];
+  const data =
+    singleClientAgentData?.data?.map((agent, index) => ({
+      key: agent._id,
+      slNo: `#${index + 1}`,
+      name: agent.name,
+      authId: agent.authId,
+      email: agent.email,
+      phone: agent.phone_number,
+      address: agent.address,
+      profile_image: agent.profile_image,
+    })) || [];
 
   const handleEdit = (record) => {
     setSelectedCategory(record);
@@ -49,7 +55,10 @@ export const Agent = () => {
       key: "name",
       render: (text, record) => (
         <div className="flex items-center">
-          <Avatar src={`${imageUrl}/${record.profile_image}`} alt={record.name} />
+          <Avatar
+            src={`${imageUrl}/${record.profile_image}`}
+            alt={record.name}
+          />
           <span style={{ marginLeft: 8 }}>{record.name}</span>
         </div>
       ),
@@ -108,30 +117,31 @@ export const Agent = () => {
           </button>
           <span className="text-lg font-semibold">Agent</span>
         </h1>
-        <Input placeholder="Search here..." style={{ width: 300 }} />
       </div>
 
       <div className="">
         <div>
-          <button onClick={() => setOpenAddModal(true)} className="bg-[#2A216D] mb-8 text-[white] rounded px-11 py-2.5">
+          <button
+            onClick={() => setOpenAddModal(true)}
+            className="bg-[#2A216D] mb-8 text-[white] rounded px-11 py-2.5"
+          >
             + New Agent
           </button>
         </div>
       </div>
-      <Table
-        dataSource={data}
-        columns={columns}
-        pagination={{
-          pageSize: 5,
-          showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "20"],
-        }}
-        bordered
-      />
+      <Table dataSource={data} columns={columns} pagination={false} />
 
-      <AddAgentModal singleClientAgentData={singleClientAgentData} openAddModal={openAddModal} setOpenAddModal={setOpenAddModal}></AddAgentModal>
-      <EditAgent openAddModal={openAddModal1}
-  setOpenAddModal={setOpenAddModal1}  selectAgentManagement={selectedCategory}></EditAgent>
+      <AddAgentModal
+        singleClientAgentData={singleClientAgentData}
+        id={id}
+        openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}
+      ></AddAgentModal>
+      <EditAgent
+        openAddModal={openAddModal1}
+        setOpenAddModal={setOpenAddModal1}
+        selectAgentManagement={selectedCategory}
+      ></EditAgent>
     </div>
   );
 };

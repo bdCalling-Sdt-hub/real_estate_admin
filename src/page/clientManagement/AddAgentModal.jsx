@@ -3,10 +3,13 @@ import { Form, Input, Checkbox, Modal } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useAddAgentManagementMutation } from "../redux/api/clientManageApi";
 
-export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgentData }) => {
+export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgentData,id }) => {
+  console.log(id)
+  
   const client = singleClientAgentData?.data?.map((agent) => ({
     id: agent.clientId, 
   })) || [];
+  console.log(singleClientAgentData)
 
   console.log(client.length > 0 ? client[0].id : ''); 
 
@@ -24,8 +27,10 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
     const formData = new FormData();
     // Append the form data
     const clientId = client.length > 0 ? client[0].id : '';
+    console.log(id)
     formData.append("name", values.name);
-    formData.append("clientId", clientId);
+    formData.append("clientId", id);
+    
     formData.append("email", values.email);
     formData.append("phone_number", values.phone);
     formData.append("address", values.address);

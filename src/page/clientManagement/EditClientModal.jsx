@@ -28,8 +28,8 @@ export const EditClientModal = ({
     const file = e.target.files[0];
     setSelectedFile(file);
   };
-
-  // Handle form submission
+ 
+  
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -38,7 +38,6 @@ export const EditClientModal = ({
     formData.append("email_notifications", emailNotifications);
     formData.append("email_invoice", emailInvoice);
 
-    // Append the file only if one is selected
     if (selectedFile) {
       formData.append("profile_image", selectedFile);
     }

@@ -47,24 +47,22 @@ export const EditPackageModal = ({
       value: service._id,
       label: service.title,
     })) || [];
-
-  // Handle service selection
   const handleServiceChange = (value) => {
     console.log("Selected Service IDs:", value);
     setSelectedServices(value);
   };
 
-  // Handle file uploads
+
   const handleFileChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
 
-  // Handle file removal
+
   const handleRemove = (file) => {
     setFileList(fileList.filter((item) => item.uid !== file.uid));
   };
 
-  // Form Submission Handler
+
   const onFinish = async (values) => {
     const id = selectedCategory?.key;
     console.log("Package ID:", id);
@@ -81,8 +79,6 @@ export const EditPackageModal = ({
     formData.append("name", values.name);
     formData.append("price", values.price);
     formData.append("descriptions", values.descriptions);
-
-    // Append selected service IDs to formData (Fixing your issue)
     selectedServices.forEach((id) => {
       formData.append("services", id);
     });

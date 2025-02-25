@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Select, Table } from "antd";
+import { Form, Input, Button, Select, Table, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useGetAllClientQuery, useGetServicesAllQuery } from "../redux/api/packageApi";
+import { useAddPricingMutation, useGetAllClientQuery, useGetServicesAllQuery } from "../redux/api/packageApi";
 import { imageUrl } from "../redux/api/baseApi";
 
 export const AddPricingPage = () => {
   const navigate = useNavigate();
   const { data: clientData } = useGetAllClientQuery();
   const { data: allServicesData } = useGetServicesAllQuery();
+  const [addPricingGroup] = useAddPricingMutation();
   const [form] = Form.useForm();
- 
+  
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
@@ -29,7 +30,6 @@ export const AddPricingPage = () => {
   // Handle client selection
   const handleClientSelect = (clientIds) => {
     setSelectedClientIds(clientIds);
-    console.log("Selected Client IDs:", clientIds);
   };
 
   // Handle service selection
@@ -39,24 +39,38 @@ export const AddPricingPage = () => {
       serviceIds.includes(service._id)
     );
     setSelectedServices(selectedServicesData);
-    console.log("Selected Service IDs:", serviceIds);
   };
 
   // Handle client removal
   const handleRemoveClient = (clientId) => {
     const updatedClients = selectedClientIds.filter((id) => id !== clientId);
     setSelectedClientIds(updatedClients);
-    console.log("Updated Client ID Array after removal:", updatedClients);
   };
 
+  const handleSubmit = async (values) => {
+    // Preparing the data with special_price from the input fields
+    const data = {
+      name: values.pricingGroupName, 
+      clients: selectedClientIds, 
+      services: selectedServices.map((service) => ({
+        serviceId: service._id, 
+        special_price: service.special_price, 
+      })),
+    };
 
-  const handleSubmit = (values) => {
-    console.log("Form Values:", values);
-    console.log("Selected Clients:", selectedClientIds);
-    console.log("Selected Services:", selectedServices);
+    console.log(data);
+
+    try {
+      const res = await addPricingGroup(data);
+      message.success(res?.data?.message);
+      console.log(res);
+    } catch (error) {
+      message.error(error?.data?.data?.message)
+      console.error("Error creating pricing group:", error);
+      message.error("An error occurred while creating the pricing group.");
+    }
   };
 
- 
   const pricingColumns = [
     {
       title: "Service Title",
@@ -69,21 +83,44 @@ export const AddPricingPage = () => {
       key: "price",
     },
     {
-      title: " price",
-      dataIndex: "price",
-      key: "price",
+      title: "Special Price",
+      dataIndex: "special_price",
+      key: "special_price",
       render: (text, record, index) => (
         <Input
-          defaultValue={text}
-          onChange={(e) => {
-            const updatedServices = [...selectedServices];
-            updatedServices[index].pricingGroupPrice = e.target.value;
-            setSelectedServices(updatedServices);
-          }}
-        />
+  defaultValue={record.price} 
+  onChange={(e) => {
+    const newServices = [...selectedServices];
+
+
+    const updatedSpecialPrice = parseFloat(e.target.value); 
+
+    // Check if the value is a valid number
+    if (isNaN(updatedSpecialPrice)) {
+      message.error("Invalid special_price: Must be a number.")
+    
+      return; // Don't update the state if it's not a valid number
+    }
+
+    // Create a new object with the updated special_price
+    newServices[index] = { 
+      ...newServices[index], // Spread the existing properties of the service
+      special_price: updatedSpecialPrice // Update special_price as a number
+    };
+
+    setSelectedServices(newServices);
+
+    // Log the updated special price to the console
+    console.log(`Updated special price for service ${record.title}: ${updatedSpecialPrice}`);
+  }}
+/>
+
+      
+
       ),
     },
   ];
+  
 
   return (
     <div className="bg-white p-4">

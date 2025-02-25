@@ -116,12 +116,7 @@ const handleDelete = async (record) => {
           dataSource={data}
           columns={columns}
           loading={isLoading}
-          pagination={{
-            pageSize: 7,
-            showSizeChanger: true,
-            pageSizeOptions: ["7", "10", "20"],
-          }}
-          bordered
+          pagination={false}
           style={{ marginTop: "20px" }}
         />
       </div>

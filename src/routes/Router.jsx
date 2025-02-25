@@ -116,7 +116,7 @@ export const router = createBrowserRouter([
         element: <AddPricingPage></AddPricingPage>
       },
       {
-        path: "/dashboard/pricing-group/edit-pricing-group",
+        path: "/dashboard/pricing-group/edit-pricing-group/:id",
         element: <EditPricingPage></EditPricingPage>
       },
       {

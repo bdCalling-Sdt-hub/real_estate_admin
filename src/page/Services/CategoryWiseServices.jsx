@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Modal, message } from "antd";
+import { Table, Modal, message,Pagination, } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useDeleteServicesMutation, useGetAllServicesQuery } from "../redux/api/serviceApi";
 import { EditServiceMOdal } from "./EditServiceMOdal";
@@ -7,11 +7,14 @@ import { EditServiceMOdal } from "./EditServiceMOdal";
 export const CategoryWiseServices = ({category,searchTerm}) => {
   console.log(category)
   
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const [editModal, setEditModal] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
-  const { data: serviceData, isLoading } = useGetAllServicesQuery({category,searchTerm});
+  const { data: serviceData, isLoading } = useGetAllServicesQuery({category,searchTerm:searchTerm,page: currentPage,
+    limit: pageSize,});
 const[deleteServices]= useDeleteServicesMutation()
   const data = serviceData?.data?.data?.map((item, index) => ({
     key: item._id,
@@ -33,7 +36,13 @@ const[deleteServices]= useDeleteServicesMutation()
     setEditModal(true);
   };
 
+  const handlePageChange = (page) => {
+    console.log("Page Changed to:", page); 
+    setCurrentPage(page);
+  };
+
   const handleDelete = async (record) => {
+    console.log(record?.key)
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -110,20 +119,25 @@ const[deleteServices]= useDeleteServicesMutation()
 
   return (
     <div>
-      {/* Table for Services */}
+      
       <Table
         dataSource={data}
         columns={columns}
         loading={isLoading}
-        pagination={{
-          pageSize: 7,
-          showSizeChanger: true,
-          pageSizeOptions: ["7", "10", "20"],
-        }}
-        bordered
+        pagination={false}
         style={{ marginTop: "20px" }}
       />
-
+      
+      <div className="mt-4 flex justify-end">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={serviceData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
+          ;
+        </div>
       {/* Service Details Modal */}
       <Modal
         title="Service Details"

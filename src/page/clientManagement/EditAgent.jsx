@@ -11,13 +11,10 @@ export const EditAgent = ({
 }) => {
   const [form] = Form.useForm();
 const [updateAgent] = useUpdateAgentManagementMutation();
+const [selectedFile, setSelectedFile] = useState(null);
 console.log(selectAgentManagement?.authId)
   const [profileImage, setProfileImage] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-  };
+  
   
   useEffect(() => {
     if (selectAgentManagement) {
@@ -31,6 +28,12 @@ console.log(selectAgentManagement?.authId)
       setProfileImage(selectAgentManagement.profile_image);
     }
   }, [selectAgentManagement, form]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+  
 
   const handleSubmit = async (values) => {
 

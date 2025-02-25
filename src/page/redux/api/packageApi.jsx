@@ -12,6 +12,18 @@ const service = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
+
+    addPricing: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/service/create-pricing-group",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+    
     getAllPackage: builder.query({
       query: ({ limit = 100, page = 1, searchTerm }) => {
         const searchQuery = searchTerm ? `&searchTerm=${searchTerm}` : "";
@@ -44,6 +56,16 @@ const service = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
+    getAllPricingGroup: builder.query({
+      query: ({searchTerm,page,limit}) => {
+        return {
+          url: `/service/price-group?searchTerm=${searchTerm}&page=${page}&limit=${limit}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
     getServicesAll: builder.query({
       query: () => {
         return {
@@ -53,6 +75,48 @@ const service = baseApi.injectEndpoints({
       },
       providesTags: ["updateProfile"],
     }),
+
+      updatePricing: builder.mutation({
+        query: ({ data, id }) => {
+          return {
+            url: `/service/update-pricing-group/${id}`,
+            method: "PATCH",
+            body: data,
+          };
+        },
+        invalidatesTags: ["updateProfile"],
+      }),
+
+      getSinglePrice: builder.query({
+      query: ({id}) => {
+        return {
+          url: `/service/price-group-details/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
+       deletePackage: builder.mutation({
+        query: (id) => {
+          return {
+            url: `/service/package-delete/${id}`,
+            method: "DELETE",
+          };
+        },
+        invalidatesTags: ["updateProfile"],
+      }),
+
+         deletePricing: builder.mutation({
+        query: (id) => {
+          return {
+            url: `/service/delete-pricing-group/${id}`,
+            method: "DELETE",
+          };
+        },
+        invalidatesTags: ["updateProfile"],
+      }),
+
 
     // deleteServicesCategory: builder.mutation({
     //   query: (id) => {
@@ -114,4 +178,10 @@ export const {
   useUpdatePackageMutation,
   useGetAllClientQuery,
   useGetServicesAllQuery,
+  useAddPricingMutation,
+  useGetAllPricingGroupQuery,
+  useUpdatePricingMutation,
+  useGetSinglePriceQuery,
+  useDeletePackageMutation,
+  useDeletePricingMutation
 } = service;

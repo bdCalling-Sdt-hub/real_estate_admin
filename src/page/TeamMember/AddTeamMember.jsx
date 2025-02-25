@@ -1,13 +1,115 @@
 import React, { useState } from "react";
 import { Form, Input, Checkbox, Modal, Select } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
+import { useAddTeamMemberMutation } from "../redux/api/clientManageApi";
+import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
 
 export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
-  const [image, setImage] = useState(null);
+  const [form] = Form.useForm();
+  const [addTeamMember] = useAddTeamMemberMutation();
+  const { data: getAllServicesSelect } = useGetAllServicesSelectQuery();
 
+  const serviceOptions =
+    getAllServicesSelect?.data?.data?.map((service) => ({
+      label: service.title,
+      value: service._id,
+    })) || [];
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [access, setAccess] = useState({
+    viewAssignedOrders: false,
+    viewAllOrders: false,
+    placeOrder: false,
+    productionWork: false,
+    seePricing: false,
+    editOrders: false,
+    isAdmin: false,
+  });
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(file ? URL.createObjectURL(file) : null);
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setSelectedFile(null);
+      setImagePreview(null);
+    }
+  };
+  const handleAdminChange = (e) => {
+    const isChecked = e.target.checked;
+    setAccess({
+      viewAssignedOrders: isChecked ? true : access.viewAssignedOrders,
+      viewAllOrders: isChecked ? true : access.viewAllOrders,
+      placeOrder: isChecked ? true : access.placeOrder,
+      productionWork: isChecked ? true : access.productionWork,
+      seePricing: isChecked ? true : access.seePricing,
+      editOrders: isChecked ? true : access.editOrders,
+      isAdmin: isChecked,
+    });
+  };
+
+  const handleCheckboxChange = (key) => (e) => {
+    if (access.isAdmin) return;
+    setAccess({ ...access, [key]: e.target.checked });
+  };
+
+  const handleServiceChange = (value) => {
+    console.log("Selected services:", value);
+  };
+
+  const handleFinish = async (values) => {
+    try {
+      const formData = new FormData();
+      if (selectedFile) {
+        formData.append("profile_image", selectedFile);
+      }
+
+      // Basic fields
+      formData.append("name", values.member);
+      formData.append("email", values.email);
+      formData.append("password", values.newPassword);
+      formData.append("confirmPassword", values.confirmPassword);
+      formData.append("phone_number", values.phone);
+      const finalRole = access.isAdmin ? "ADMIN" : "MEMBER";
+      formData.append("role", finalRole);
+
+      formData.append("roleOfName", values.roleOfName);
+
+      formData.append(
+        "view_assigned_order",
+        access.viewAssignedOrders ? "true" : "false"
+      );
+      formData.append(
+        "view_all_order",
+        access.viewAllOrders ? "true" : "false"
+      );
+      formData.append(
+        "place_on_order_for_client",
+        access.placeOrder ? "true" : "false"
+      );
+      formData.append(
+        "do_production_work",
+        access.productionWork ? "true" : "false"
+      );
+      formData.append("see_the_pricing", access.seePricing ? "true" : "false");
+      formData.append("edit_order", access.editOrders ? "true" : "false");
+      formData.append("is_admin", access.isAdmin ? "true" : "false");
+      if (values.services?.length) {
+        values.services.forEach((serviceId) => {
+          formData.append("serviceId", serviceId);
+        });
+      }
+      const response = await addTeamMember(formData);
+      if (response?.error) {
+        console.error(response.error);
+      } else {
+        form.resetFields();
+        setOpenAddModal(false);
+      }
+    } catch (error) {
+      console.error("Add Team Member Error:", error);
+    }
   };
 
   return (
@@ -19,10 +121,9 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       width={600}
     >
       <div className="mb-6 mt-4">
-        <h2 className="text-center font-bold text-lg mb-11">
-          Add Team Member
-        </h2>
-        <Form layout="vertical">
+        <h2 className="text-center font-bold text-lg mb-11">Add Team Member</h2>
+        <Form layout="vertical" form={form} onFinish={handleFinish}>
+          {/* Profile Image */}
           <div className="relative w-[140px] h-[140px] mx-auto mb-6">
             <input
               type="file"
@@ -39,8 +140,8 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
                 objectFit: "cover",
                 border: "2px solid #e5e7eb",
               }}
-              src={image || "https://via.placeholder.com/140"}
-              alt="Client Profile"
+              src={imagePreview || "https://via.placeholder.com/140"}
+              alt="Team Member Profile"
             />
             <label
               htmlFor="imgUpload"
@@ -59,6 +160,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
             </label>
           </div>
 
+          {/* Name */}
           <Form.Item
             label="Team Member Name"
             name="member"
@@ -67,14 +169,16 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
+          {/* Email */}
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please enter the address" }]}
+            rules={[{ required: true, message: "Please enter the email" }]}
           >
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
+          {/* Phone */}
           <Form.Item
             label="Phone Number"
             name="phone"
@@ -84,58 +188,138 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
           >
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
+
+          {/* Textual Role (roleName) */}
           <Form.Item
-          label="Role"
-          name="phone"
-          rules={[
-            { required: true, message: "Please enter the phone number" },
-          ]}
+            label="Role"
+            name="roleOfName"
+            rules={[{ required: true, message: "Please select a role" }]}
           >
-          <Select
-            placeholder="Role"
-            style={{
-              width: "100%",
-              fontSize: "16px",
-              padding: "0px",
-              
-            }}
-            options={[
-              { label: "Photographer", value: "Photographer" },
-          
+            <Select
+              showSearch
+              placeholder="Search to Select"
+              optionFilterProp="label"
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? "")
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? "").toLowerCase())
+              }
+              options={[
+                { value: "Photographer", label: "Photographer" },
+                { value: "PhotoEditor", label: "Photo Editor" },
+                { value: "VideoEditor", label: "Video Editor" },
+                { value: "EnergyLabelAdvisor", label: "Energy Label Advisor" },
+                { value: "Manager", label: "Manager" },
+              ]}
+              onChange={(value) => {
+                console.log("Selected Role:", value); // Log the selected role
+              }}
+            />
+          </Form.Item>
+
+          {/* Services */}
+          <Form.Item
+            label="Services"
+            name="services"
+            rules={[
+              { required: true, message: "Please select at least one service" },
             ]}
-          />
+          >
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Select Services"
+              onChange={handleServiceChange}
+              options={serviceOptions}
+            />
+          </Form.Item>
+
+          {/* Passwords */}
+          <Form.Item
+            name="newPassword"
+            label="New Password"
+            rules={[
+              { required: true, message: "Please enter your new password" },
+            ]}
+          >
+            <Input.Password className="py-2" placeholder="Enter new password" />
           </Form.Item>
 
           <Form.Item
-          label="Select Services"
-          name="phone"
-          rules={[
-            { required: true, message: "Please enter the phone number" },
-          ]}>
-          <Select
-            placeholder="Please select"
-            style={{
-              width: "100%",
-              fontSize: "16px",
-              padding: "0px",
-              
-            }}
-            options={[
-              { label: "Option 1", value: "option1" },
-              { label: "Option 2", value: "option2" },
-              { label: "Option 3", value: "option3" },
+            name="confirmPassword"
+            label="Confirm New Password"
+            dependencies={["newPassword"]}
+            rules={[
+              { required: true, message: "Please confirm your new password" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("newPassword") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Passwords do not match"));
+                },
+              }),
             ]}
-          />
+          >
+            <Input.Password
+              className="py-2"
+              placeholder="Confirm new password"
+            />
           </Form.Item>
 
+          {/* Access Checkboxes */}
           <Form.Item label="Give Access To">
             <div className="flex flex-col gap-3">
-              <Checkbox> Email Notifications </Checkbox>
-              <Checkbox> Email Invoices </Checkbox>
+              <Checkbox
+                checked={access.viewAssignedOrders}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("viewAssignedOrders")}
+              >
+                Can view assigned orders
+              </Checkbox>
+              <Checkbox
+                checked={access.viewAllOrders}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("viewAllOrders")}
+              >
+                Can view all orders
+              </Checkbox>
+              <Checkbox
+                checked={access.placeOrder}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("placeOrder")}
+              >
+                Can place an order for clients
+              </Checkbox>
+              <Checkbox
+                checked={access.productionWork}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("productionWork")}
+              >
+                Can do production work
+              </Checkbox>
+              <Checkbox
+                checked={access.seePricing}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("seePricing")}
+              >
+                Can see the pricing
+              </Checkbox>
+              <Checkbox
+                checked={access.editOrders}
+                disabled={access.isAdmin}
+                onChange={handleCheckboxChange("editOrders")}
+              >
+                Can edit orders
+              </Checkbox>
+              <Checkbox checked={access.isAdmin} onChange={handleAdminChange}>
+                Is an admin
+              </Checkbox>
             </div>
           </Form.Item>
 
-          <div className="flex  gap-3 mt-4">
+          {/* Buttons */}
+          <div className="flex gap-3 mt-4">
             <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"

@@ -1,56 +1,51 @@
-import { Input } from 'antd';
-import React from 'react';
+import { Input, message, Modal, Pagination } from 'antd';
+import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-
 import { Table, Button } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useDeletePricingMutation, useGetAllPricingGroupQuery } from '../redux/api/packageApi';
 
 export const PricingGroup = () => {
-  const data = [
-    {
-      key: "1",
-      slNo: "#1233",
-      groupName: "VIP Group",
-      numberOfClients: "04",
-    },
-    {
-      key: "2",
-      slNo: "#1233",
-      groupName: "Premium Group",
-      numberOfClients: "05",
-    },
-    {
-      key: "3",
-      slNo: "#1233",
-      groupName: "VIP Group",
-      numberOfClients: "02",
-    },
-    {
-      key: "4",
-      slNo: "#1233",
-      groupName: "Premium Group",
-      numberOfClients: "08",
-    },
-    {
-      key: "5",
-      slNo: "#1233",
-      groupName: "VIP Group",
-      numberOfClients: "12",
-    },
-    {
-      key: "6",
-      slNo: "#1233",
-      groupName: "Premium Group",
-      numberOfClients: "03",
-    },
-    {
-      key: "7",
-      slNo: "#1233",
-      groupName: "VIP Group",
-      numberOfClients: "06",
-    },
-  ];
+  const [searchTerm, setSearch] = useState("");
+  const[deletePricing] = useDeletePricingMutation();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const { data: pricingGroupData } = useGetAllPricingGroupQuery({searchTerm,page: currentPage,
+    limit: pageSize,}); 
+  console.log(pricingGroupData);
+
+
+  const pricingGroups = pricingGroupData?.data?.data?.map(group => ({
+    key: group._id,
+    slNo: `#${group._id.slice(0, 4)}`, 
+    groupName: group.name,
+    numberOfClients: group.clients?.length || 0,
+  })) || [];
+
+  const handlePageChange = (page) => {
+    console.log("Page Changed to:", page); 
+    setCurrentPage(page);
+  };
+
+  const handleDelete = async (record) => {
+    console.log(record?.key)
+    Modal.confirm({
+      title: "Are you sure?",
+      content: "This action cannot be undone. Do you want to delete this category?",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      async onOk() {
+        try {
+          const response = await deletePricing(record.key).unwrap();
+          message.success(response.message );
+        } catch (error) {
+          message.error(error?.data?.message);
+        }
+      },
+    });
+  };
 
   const columns = [
     {
@@ -68,7 +63,7 @@ export const PricingGroup = () => {
       width: "50%",
     },
     {
-      title: "Number of Client",
+      title: "Number of Clients",
       dataIndex: "numberOfClients",
       key: "numberOfClients",
       align: "center",
@@ -77,16 +72,19 @@ export const PricingGroup = () => {
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (record) => (
         <div>
-          <Link to={'/dashboard/pricing-group/edit-pricing-group'}><button
-            shape="circle"
-            className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
-          >
-            <EditOutlined />
-          </button></Link>
+          <Link to={`/dashboard/pricing-group/edit-pricing-group/${record.key}`}>
+            <button
+              shape="circle"
+              className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
+            >
+              <EditOutlined />
+            </button>
+          </Link>
           <button
             shape="circle"
+            onClick={() => handleDelete(record)}
             className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
           >
             <DeleteOutlined />
@@ -115,29 +113,35 @@ export const PricingGroup = () => {
           </button>
           <span className="text-lg font-semibold">Pricing Groups</span>
         </h1>
-        <Input placeholder="Search here..." style={{ width: 300 }} />
+        <Input onChange={(e) => setSearch(e.target.value)} placeholder="Search here..." style={{ width: 300 }} />
       </div>
 
       <div className="">
         <div>
-          <Link to={'/dashboard/pricing-group/add-pricing-group'}><button className="bg-[#2A216D] text-[white] rounded px-11 py-2.5">
-            + New Pricing Group
-          </button></Link>
+          <Link to={'/dashboard/pricing-group/add-pricing-group'}>
+            <button className="bg-[#2A216D] text-[white] rounded px-11 py-2.5">
+              + New Pricing Group
+            </button>
+          </Link>
         </div>
       </div>
 
       <div className="">
         <Table
-          dataSource={data}
+          dataSource={pricingGroups} // Use dynamic data from API
           columns={columns}
-          pagination={{
-            pageSize: 7,
-            showSizeChanger: true,
-            pageSizeOptions: ["7", "10", "20"],
-          }}
-          bordered
-          style={{ marginTop: "20px" }}
+          pagination={false}
         />
+        <div className="mt-4 flex justify-end">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={pricingGroupData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
+          ;
+        </div>
       </div>
     </div>
   );

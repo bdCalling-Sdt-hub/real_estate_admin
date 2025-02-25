@@ -23,6 +23,15 @@ const service = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
+       deleteServicesCategories: builder.mutation({
+        query: (id) => {
+          return {
+            url: `/service/get-all-categories/${id}`,
+            method: "DELETE",
+          };
+        },
+        invalidatesTags: ["updateProfile"],
+      }),
     updateServiceCategory: builder.mutation({
       query: ({ data, id }) => {
         return {
@@ -59,7 +68,7 @@ const service = baseApi.injectEndpoints({
     getAllServicesSelect: builder.query({
       query: () => {
         return {
-          url: `/service/services?limit=100`,
+          url: `/service/services?limit=10000`,
           method: "GET",
         };
       },
@@ -97,6 +106,16 @@ const service = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
+
+    //   deleteServices: builder.mutation({
+    //   query: (id) => {
+    //     return {
+    //       url: `/service/delete/${id}`,
+    //       method: "DELETE",
+    //     };
+    //   },
+    //   invalidatesTags: ["updateProfile"],
+    // }),
 
     // getProfile: builder.query({
     //   query: () => {
@@ -219,5 +238,6 @@ export const {
   useAddServicesMutation,
   useUpdateServiceMutation,
   useDeleteServicesMutation,
-  useGetAllServicesSelectQuery
+  useGetAllServicesSelectQuery,
+  useDeleteServicesCategoriesMutation
 } = service;
