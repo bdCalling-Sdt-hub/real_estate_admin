@@ -105,7 +105,7 @@ export const ConfirmSection = ({ formData, setFormData }) => {
             <div className="grid grid-cols-3 gap-5">
               {formData.services.length > 0 &&
                 formData.services.map((service, index) => (
-                  <ConfirmCard key={index} service={service}  />
+                  <ConfirmCard key={index} service={service} />
                 ))}
             </div>
           </div>
@@ -131,6 +131,9 @@ export const ConfirmSection = ({ formData, setFormData }) => {
 
 const FileUploadAndDescription = ({ formData, setFormData }) => {
   const uploadProps = {
+    customRequest: ({ onSuccess }) => {
+      onSuccess("ok");
+    },
     onChange: (info) => {
       setFormData({ ...formData, uploadFiles: info.fileList });
     },

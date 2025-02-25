@@ -17,7 +17,7 @@ export const ServicesTab = ({ formData, setFormData }) => {
     searchTerm,
   });
   const { data: services } = useGetAllServicesQuery({
-    clientId: formData.client._id,
+    clientId: formData.client,
     categoryId: selectedTab,
   });
   return (
@@ -67,7 +67,7 @@ export const ServicesTab = ({ formData, setFormData }) => {
           />
         ) : (
           <ServicesPackeg
-            services={services?.data}
+            services={services}
             selectedTab={selectedTab}
             searchTerm={searchTerm}
             formData={formData}
