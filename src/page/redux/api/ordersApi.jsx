@@ -3,7 +3,7 @@ import { baseApi } from "./baseApi";
 const ordersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllClients: builder.query({
-      query: () => "/service/get-all-client",
+      query: () => "/client/get-all-clients",
     }),
     getClientAgents: builder.query({
       query: (clientId) => `/client/get-client-agent?clientId=${clientId}`,
