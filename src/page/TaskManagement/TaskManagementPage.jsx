@@ -10,6 +10,7 @@ import {
   useGetTasksQuery,
   useTakeTaskMutation,
   useGetAssignedTasksQuery,
+  useGetNewTaskQuery,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
 import { message } from "antd";
@@ -17,34 +18,7 @@ export const TaskManagementPage = () => {
   const [modal2Open1, setModal2Open1] = useState(false);
   const [modal2Open, setModal2Open] = useState(false);
   const [modal2Open3, setModal2Open3] = useState(false);
-  const tasks = [
-    {
-      date: "Sunday, 18 January, 2025",
-      tasks: [
-        {
-          type: "Photography",
-          location: "Westheimer Rd. Santa Ana, Illinois 85",
-        },
-        { type: "Video", location: "Gray St. Utica, Pennsylvania 57867" },
-        {
-          type: "Floorplans",
-          location: "Westheimer Rd. Santa Ana, Illinois 85",
-        },
-        { type: "Photography", location: "Elgin St. Celina, Delaware 10299" },
-      ],
-    },
-    {
-      date: "Sunday, 18 January, 2025",
-      tasks: [
-        { type: "Video", location: "Elgin St. Celina, Delaware 10299" },
-        { type: "Floorplans", location: "Gray St. Utica, Pennsylvania 57867" },
-        {
-          type: "Photography",
-          location: "Westheimer Rd. Santa Ana, Illinois 85",
-        },
-      ],
-    },
-  ];
+  const { data: newTasks } = useGetNewTaskQuery();
 
   const toDoList = [
     { date: "16/05/24", description: "Empty the SD card" },
@@ -82,9 +56,9 @@ export const TaskManagementPage = () => {
     return addressArray.join(", ");
   };
 
-  const handleTakeTask = (id) => {
+  const handleTakeTask = async (id) => {
     try {
-      takeTask(id);
+      await takeTask(id);
       message.success("Task taken successfully");
       refetchTasks();
     } catch (error) {
@@ -114,7 +88,9 @@ export const TaskManagementPage = () => {
                         className="flex justify-between items-center mb-2  pb-2"
                       >
                         <div>
-                          <p className="font-semibold">{item?.service?.title}</p>
+                          <p className="font-semibold">
+                            {item?.service?.title}
+                          </p>
                           <p className="text-sm text-gray-600">
                             {formatAddress(item?.order?.address)}
                           </p>
@@ -175,7 +151,9 @@ export const TaskManagementPage = () => {
                         className="flex justify-between items-center mb-2 pb-2"
                       >
                         <div>
-                          <p className="font-semibold">{item?.service?.title}</p>
+                          <p className="font-semibold">
+                            {item?.service?.title}
+                          </p>
                           <p className="text-sm text-gray-600">
                             {formatAddress(item?.order?.address)}
                           </p>
@@ -263,34 +241,37 @@ export const TaskManagementPage = () => {
             Upload Source Files
           </h3>
           <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
-            {tasks.map((task, index) => (
-              <div key={index} className="mb-4 border py-5">
-                <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                  {task.date}
-                </div>
-                <div className=" p-3">
-                  {task.tasks.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex justify-between items-center mb-2 pb-2"
-                    >
-                      <div>
-                        <p className="font-semibold">{item.type}</p>
-                        <p className="text-sm text-gray-600">{item.location}</p>
+            {newTasks?.data?.data?.length > 0 &&
+              newTasks?.data?.data?.map((task, index) => (
+                <div key={index} className="mb-4 border py-5">
+                  <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
+                    {task._id}
+                  </div>
+                  <div className=" p-3">
+                    {task.tasks.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center mb-2 pb-2"
+                      >
+                        <div>
+                          <p className="font-semibold">{item.service.title}</p>
+                          <p className="text-sm text-gray-600">
+                            {formatAddress(item?.order?.address)}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
+                            <CheckOutlined />
+                          </button>
+                          <button className="bg-[#F38E0A] text-white p-2 w-10 h-10 text-2xl rounded">
+                            <UploadOutlined />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
-                          <CheckOutlined />
-                        </button>
-                        <button className="bg-[#F38E0A] text-white p-2 w-10 h-10 text-2xl rounded">
-                          <UploadOutlined />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
