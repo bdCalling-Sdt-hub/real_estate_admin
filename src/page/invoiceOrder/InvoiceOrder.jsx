@@ -63,7 +63,7 @@ export const InvoiceOrder = () => {
     try {
       const response = await addInvoiceOrder(invoiceData); 
       setSelectedRows([]); 
-      message.success(response?.message)
+      message.success(response?.data?.message)
       setOpendetails(false); 
       setTotalAmount(0); 
       

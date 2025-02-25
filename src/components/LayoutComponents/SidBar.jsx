@@ -18,6 +18,7 @@ import { LiaUsersSolid } from "react-icons/lia";
 import { IoBagOutline, IoSettingsOutline } from "react-icons/io5";
 import { logout } from "../../page/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { VscNotebook } from "react-icons/vsc";
 
 const items = [
   {
@@ -104,7 +105,7 @@ const items = [
   {
     key: "report",
     label: "Report",
-    icon: <PiInvoice />,
+    icon: <VscNotebook />,
     link: "/dashboard/report",
   },
   {

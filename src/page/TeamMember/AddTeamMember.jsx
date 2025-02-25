@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, Modal, Select } from "antd";
+import { Form, Input, Checkbox, Modal, Select, message } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useAddTeamMemberMutation } from "../redux/api/clientManageApi";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
@@ -101,13 +101,18 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
         });
       }
       const response = await addTeamMember(formData);
+      
       if (response?.error) {
+        message.error(response.error.message || "Invalid Profile Image Type");
         console.error(response.error);
+
       } else {
+        message.success(response?.data?.message);
         form.resetFields();
         setOpenAddModal(false);
       }
     } catch (error) {
+      message.error(error?.data?.message);
       console.error("Add Team Member Error:", error);
     }
   };

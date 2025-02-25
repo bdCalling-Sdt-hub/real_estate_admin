@@ -43,7 +43,7 @@ const Profile = () => {
         // Redirect after success
       })
       .catch((error) => {
-        message.error( "Failed to add category.", error);
+        message.error( error?.data?.message || "Failed To Update Profile");
       });
   };
 
