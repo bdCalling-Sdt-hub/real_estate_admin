@@ -36,7 +36,9 @@ export const PurchasedPackageSection = ({ tasks: initialTasks }) => {
               className="grid grid-cols-2 border border-gray-200 rounded-md p-4 mb-6"
             >
               <div className="flex justify-between items-center">
-                <span className="text-gray-700">{service.serviceId?.title}</span>
+                <span className="text-gray-700">
+                  {service.serviceId?.title}
+                </span>
                 <div className="flex gap-2">
                   <button className="relative bg-[#2A216D] text-white w-[40px] h-[40px] items-center text-xl rounded pl-[10px] group">
                     <MdLink />
@@ -95,11 +97,11 @@ const TaskStatuses = ({ service, setTasks }) => {
   return (
     <div className="flex items-center space-x-2 border justify-between ml-4 px-5 py-3 rounded-md">
       <button
-        onClick={() => handleUpdateTaskStatus("Submitted")}
-        className="relative text-black text-[26px] group"
+        onClick={() => handleUpdateTaskStatus("Pending")}
+        className="relative text-red-300 text-[24px] group"
       >
-        <LuFileCheck className={getStatusColor("Submitted")} />
-        <PopOver status="Submitted" activeStatus={service.status} />
+        <TfiReload className={getStatusColor("Pending")} />
+        <PopOver status="Pending" activeStatus={service.status} />
       </button>
       <button
         onClick={() => handleUpdateTaskStatus("Scheduled")}
@@ -109,11 +111,11 @@ const TaskStatuses = ({ service, setTasks }) => {
         <PopOver status="Scheduled" activeStatus={service.status} />
       </button>
       <button
-        onClick={() => handleUpdateTaskStatus("Pending")}
-        className="relative text-red-300 text-[24px] group"
+        onClick={() => handleUpdateTaskStatus("Submitted")}
+        className="relative text-black text-[26px] group"
       >
-        <TfiReload className={getStatusColor("Pending")} />
-        <PopOver status="Pending" activeStatus={service.status} />
+        <LuFileCheck className={getStatusColor("Submitted")} />
+        <PopOver status="Submitted" activeStatus={service.status} />
       </button>
       <button
         onClick={() => handleUpdateTaskStatus("Delivered")}

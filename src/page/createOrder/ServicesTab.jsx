@@ -17,9 +17,8 @@ export const ServicesTab = ({ formData, setFormData }) => {
     searchTerm,
   });
   const { data: services } = useGetAllServicesQuery({
-    category: selectedTab,
-    searchTerm,
-    limit: 100,
+    clientId: formData.client,
+    categoryId: selectedTab,
   });
   return (
     <div className="mt-5">
@@ -68,7 +67,7 @@ export const ServicesTab = ({ formData, setFormData }) => {
           />
         ) : (
           <ServicesPackeg
-            services={services?.data}
+            services={services}
             selectedTab={selectedTab}
             searchTerm={searchTerm}
             formData={formData}

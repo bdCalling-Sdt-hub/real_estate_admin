@@ -65,6 +65,9 @@ const taskApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getNewTask: builder.query({
+      query: () => "/task/get-new-task",
+    }),
   }),
 });
 
@@ -79,4 +82,5 @@ export const {
   useDeleteFileMutation,
   useGetCommentsQuery,
   usePostCommentMutation,
+  useGetNewTaskQuery,
 } = taskApi;

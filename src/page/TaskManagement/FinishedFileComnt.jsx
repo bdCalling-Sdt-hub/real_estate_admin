@@ -111,7 +111,7 @@ export const FinishedFileComnt = ({ fileId }) => {
       { taskId: id, fileId: fileId, text: comment },
       callback
     );
-  };
+  };  
   return (
     <div>
       {/* Right Comments Section */}

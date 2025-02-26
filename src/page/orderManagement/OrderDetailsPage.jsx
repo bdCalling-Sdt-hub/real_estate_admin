@@ -30,7 +30,7 @@ export const OrderDetailsPage = () => {
 
   const { id } = useParams();
 
-  const { data, isLoading } = useGetOrderByIdQuery(id);
+  const { data, isLoading, refetch } = useGetOrderByIdQuery(id);
   if (isLoading) return <Loading />;
   return (
     <div className="p-6 bg-white min-h-screen">
@@ -229,7 +229,7 @@ export const OrderDetailsPage = () => {
             </div>
           </div>
         </div>
-        <DetailsNote notes={data?.data?.notes} />
+        <DetailsNote notes={data?.data?.notes} refetch={refetch} />
         <PurchasedPackageSection tasks={data?.data?.taskIds} />
         <MassageBox files={data?.data?.uploadFiles} />
       </div>

@@ -31,7 +31,7 @@ export const CreateANewOrder = ({ setActiveTab, formData, setFormData }) => {
         </div>
         <div className="flex flex-col bg-white p-11 gap-5 rounded">
           {clientData?.data &&
-            clientData.data?.result.map((client) => (
+            clientData.data?.map((client) => (
               <ClientCard key={client._id} client={client} handleClientChange={handleClientChange} selectedClient={selectedClient} />
             ))}
           <button

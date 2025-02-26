@@ -4,8 +4,8 @@ import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
 export const AdressTab = ({ formData, setFormData }) => {
   const [markerPosition, setMarkerPosition] = useState({
-    lat: formData.address?.lat || 0,
-    lng: formData.address?.lng || 0,
+    lat: formData.address?.lat || 52.3547418,
+    lng: formData.address?.lng || 4.8215606,
   });
   const [form] = Form.useForm();
 

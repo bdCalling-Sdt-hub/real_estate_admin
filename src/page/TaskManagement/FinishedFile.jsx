@@ -252,7 +252,7 @@ export const FinishedFile = ({ finishedFiles, refetch }) => {
             </div>
           </div>
           <div className="col-span-3">
-            <FinishedFileComnt />
+            <FinishedFileComnt fileId={finishedFiles[currentImageIndex]._id} />
           </div>
         </div>
       </Modal>
