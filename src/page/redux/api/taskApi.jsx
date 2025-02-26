@@ -68,6 +68,13 @@ const taskApi = baseApi.injectEndpoints({
     getNewTask: builder.query({
       query: () => "/task/get-new-task",
     }),
+    updateTaskStatus: builder.mutation({
+      query: ({ status, taskId }) => ({
+        url: "/task/update-status-submitted",
+        body: { status, taskId },
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -83,4 +90,5 @@ export const {
   useGetCommentsQuery,
   usePostCommentMutation,
   useGetNewTaskQuery,
+  useUpdateTaskStatusMutation,
 } = taskApi;

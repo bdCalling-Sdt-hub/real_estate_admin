@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { CheckOutlined, EyeOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  EyeOutlined,
+  ScheduleOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { RejectTask } from "./RejectTask";
 import { AssignModal } from "./AssignModal";
@@ -11,14 +16,16 @@ import {
   useTakeTaskMutation,
   useGetAssignedTasksQuery,
   useGetNewTaskQuery,
+  useUpdateTaskStatusMutation,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
-import { message } from "antd";
+import { message, Spin, Upload } from "antd";
+import handleFileUpload from "../../utils/handleFileUpload";
+import { useSelector } from "react-redux";
 export const TaskManagementPage = () => {
   const [modal2Open1, setModal2Open1] = useState(false);
   const [modal2Open, setModal2Open] = useState(false);
   const [modal2Open3, setModal2Open3] = useState(false);
-  const { data: newTasks } = useGetNewTaskQuery();
 
   const toDoList = [
     { date: "16/05/24", description: "Empty the SD card" },
@@ -37,12 +44,14 @@ export const TaskManagementPage = () => {
     isLoading: isLoadingAssignedTasks,
     refetch: refetchAssignedTasks,
   } = useGetAssignedTasksQuery();
+  const { data: newTasks, refetch: refetchNewTasks } = useGetNewTaskQuery();
 
   const [takeTask, { isLoading: isTakingTask }] = useTakeTaskMutation();
 
   const refetchTasks = () => {
     refetchAssignedTasks();
     refetchOpenProductionWork();
+    refetchNewTasks();
   };
 
   const formatAddress = (address) => {
@@ -64,6 +73,56 @@ export const TaskManagementPage = () => {
     } catch (error) {
       console.log(error);
       message.error("Task taken failed");
+    }
+  };
+
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const token = useSelector((state) => state.logInUser.token);
+
+  const uploadProps = (task) => ({
+    name: "sourceFile",
+    accept: "image/*, video/*",
+    itemRender() {},
+    customRequest: async (options) => {
+      setUploadLoading(task._id);
+      try {
+        const formData = new FormData();
+        formData.append("sourceFile", options.file);
+        await handleFileUpload({
+          formData: formData,
+          action: `/task/add-source-file/${task._id}`,
+          method: "PATCH",
+          token: token,
+        });
+        message.success("File uploaded successfully");
+        refetchTasks();
+      } catch (error) {
+        console.log(error);
+        message.error("File upload failed");
+      } finally {
+        setUploadLoading(false);
+      }
+    },
+  });
+
+  const [updateTaskStatus] = useUpdateTaskStatusMutation();
+  const [updateTaskLoading, setUpdateTaskLoading] = useState(false);
+
+  const handleUpdateTaskStatus = async (id) => {
+    setUpdateTaskLoading(id);
+    try {
+      await updateTaskStatus({
+        taskId: id,
+        status: "Submitted",
+      });
+
+      message.success("Task status updated successfully!");
+    } catch (error) {
+      console.log(error);
+      message.success("Task status update failed");
+    } finally {
+      setUpdateTaskLoading(false);
+      refetchNewTasks();
     }
   };
   return (
@@ -260,12 +319,34 @@ export const TaskManagementPage = () => {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
-                            <CheckOutlined />
-                          </button>
-                          <button className="bg-[#F38E0A] text-white p-2 w-10 h-10 text-2xl rounded">
-                            <UploadOutlined />
-                          </button>
+                          {item?.status !== "Submitted" ? (
+                            <button
+                              onClick={() => handleUpdateTaskStatus(item._id)}
+                              disabled={updateTaskLoading === item._id}
+                              className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded"
+                            >
+                              {updateTaskLoading === item._id ? (
+                                <Spin />
+                              ) : (
+                                <ScheduleOutlined />
+                              )}
+                            </button>
+                          ) : (
+                            <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded cursor-not-allowed">
+                              <CheckOutlined />
+                            </button>
+                          )}
+                          <Upload {...uploadProps(item)}>
+                            {uploadLoading === item._id ? (
+                              <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
+                                <Spin />
+                              </button>
+                            ) : (
+                              <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
+                                <UploadOutlined />
+                              </button>
+                            )}
+                          </Upload>
                         </div>
                       </div>
                     ))}
