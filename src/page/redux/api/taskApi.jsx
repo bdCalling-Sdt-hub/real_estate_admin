@@ -22,7 +22,8 @@ const taskApi = baseApi.injectEndpoints({
       }),
     }),
     getAssignedTasks: builder.query({
-      query: () => "/task/taken/assigned-list",
+      query: ({ page = 1, limit = 3 }) =>
+        `/task/taken/assigned-list?page=${page}&limit=${limit}`,
     }),
     rejectTask: builder.mutation({
       query: ({ taskId, memberId, reason }) => ({

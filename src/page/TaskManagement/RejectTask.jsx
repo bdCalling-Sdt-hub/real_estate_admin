@@ -10,7 +10,6 @@ export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
   const [rejectTask, { isLoading }] = useRejectTaskMutation();
   const { data: profile } = useGetProfileQuery();
   const role = profile?.data?.role;
-  console.log({modal2Open1});
   
   const handleFinish = async (values) => {
     console.log({ values });
