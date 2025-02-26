@@ -48,24 +48,22 @@ const CreateServices = () => {
     if (activeTab === 2) {
       const { zipCode, city, streetAddress, streetName, streetNumber } =
         formData.address || {};
-      if (
-        zipCode &&
-        city &&
-        streetAddress &&
-        streetName &&
-        streetNumber &&
-        formData?.pickupKeys
-      ) {
-        setActiveTab(3);
-      } else {
-        message.error("Please enter an address");
+
+      if (!zipCode || !city || !streetAddress || !streetName || !streetNumber) {
+        message.error("Please enter a complete address");
         return;
       }
+
+      if (!formData?.pickupKeys) {
+        message.error("Please enter pickup keys");
+        return;
+      }
+
+      setActiveTab(3);
     }
 
     // Step 3: Contact Info Tab Validation
     if (activeTab === 3) {
-     
       const contactAgent =
         formData?.contactAgent === "true" && formData?.linkedAgents?._id;
       const contactOwner =
@@ -145,7 +143,6 @@ const CreateServices = () => {
 
       navigate("/");
     } catch (error) {
-      
       message.error("Something went wrong");
     }
   };
