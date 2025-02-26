@@ -285,6 +285,7 @@ const AssignedToMe = ({
   page,
   setPage,
   loading,
+  refetchTasks,
 }) => {
   const [modal2Open1, setModal2Open1] = useState(false);
   const [toggleTaskLoading, setToggleTaskLoading] = useState(false);
@@ -415,7 +416,11 @@ const AssignedToMe = ({
           ))}
       </div>
       {loading && <p className="text-center">Loading more tasks...</p>}
-      <RejectTask setModal2Open1={setModal2Open1} modal2Open1={modal2Open1} />
+      <RejectTask
+        setModal2Open1={setModal2Open1}
+        modal2Open1={modal2Open1}
+        refetchTasks={refetchTasks}
+      />
     </div>
   );
 };

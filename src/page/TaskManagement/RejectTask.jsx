@@ -1,43 +1,49 @@
 import { Modal, Form, Input, Button, Select, message } from "antd";
-import {
-  useGetAllTeamMembersQuery,
-  useRejectTaskMutation,
-} from "../redux/api/taskApi";
+import { useRejectTaskMutation } from "../redux/api/taskApi";
 import { useGetProfileQuery } from "../redux/api/userApi";
+import { useEffect } from "react";
 
 export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
-  const { data: teamMembers } = useGetAllTeamMembersQuery();
+  const [form] = Form.useForm(); // ✅ Create a form instance
   const [rejectTask, { isLoading }] = useRejectTaskMutation();
   const { data: profile } = useGetProfileQuery();
   const role = profile?.data?.role;
-  
-  const handleFinish = async (values) => {
-    console.log({ values });
+  const defaultMembers = modal2Open1?.members?.map((m) => m._id) || [];
 
+  useEffect(() => {
+    if (modal2Open1) {
+      form.setFieldsValue({
+        member: role === "MEMBER" ? profile?.data?._id : defaultMembers,
+      });
+    }
+  }, [modal2Open1, profile, role, form]);
+
+  const handleFinish = async (values) => {
     try {
-      if (role === "MEMBER") {
-        await rejectTask({
-          taskId: modal2Open1?._id,
-          memberId: profile?.data?._id,
-          reason: values.reason,
-        });
-      } else {
-        // await rejectTask({
-        //   taskId: modal2Open1?._id,
-        //   memberId: values.member,
-        //   reason: values.reason,
-        // });
-      }
+      const payload = {
+        taskId: modal2Open1?._id,
+        memberId: role === "MEMBER" ? profile?.data?._id : values.member,
+        reason: values.reason,
+      };
+
+      await rejectTask(payload);
+
       setModal2Open1(false);
       message.success("Task rejected successfully");
-      refetchTasks();
     } catch (error) {
       message.error("Task rejection failed");
+    } finally {
       refetchTasks();
     }
   };
+
   return (
-    <Form layout="vertical" id="rejectForm" onFinish={handleFinish}>
+    <Form
+      layout="vertical"
+      id="rejectForm"
+      form={form} // ✅ Bind the form instance
+      onFinish={handleFinish}
+    >
       <Modal
         title="Reject Production Task"
         centered
@@ -73,12 +79,11 @@ export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
             <h1 className="font-bold">{profile?.data?.name}</h1>
           ) : (
             <Select placeholder="Select a team member" mode="multiple">
-              {teamMembers?.data?.length > 0 &&
-                teamMembers?.data?.map((member) => (
-                  <Select.Option key={member._id} value={member._id}>
-                    {member.name}
-                  </Select.Option>
-                ))}
+              {modal2Open1?.members?.map((member) => (
+                <Select.Option key={member._id} value={member._id}>
+                  {member.name}
+                </Select.Option>
+              ))}
             </Select>
           )}
         </Form.Item>
