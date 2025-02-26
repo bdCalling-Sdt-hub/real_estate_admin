@@ -22,7 +22,8 @@ const taskApi = baseApi.injectEndpoints({
       }),
     }),
     getAssignedTasks: builder.query({
-      query: () => "/task/taken/assigned-list",
+      query: ({ page = 1, limit = 3 }) =>
+        `/task/taken/assigned-list?page=${page}&limit=${limit}`,
     }),
     rejectTask: builder.mutation({
       query: ({ taskId, memberId, reason }) => ({
@@ -68,6 +69,19 @@ const taskApi = baseApi.injectEndpoints({
     getNewTask: builder.query({
       query: () => "/task/get-new-task",
     }),
+    updateTaskStatus: builder.mutation({
+      query: ({ status, taskId }) => ({
+        url: "/task/update-status-submitted",
+        body: { status, taskId },
+        method: "PATCH",
+      }),
+    }),
+    toggleTaskStatus: builder.mutation({
+      query: (id) => ({
+        url: `/task/update-status/${id}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -83,4 +97,6 @@ export const {
   useGetCommentsQuery,
   usePostCommentMutation,
   useGetNewTaskQuery,
+  useUpdateTaskStatusMutation,
+  useToggleTaskStatusMutation,
 } = taskApi;

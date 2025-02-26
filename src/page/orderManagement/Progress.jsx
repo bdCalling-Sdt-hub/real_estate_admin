@@ -9,7 +9,7 @@ export const Progress = ({ search }) => {
   const { data: orders, isLoading } = useGetAllOrdersQuery({
     page: page,
     limit: pageSize,
-    status: "In-Progress",
+    status: "Progress",
     searchTerm: search,
   });
   return (

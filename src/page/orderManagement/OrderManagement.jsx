@@ -31,7 +31,7 @@ export const OrderManagement = () => {
   } = (!isLoading &&
     orders?.data?.data?.reduce(
       (acc, order) => {
-        if (order.status === "In Progress") {
+        if (order.status === "Progress") {
           acc.InProgress += 1;
         } else if (order.status === "Completed") {
           acc.Completed += 1;

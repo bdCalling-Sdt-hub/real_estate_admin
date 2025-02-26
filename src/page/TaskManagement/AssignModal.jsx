@@ -50,7 +50,7 @@ export const AssignModal = ({ setModal2Open, modal2Open, refetchTasks }) => {
           rules={[{ required: true, message: "Recipient is required" }]}
           layout="vertical"
         >
-          <Select placeholder="Select a team member">
+          <Select placeholder="Select a team member" mode="multiple">
             {teamMembers?.data?.length > 0 &&
               teamMembers?.data?.map((member) => (
                 <Select.Option key={member._id} value={member._id}>

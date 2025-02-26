@@ -5,6 +5,7 @@ import { SlCalender } from "react-icons/sl";
 import { TfiReload } from "react-icons/tfi";
 import { PiFileImageDuotone } from "react-icons/pi";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
+import { FaGears } from "react-icons/fa6";
 import { useUpdateTaskStatusMutation } from "../redux/api/ordersApi";
 import { message } from "antd";
 
@@ -116,6 +117,13 @@ const TaskStatuses = ({ service, setTasks }) => {
       >
         <LuFileCheck className={getStatusColor("Submitted")} />
         <PopOver status="Submitted" activeStatus={service.status} />
+      </button>
+      <button
+        onClick={() => handleUpdateTaskStatus("In-Production")}
+        className="relative text-black text-[26px] group"
+      >
+        <FaGears className={getStatusColor("In-Production")} />
+        <PopOver status="In-Production" activeStatus={service.status} />
       </button>
       <button
         onClick={() => handleUpdateTaskStatus("Delivered")}
