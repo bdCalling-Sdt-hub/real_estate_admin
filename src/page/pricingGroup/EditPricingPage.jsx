@@ -28,13 +28,13 @@ export const EditPricingPage = () => {
         name: singlePricing?.data?.name,
       });
 
-      setSelectedClientIds(singlePricing?.data?.clients.map(client => client._id));
-      setSelectedServiceIds(singlePricing.data?.services.map(service => service.serviceId._id));
+      setSelectedClientIds(singlePricing?.data?.clients?.map(client => client?._id));
+      setSelectedServiceIds(singlePricing.data?.services?.map(service => service?.serviceId?._id));
       
       // Initialize the special prices
-      const servicesWithPrice = singlePricing.data?.services.map(service => ({
+      const servicesWithPrice = singlePricing?.data?.services?.map(service => ({
         ...service.serviceId,
-        special_price: service.special_price,  // Add the special_price to each service
+        special_price: service?.special_price,  // Add the special_price to each service
       }));
       setSelectedServices(servicesWithPrice);
     }
@@ -46,14 +46,14 @@ export const EditPricingPage = () => {
 
   const handleServiceSelect = (serviceIds) => {
     setSelectedServiceIds(serviceIds);
-    const selectedServicesData = allServicesData?.data.filter(service =>
-      serviceIds.includes(service._id)
+    const selectedServicesData = allServicesData?.data?.filter(service =>
+      serviceIds.includes(service?._id)
     );
     setSelectedServices(selectedServicesData);
   };
 
   const handleRemoveClient = (clientId) => {
-    const updatedClients = selectedClientIds.filter((id) => id !== clientId);
+    const updatedClients = selectedClientIds?.filter((id) => id !== clientId);
     setSelectedClientIds(updatedClients);
   };
 
@@ -62,7 +62,7 @@ export const EditPricingPage = () => {
       ...values,
       clients: selectedClientIds,
       services: selectedServices.map((service, index) => ({
-        serviceId: service._id,
+        serviceId: service?._id,
         special_price: Number(service.special_price),  
       })),
     };
@@ -142,24 +142,24 @@ export const EditPricingPage = () => {
               value={selectedClientIds}
               onChange={handleClientSelect}
               options={clientData?.data?.map((client) => ({
-                label: client.name,
-                value: client._id,
+                label: client?.name,
+                value: client?._id,
               }))}
             />
             <ul>
               {selectedClientIds.map((clientId) => {
                 const client = clientData?.data?.find((c) => c._id === clientId);
                 return client ? (
-                  <li key={client._id} className="flex items-center justify-between mb-2">
+                  <li key={client?._id} className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <img
-                        src={`${imageUrl}/${client.profile_image}`}
-                        alt={client.name}
+                        src={`${imageUrl}/${client?.profile_image}`}
+                        alt={client?.name}
                         className="w-8 h-8 rounded"
                       />
-                      <span>{client.name}</span>
+                      <span>{client?.name}</span>
                     </div>
-                    <Button type="link" danger onClick={() => handleRemoveClient(client._id)}>
+                    <Button type="link" danger onClick={() => handleRemoveClient(client?._id)}>
                       Remove
                     </Button>
                   </li>
@@ -178,9 +178,9 @@ export const EditPricingPage = () => {
               value={selectedServiceIds}
               onChange={handleServiceSelect}
               options={allServicesData?.data?.map((service) => ({
-                label: service.title,
-                value: service._id,
-                price: service.price,
+                label: service?.title,
+                value: service?._id,
+                price: service?.price,
               }))}
             />
           </div>

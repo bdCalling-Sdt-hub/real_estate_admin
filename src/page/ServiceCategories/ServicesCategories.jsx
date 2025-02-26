@@ -19,9 +19,9 @@ export const ServicesCategories = () => {
 const [deleteService] = useDeleteServicesCategoryMutation()
   
   const data = categoryData?.data?.map((item, index) => ({
-    key: item._id,
+    key: item?._id,
     slNo: (index + 1).toString().padStart(2, "0"),
-    categoryName: item.name,
+    categoryName: item?.name,
   })) || [];
 
   const handleEdit = (record) => {
@@ -40,8 +40,8 @@ const handleDelete = async (record) => {
     cancelText: "Cancel",
     async onOk() {
       try {
-        const response = await deleteService(record.key).unwrap();
-        message.success(response.message );
+        const response = await deleteService(record?.key).unwrap();
+        message.success(response?.message );
       } catch (error) {
         message.error(error?.data?.message);
       }

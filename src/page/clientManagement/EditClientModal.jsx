@@ -1,35 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Checkbox, Modal, message } from "antd";
+import { Form, Input, Checkbox, Modal, message, Avatar, Upload } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useUpdateClientManagementMutation } from "../redux/api/clientManageApi";
 import { imageUrl } from "../redux/api/baseApi";
-
+import { FaCamera } from "react-icons/fa6";
 export const EditClientModal = ({
   openAddModal,
   setOpenAddModal,
   selectClientManagement,
 }) => {
   const [updateClient] = useUpdateClientManagementMutation();
-  const [selectedFile, setSelectedFile] = useState(null); // For the file from input
-  const [profileImage, setProfileImage] = useState(null); // For the URL string from API
+  const [profilePic, setProfilePic] = useState(null);
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [emailInvoice, setEmailInvoice] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    if (selectClientManagement) {
-      setEmailNotifications(selectClientManagement.email_notifications);
-      setEmailInvoice(selectClientManagement.email_invoice);
-      setProfileImage(selectClientManagement.profile_image);
-    }
-  }, [selectClientManagement]);
+    if (selectClientManagement && openAddModal) {
+      form.setFieldsValue({
+        name: selectClientManagement?.name,
+        email: selectClientManagement?.email,
+        address: selectClientManagement?.address,
+        phone: selectClientManagement?.phone,
+      });
 
-  // Handle the image file change
+      setEmailNotifications(
+        selectClientManagement?.email_notifications || false
+      );
+      setEmailInvoice(selectClientManagement?.email_invoice || false);
+      setProfilePic(selectClientManagement?.profile_image || null);
+    }
+  }, [selectClientManagement, openAddModal]);
+
+  // Reset values when modal closes
+  useEffect(() => {
+    if (!openAddModal) {
+      form.resetFields();
+
+      setProfilePic(null);
+      setEmailNotifications(false);
+      setEmailInvoice(false);
+    }
+  }, [openAddModal]);
+
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
+    if (e.file && e.file.originFileObj) {
+      setProfilePic(e.file.originFileObj);
+    }
   };
- 
-  
+
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -38,8 +57,11 @@ export const EditClientModal = ({
     formData.append("email_notifications", emailNotifications);
     formData.append("email_invoice", emailInvoice);
 
-    if (selectedFile) {
-      formData.append("profile_image", selectedFile);
+    // if (selectedFile) {
+    //   formData.append("profile_image", selectedFile);
+    // }
+    if (profilePic instanceof File) {
+      formData.append("profile_image", profilePic);
     }
 
     try {
@@ -48,11 +70,10 @@ export const EditClientModal = ({
         userId: selectClientManagement.key,
         authId: selectClientManagement.authId,
       }).unwrap();
-      message.success(response?.message)
-      console.log(response);
+      message.success(response?.message);
       setOpenAddModal(false);
     } catch (error) {
-      message.error(error?.data?.message)
+      message.error(error?.data?.message);
       console.error("Error editing client:", error);
     }
   };
@@ -64,11 +85,12 @@ export const EditClientModal = ({
       onCancel={() => setOpenAddModal(false)}
       footer={null}
       width={600}
+      destroyOnClose
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">Edit Client</h2>
-        <Form layout="vertical" onFinish={handleSubmit}>
-          <div className="relative w-[140px] h-[140px] mx-auto mb-6">
+        <Form layout="vertical" form={form} onFinish={handleSubmit}>
+          {/* <div className="relative w-[140px] h-[140px] mx-auto mb-6">
             <input
               type="file"
               accept="image/*"
@@ -99,12 +121,34 @@ export const EditClientModal = ({
             >
               <IoCameraOutline className="text-white" />
             </label>
+          </div> */}
+
+          <div className="relative w-[140px] h-[140px] mx-auto mb-6">
+            <Avatar
+              size={140}
+              src={
+                profilePic
+                  ? profilePic instanceof File
+                    ? URL.createObjectURL(profilePic)
+                    : `${imageUrl}/${profilePic}`
+                  : null
+              }
+              className="border-4 border-highlight shadow-xl"
+            />
+            <Upload
+              showUploadList={false}
+              accept="image/*"
+              maxCount={1}
+              onChange={handleImageChange}
+              className="absolute bottom-1 right-2 bg-white px-2 py-1 rounded-full cursor-pointer"
+            >
+              <FaCamera className="text-accent w-4 h-4 mt-1" />
+            </Upload>
           </div>
 
           <Form.Item
             label="Company/Client Name"
             name="name"
-            initialValue={selectClientManagement?.name}
             rules={[{ required: true, message: "Please enter the name" }]}
           >
             <Input className="py-3" placeholder="Input here" />
@@ -113,7 +157,6 @@ export const EditClientModal = ({
           <Form.Item
             label="Email"
             name="email"
-            initialValue={selectClientManagement?.email}
             rules={[{ required: true, message: "Please enter the email" }]}
           >
             <Input className="py-3" placeholder="Input here" disabled />
@@ -122,7 +165,6 @@ export const EditClientModal = ({
           <Form.Item
             label="Address"
             name="address"
-            initialValue={selectClientManagement?.address}
             rules={[{ required: true, message: "Please enter the address" }]}
           >
             <Input className="py-3" placeholder="Input here" />
@@ -131,8 +173,9 @@ export const EditClientModal = ({
           <Form.Item
             label="Phone Number"
             name="phone"
-            initialValue={selectClientManagement?.phone}
-            rules={[{ required: true, message: "Please enter the phone number" }]}
+            rules={[
+              { required: true, message: "Please enter the phone number" },
+            ]}
           >
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>

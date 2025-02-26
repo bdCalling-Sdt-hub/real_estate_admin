@@ -40,7 +40,7 @@ export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
       console.log(response); // Handle successful response
       setOpenAddModal(false); // Close modal after successful submission
     } catch (error) {
-      message.error(error?.data?.message)
+      message.error(error?.data?.message || 'invalid profile image type ');
       console.error("Error adding client:", error);
       // Handle error (show error message if needed)
     }

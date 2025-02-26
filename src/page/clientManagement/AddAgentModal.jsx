@@ -7,7 +7,7 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
   console.log(id)
   
   const client = singleClientAgentData?.data?.map((agent) => ({
-    id: agent.clientId, 
+    id: agent?.clientId, 
   })) || [];
   console.log(singleClientAgentData)
 
@@ -150,12 +150,11 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
           </Form.Item>
           {/* <Form.Item label="Give Access To">
                                 <div className="flex flex-col gap-3">
-                                <Checkbox> Place an order with all products </Checkbox>
-                                <Checkbox> Place an order with specific products </Checkbox>
+                                <Checkbox> Place an orders </Checkbox>                        
                                 <Checkbox> Can see the pricing </Checkbox>
                                 <Checkbox> Can see only their order assigned to</Checkbox>
                                 <Checkbox> Can see all orders </Checkbox>
-                                <Checkbox> Can add new team members/agents </Checkbox>
+                                <Checkbox> Can add new agents </Checkbox>
                                 <Checkbox> Can see invoicing</Checkbox>
                                 </div>
                               </Form.Item> */}

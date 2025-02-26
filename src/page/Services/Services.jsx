@@ -18,10 +18,10 @@ export const Services = () => {
 
   const data =
     getAllCategory?.data?.map((item, index) => ({
-      key: item._id,
+      key: item?._id,
       slNo: (index + 1).toString().padStart(2, "0"),
-      categoryName: item.name,
-      categoryId: item._id,
+      categoryName: item?.name,
+      categoryId: item?._id,
     })) || [];
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const Services = () => {
 
   console.log(
     category
-      ? data.find((item) => item.categoryId === category)?.categoryName
+      ? data.find((item) => item?.categoryId === category)?.categoryName
       : ""
   );
 
@@ -68,15 +68,15 @@ export const Services = () => {
           ) : (
             data.map((item) => (
               <button
-                key={item.categoryId}
-                onClick={() => handleCategory(item.categoryId)}
+                key={item?.categoryId}
+                onClick={() => handleCategory(item?.categoryId)}
                 className={`px-4 py-2 border rounded ${
-                  category === item.categoryId
+                  category === item?.categoryId
                     ? "bg-[#2A216D] text-white"
                     : "bg-gray-200"
                 }`}
               >
-                {item.categoryName}
+                {item?.categoryName}
               </button>
             ))
           )}
@@ -95,7 +95,7 @@ export const Services = () => {
         key={category}  // Force re-render when category changes
         openAddModal={openAddModal}
         setOpenAddModal={setOpenAddModal}
-        selectedCategory={category ? data.find((item) => item.categoryId === category)?.categoryName : ''}
+        selectedCategory={category ? data?.find((item) => item?.categoryId === category)?.categoryName : ''}
         categoryId={category}  
       />
       <div>

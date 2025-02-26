@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Checkbox, Modal, Select, message } from "antd";
+import {
+  Form,
+  Input,
+  Checkbox,
+  Modal,
+  Select,
+  message,
+  Avatar,
+  Upload,
+} from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useUpdateTeamMemberMutation } from "../redux/api/clientManageApi";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
 import { imageUrl } from "../redux/api/baseApi";
+import { FaCamera } from "react-icons/fa6";
 
 export const EditTeamMember = ({
   openAddModal,
@@ -18,60 +28,73 @@ export const EditTeamMember = ({
   const { data: getAllServicesSelect } = useGetAllServicesSelectQuery();
   const serviceOptions =
     getAllServicesSelect?.data?.data?.map((service) => ({
-      label: service.title,
-      value: service._id,
+      label: service?.title,
+      value: service?._id,
     })) || [];
 
   const [profileImage, setProfileImage] = useState("");
   const [isAdmin, setIsAdmin] = useState(false); // state for isAdmin checkbox
-
+  const [profilePic, setProfilePic] = useState(null);
   useEffect(() => {
-    if (selectedTeamMember) {
+    if (selectedTeamMember && openAddModal) {
       form.setFieldsValue({
-        member: selectedTeamMember.name,
-        email: selectedTeamMember.email,
-        phone: selectedTeamMember.phone,
-        role: selectedTeamMember.role,
-        roleOfName:selectedTeamMember.roleOfName,
-        services: selectedTeamMember?.servicesId?.map((service) => service?._id) || [],
-        viewAssignedOrders: selectedTeamMember.view_assigned_order,
-        viewAllOrders: selectedTeamMember.view_all_order,
-        placeOnOrderForClient: selectedTeamMember.place_on_order_for_client,
-        doProductionWork: selectedTeamMember.do_production_work,
-        seeThePricing: selectedTeamMember.see_the_pricing,
-        editOrders: selectedTeamMember.edit_order,
-        isAdmin: selectedTeamMember.is_admin,
+        member: selectedTeamMember?.name,
+        email: selectedTeamMember?.email,
+        phone: selectedTeamMember?.phone,
+        role: selectedTeamMember?.role,
+        roleOfName: selectedTeamMember?.roleOfName,
+        services:
+          selectedTeamMember?.servicesId?.map((service) => service?._id) || [],
+        viewAssignedOrders: selectedTeamMember?.view_assigned_order,
+        viewAllOrders: selectedTeamMember?.view_all_order,
+        placeOnOrderForClient: selectedTeamMember?.place_on_order_for_client,
+        // doProductionWork: selectedTeamMember.do_production_work,
+        seeThePricing: selectedTeamMember?.see_the_pricing,
+        editOrders: selectedTeamMember?.edit_order,
+        isAdmin: selectedTeamMember?.is_admin,
       });
       setSelectedServices(
-        selectedTeamMember.servicesId?.map((service) => service._id) || []
+        selectedTeamMember?.servicesId?.map((service) => service?._id) || []
       );
-      setProfileImage(selectedTeamMember.profile_image);
-      setIsAdmin(selectedTeamMember.is_admin); // set the isAdmin state
+      setProfilePic(selectedTeamMember?.profile_image || null);
+      setIsAdmin(selectedTeamMember?.is_admin); // set the isAdmin state
     }
-  }, [selectedTeamMember]);
+  }, [selectedTeamMember, openAddModal]);
+
+  useEffect(() => {
+    if (!openAddModal) {
+      form.resetFields();
+      setSelectedFile(null);
+      setSelectedServices([]);
+      setProfileImage("");
+      setIsAdmin(false);
+    }
+  }, [openAddModal]);
 
   const handleServiceChange = (value) => {
     setSelectedServices(value);
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
+    if (e.file && e.file.originFileObj) {
+      setProfilePic(e.file.originFileObj);
+    }
   };
 
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      if (selectedFile) {
-        formData.append("profile_image", selectedFile);
+      if (profilePic instanceof File) {
+        formData.append("profile_image", profilePic);
       }
+
       formData.append("name", values.member);
       formData.append("email", values.email);
       formData.append("phone_number", values.phone);
       const finalRole = values.isAdmin ? "ADMIN" : "MEMBER";
       formData.append("role", finalRole);
       formData.append("roleOfName", values.roleOfName);
-      
+
       selectedServices.forEach((id) => {
         formData.append("serviceId", id);
       });
@@ -82,7 +105,7 @@ export const EditTeamMember = ({
         "place_on_order_for_client",
         values.placeOnOrderForClient
       );
-      formData.append("do_production_work", values.doProductionWork);
+      // formData.append("do_production_work", values.doProductionWork);
       formData.append("see_the_pricing", values.seeThePricing);
       formData.append("edit_order", values.editOrders);
       formData.append("is_admin", values.isAdmin);
@@ -94,7 +117,7 @@ export const EditTeamMember = ({
         memberId,
         authId,
       });
-      
+
       if (response?.error) {
         message.error(response.error.message || "Invalid Profile Image Type");
         console.error(response.error);
@@ -104,7 +127,7 @@ export const EditTeamMember = ({
         setOpenAddModal(false);
       }
     } catch (error) {
-      message.error(error?.data?.message );
+      message.error(error?.data?.message);
       console.error("Update Team Member Error:", error);
     }
   };
@@ -117,7 +140,7 @@ export const EditTeamMember = ({
         viewAssignedOrders: false,
         viewAllOrders: false,
         placeOnOrderForClient: false,
-        doProductionWork: false,
+        // doProductionWork: false,
         seeThePricing: false,
         editOrders: false,
       });
@@ -138,7 +161,7 @@ export const EditTeamMember = ({
         </h2>
         <Form layout="vertical" form={form} onFinish={handleSubmit}>
           {/* Profile Image */}
-          <div className="relative w-[140px] h-[140px] mx-auto mb-6">
+          {/* <div className="relative w-[140px] h-[140px] mx-auto mb-6">
             <input
               type="file"
               accept="image/*"
@@ -169,13 +192,37 @@ export const EditTeamMember = ({
             >
               <IoCameraOutline className="text-white" />
             </label>
+          </div> */}
+
+          <div className="relative w-[140px] h-[140px] mx-auto mb-6">
+            <Avatar
+              size={140}
+              src={
+                profilePic
+                  ? profilePic instanceof File
+                    ? URL.createObjectURL(profilePic)
+                    : `${imageUrl}/${profilePic}`
+                  : null
+              }
+              className="border-4 border-highlight shadow-xl"
+            />
+            <Upload
+              showUploadList={false}
+              accept="image/*"
+              maxCount={1}
+              onChange={handleImageChange}
+              className="absolute bottom-1 right-2 bg-white px-2 py-1 rounded-full cursor-pointer"
+            >
+              <FaCamera className="text-accent w-4 h-4 mt-1" />
+            </Upload>
           </div>
 
           {/* Team Member Name */}
           <Form.Item
             label="Team Member Name"
             name="member"
-            rules={[{ required: true, message: "Please enter the name" }]}>
+            rules={[{ required: true, message: "Please enter the name" }]}
+          >
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
@@ -183,7 +230,8 @@ export const EditTeamMember = ({
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please enter the email" }]}>
+            rules={[{ required: true, message: "Please enter the email" }]}
+          >
             <Input className="py-3" placeholder="Input here" disabled />
           </Form.Item>
 
@@ -191,7 +239,10 @@ export const EditTeamMember = ({
           <Form.Item
             label="Phone Number"
             name="phone"
-            rules={[{ required: true, message: "Please enter the phone number" }]}>
+            rules={[
+              { required: true, message: "Please enter the phone number" },
+            ]}
+          >
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
@@ -199,7 +250,8 @@ export const EditTeamMember = ({
           <Form.Item
             label="Role"
             name="roleOfName"
-            rules={[{ required: true, message: "Please select a role" }]}>
+            rules={[{ required: true, message: "Please select a role" }]}
+          >
             <Select
               showSearch
               placeholder="Search to Select"
@@ -223,7 +275,10 @@ export const EditTeamMember = ({
           <Form.Item
             label="Services"
             name="services"
-            rules={[{ required: true, message: "Please select at least one service" }]}>
+            rules={[
+              { required: true, message: "Please select at least one service" },
+            ]}
+          >
             <Select
               mode="multiple"
               style={{ width: "100%" }}
@@ -244,11 +299,13 @@ export const EditTeamMember = ({
                 <Checkbox disabled={isAdmin}>Can view all orders</Checkbox>
               </Form.Item>
               <Form.Item name="placeOnOrderForClient" valuePropName="checked">
-                <Checkbox disabled={isAdmin}>Can place an order for clients</Checkbox>
+                <Checkbox disabled={isAdmin}>
+                  Can place an order for clients
+                </Checkbox>
               </Form.Item>
-              <Form.Item name="doProductionWork" valuePropName="checked">
+              {/* <Form.Item name="doProductionWork" valuePropName="checked">
                 <Checkbox disabled={isAdmin}>Can do production work</Checkbox>
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item name="seeThePricing" valuePropName="checked">
                 <Checkbox disabled={isAdmin}>Can see the pricing</Checkbox>
               </Form.Item>

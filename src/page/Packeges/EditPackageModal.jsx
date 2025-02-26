@@ -20,18 +20,18 @@ export const EditPackageModal = ({
   useEffect(() => {
     if (selectedCategory) {
       form.setFieldsValue({
-        name: selectedCategory.name,
-        price: selectedCategory.price.replace("$", ""),
-        descriptions: selectedCategory.description,
-        services: selectedCategory.services?.map((service) => service._id) || [],
+        name: selectedCategory?.name,
+        price: selectedCategory?.price?.replace("$", ""),
+        descriptions: selectedCategory?.description,
+        services: selectedCategory?.services?.map((service) => service?._id) || [],
       });
 
       setSelectedServices(
-        selectedCategory.services?.map((service) => service._id) || []
+        selectedCategory?.services?.map((service) => service?._id) || []
       );
 
       setFileList(
-        selectedCategory.images?.map((url, index) => ({
+        selectedCategory?.images?.map((url, index) => ({
           uid: index,
           name: `image-${index}.png`,
           status: "done",
@@ -44,8 +44,8 @@ export const EditPackageModal = ({
   // Map services for dropdown (show all available services)
   const serviceOptions =
     servicesData?.data?.data?.map((service) => ({
-      value: service._id,
-      label: service.title,
+      value: service?._id,
+      label: service?.title,
     })) || [];
   const handleServiceChange = (value) => {
     console.log("Selected Service IDs:", value);

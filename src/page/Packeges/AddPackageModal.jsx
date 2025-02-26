@@ -16,8 +16,8 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
   }, [servicesData]);
   const serviceOptions =
     servicesData?.data?.data?.map((service) => ({
-      value: service._id,
-      label: service.title,
+      value: service?._id,
+      label: service?.title,
     })) || [];
   const handleServiceChange = (value) => {
     console.log("Selected Service IDs:", value);

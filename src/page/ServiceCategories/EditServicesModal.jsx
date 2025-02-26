@@ -9,7 +9,7 @@ console.log(selectedCategory?.key)
 
   useEffect(() => {
     if (selectedCategory) {
-      form.setFieldsValue({ categoryName: selectedCategory.categoryName });
+      form.setFieldsValue({ categoryName: selectedCategory?.categoryName });
     }
   }, [selectedCategory, form]);
 

@@ -17,10 +17,10 @@ export const PricingGroup = () => {
 
 
   const pricingGroups = pricingGroupData?.data?.data?.map(group => ({
-    key: group._id,
-    slNo: `#${group._id.slice(0, 4)}`, 
-    groupName: group.name,
-    numberOfClients: group.clients?.length || 0,
+    key: group?._id,
+    slNo: `#${group?._id.slice(0, 4)}`, 
+    groupName: group?.name,
+    numberOfClients: group?.clients?.length || 0,
   })) || [];
 
   const handlePageChange = (page) => {
@@ -38,7 +38,7 @@ export const PricingGroup = () => {
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await deletePricing(record.key).unwrap();
+          const response = await deletePricing(record?.key).unwrap();
           message.success(response.message );
         } catch (error) {
           message.error(error?.data?.message);
@@ -74,7 +74,7 @@ export const PricingGroup = () => {
       key: "action",
       render: (record) => (
         <div>
-          <Link to={`/dashboard/pricing-group/edit-pricing-group/${record.key}`}>
+          <Link to={`/dashboard/pricing-group/edit-pricing-group/${record?.key}`}>
             <button
               shape="circle"
               className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"

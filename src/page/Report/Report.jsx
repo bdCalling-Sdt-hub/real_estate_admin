@@ -15,16 +15,16 @@ export const Report = () => {
   parPackageData?.data?.map((parPackage, index) => ({
     key: index + 1, 
     slNo: `#${index + 1}`, 
-    packageName: parPackage.packageName, 
-    totalOrders: parPackage.totalOrders,
+    packageName: parPackage?.packageName, 
+    totalOrders: parPackage?.totalOrders,
   })) || [];
 
   const orderPerServicesData =
   parService?.data?.map((parService, index) => ({
     key: index + 1, 
     slNo: `#${index + 1}`, 
-    title: parService.title, 
-    totalOrders: parService.totalOrders,
+    title: parService?.title, 
+    totalOrders: parService?.totalOrders,
   })) || [];
   console.log()
 
@@ -33,21 +33,21 @@ export const Report = () => {
   clientReport?.data?.map((report, index) => ({
     key: index + 1, 
     slNo: `#${index + 1}`, 
-    companyName: report.companyName, 
-    address: report.address,
-    totalOrders: report.totalOrders,
-    revenue: report.revenue,
+    companyName: report?.companyName, 
+    address: report?.address,
+    totalOrders: report?.totalOrders,
+    revenue: report?.revenue,
   })) || [];
 
   const teamMemberReportData =
   teamMemberReport?.data?.map((report, index) => ({
     key: index + 1, 
     slNo: `#${index + 1}`, 
-    name: report.name, 
-    role: report.role,
-    email: report.email,
-    phoneNumber: report.phoneNumber,
-    totalAppointments: report.totalAppointments
+    name: report?.name, 
+    role: report?.role,
+    email: report?.email,
+    phoneNumber: report?.phoneNumber,
+    totalAppointments: report?.totalAppointments
   })) || [];
 
 
