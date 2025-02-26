@@ -9,7 +9,7 @@ export const Report = () => {
   const{data:parService}= useGetOrderParServicesQuery()
   const{data:clientReport } = useGetClientReportQuery()
   const {data:teamMemberReport} = useGetTeamMemberReportQuery()
-  console.log(parPackageData)
+
 
   const orderPerPackagesData =
   parPackageData?.data?.map((parPackage, index) => ({
@@ -26,7 +26,7 @@ export const Report = () => {
     title: parService?.title, 
     totalOrders: parService?.totalOrders,
   })) || [];
-  console.log()
+ 
 
 
   const clientReportData =

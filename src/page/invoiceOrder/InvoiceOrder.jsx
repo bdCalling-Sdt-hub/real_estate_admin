@@ -10,7 +10,7 @@ import { imageUrl } from '../redux/api/baseApi';
 export const InvoiceOrder = () => {
   const [searchTerm, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
   const { data: invoiceOrderData } = useGetInvoiceOrderQuery({
     searchTerm,
     page: currentPage,

@@ -83,7 +83,7 @@ export const FinishedFileComnt = ({ fileId }) => {
       message.success("Comment added successfully");
       refetch();
     } catch (error) {
-      console.log(error);
+    
       message.error("Failed to add comment");
     }
   };

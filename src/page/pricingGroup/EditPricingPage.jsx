@@ -66,8 +66,7 @@ export const EditPricingPage = () => {
         special_price: Number(service.special_price),  
       })),
     };
-    console.log(data)
-    console.log(id)
+
     try {
       await updatePricing({ id, data });
       message.success("Pricing group updated successfully");

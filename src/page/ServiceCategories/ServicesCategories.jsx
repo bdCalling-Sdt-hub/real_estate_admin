@@ -25,7 +25,7 @@ const [deleteService] = useDeleteServicesCategoryMutation()
   })) || [];
 
   const handleEdit = (record) => {
-    console.log(record)
+
     setSelectedCategory(record);
     setOpenAddModal1(true);
   };

@@ -5,7 +5,7 @@ import { useDeleteServicesMutation, useGetAllServicesQuery } from "../redux/api/
 import { EditServiceMOdal } from "./EditServiceMOdal";
 
 export const CategoryWiseServices = ({category,searchTerm}) => {
-  console.log(category)
+ 
   
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -37,12 +37,12 @@ const[deleteServices]= useDeleteServicesMutation()
   };
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+   
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record?.key)
+   
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -136,7 +136,6 @@ const[deleteServices]= useDeleteServicesMutation()
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
       {/* Service Details Modal */}
       <Modal

@@ -21,7 +21,7 @@ export const ClientManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { data: clientManagementData } = useGetAllClientManagementQuery({searchTerm, page: currentPage,
     limit: pageSize,});
-  console.log(clientManagementData);
+ 
   const[deleteClient] = useDeleteAccountMutation()
   const navigate = useNavigate();
 
@@ -160,12 +160,12 @@ export const ClientManagement = () => {
   ];
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+   
     setCurrentPage(page);
   };
 
   const handleDelete = (id) => {
-    console.log(id)
+ 
     Modal.confirm({
       title: "Are you sure you want to delete this client?",
       okText: "Yes",
@@ -224,7 +224,6 @@ export const ClientManagement = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
 
       <AddClientModal

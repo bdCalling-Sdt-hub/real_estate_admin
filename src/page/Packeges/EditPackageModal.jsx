@@ -9,7 +9,7 @@ export const EditPackageModal = ({
   setEditModal,
   selectedCategory,
 }) => {
-  console.log("Selected Category Data:", selectedCategory);
+
 
   const { data: servicesData, isLoading } = useGetAllServicesSelectQuery();
   const [form] = Form.useForm();
@@ -48,7 +48,7 @@ export const EditPackageModal = ({
       label: service?.title,
     })) || [];
   const handleServiceChange = (value) => {
-    console.log("Selected Service IDs:", value);
+    
     setSelectedServices(value);
   };
 
@@ -65,7 +65,7 @@ export const EditPackageModal = ({
 
   const onFinish = async (values) => {
     const id = selectedCategory?.key;
-    console.log("Package ID:", id);
+
 
     const existingImages = fileList
       .filter((file) => file.url)
@@ -89,11 +89,11 @@ export const EditPackageModal = ({
       formData.append("package_image", file);
     });
 
-    console.log("Final FormData:", [...formData.entries()]);
+
 
     try {
       const res = await updatePackage({ data: formData, id }).unwrap();
-      console.log("API Response:", res);
+      
       message.success(res?.message);
 
       form.resetFields();

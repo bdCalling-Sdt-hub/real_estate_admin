@@ -11,9 +11,9 @@ const Login = () => {
   const[loginAdmin] = useLoginAdminMutation()
   const onFinish = async (values) => {
       try {
-        console.log("Form Values:", values);
+       
         const payload = await loginAdmin(values).unwrap();
-        console.log("API Response:", payload);
+       
         if (payload?.success) {
           dispatch(setToken(payload?.data?.accessToken))
           message.success("Login successful!");
@@ -26,7 +26,7 @@ const Login = () => {
         message.error(error?.data?.message || "Something went wrong. Try again!");
       } finally {
        
-        console.log("Login attempt finished.");
+     
       }
   };
   return (

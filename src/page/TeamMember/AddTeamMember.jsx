@@ -55,7 +55,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
   };
 
   const handleServiceChange = (value) => {
-    console.log("Selected services:", value);
+    
   };
 
   const handleFinish = async (values) => {
@@ -217,7 +217,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
                 { value: "Manager", label: "Manager" },
               ]}
               onChange={(value) => {
-                console.log("Selected Role:", value); // Log the selected role
+                
               }}
             />
           </Form.Item>

@@ -37,7 +37,7 @@ export const EditShedualModal = ({ modal2Open, setModal2Open, schedule }) => {
         id,
         data: body,
       }).unwrap();
-      console.log(response);
+    
       message.success(response?.data);
       setModal2Open(false);
     } catch (error) {

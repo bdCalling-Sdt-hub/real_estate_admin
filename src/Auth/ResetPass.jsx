@@ -9,7 +9,7 @@ const ResetPass = () => {
   
   const onFinish = async (values) => {
   
-    console.log(values);
+   
     const data = {
       email: localStorage.getItem("email"), 
       newPassword: values?.password,
@@ -18,7 +18,7 @@ const ResetPass = () => {
 
     try {
       const result = await resetPassword({ data, email: data.email }).unwrap();
-      console.log(result) 
+   
       message.success(result?.message);
       navigate("/login");
     } catch (error) {

@@ -10,7 +10,7 @@ import { imageUrl } from "../redux/api/baseApi";
 
 export const Agent = () => {
   const { id } = useParams();
-  console.log(id)
+ 
   const {
     data: singleClientAgentData,
     isLoading,
@@ -19,7 +19,7 @@ export const Agent = () => {
     { id },
     { refetchOnMountOrArgChange: true }
   );
-  console.log(singleClientAgentData);
+  
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openAddModal1, setOpenAddModal1] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);

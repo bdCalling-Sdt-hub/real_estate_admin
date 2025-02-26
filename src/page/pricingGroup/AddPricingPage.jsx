@@ -58,12 +58,12 @@ export const AddPricingPage = () => {
       })),
     };
 
-    console.log(data);
+   
 
     try {
       const res = await addPricingGroup(data);
       message.success(res?.data?.message);
-      console.log(res);
+      
     } catch (error) {
       message.error(error?.data?.data?.message)
       console.error("Error creating pricing group:", error);
@@ -102,16 +102,16 @@ export const AddPricingPage = () => {
       return; // Don't update the state if it's not a valid number
     }
 
-    // Create a new object with the updated special_price
+    
     newServices[index] = { 
-      ...newServices[index], // Spread the existing properties of the service
-      special_price: updatedSpecialPrice // Update special_price as a number
+      ...newServices[index], 
+      special_price: updatedSpecialPrice 
     };
 
     setSelectedServices(newServices);
 
-    // Log the updated special price to the console
-    console.log(`Updated special price for service ${record.title}: ${updatedSpecialPrice}`);
+   
+   
   }}
 />
 

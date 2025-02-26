@@ -99,7 +99,7 @@ export const EditOrder = () => {
         message.success("Order updated successfully");
       }
     } catch (error) {
-      console.log(error);
+     
       message.error("Something went wrong");
     }
   };

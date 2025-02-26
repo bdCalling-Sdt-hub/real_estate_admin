@@ -73,7 +73,7 @@ export const EditServices = () => {
       message.success("Packages and Services updated successfully");
       refetch();
     } catch (error) {
-      console.log(error);
+     
       message.error("Failed to update packages and services");
     }
   };

@@ -52,12 +52,12 @@ export const TeamMember = () => {
   };
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); // Debug to confirm `page` is received
+
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record)
+    
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -188,7 +188,6 @@ export const TeamMember = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
 
       <AddTeamMember openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />

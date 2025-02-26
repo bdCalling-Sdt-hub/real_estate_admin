@@ -31,7 +31,7 @@ export const Services = () => {
   }, [data]);
 
   const handleCategory = (categoryId) => {
-    console.log("Selected Category ID:", categoryId);
+    
     setCategoryData(categoryId);
   };
 

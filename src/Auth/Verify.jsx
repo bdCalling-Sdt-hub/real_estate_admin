@@ -18,11 +18,11 @@ const Verify = () => {
       email: localStorage.getItem("email"),
     };
 
-    console.log(data); // Debugging: log OTP and email data
+   
 
     try {
       const response = await verifyOtp({data}).unwrap();
-      console.log(response); // Debugging: log response
+    
       message.success(response?.message);
       navigate("/reset");
     } catch (error) {
@@ -37,7 +37,7 @@ const Verify = () => {
     };
     try {
       const response =await resendVerifyOtp(data).unwrap();
-      console.log(response,message); // Debugging: log resend OTP response
+      
       message.success(response.message);
     } catch (error) {
       console.error(error); // Debugging: log error response

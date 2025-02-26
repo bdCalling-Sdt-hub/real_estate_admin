@@ -41,7 +41,7 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
     try {
       const response = await addServices(formData); 
       setOpenAddModal(false); 
-      console.log('response----------',response)
+      
       if (response?.data?.success) {
         message.success(response?.data?.message); 
       } else {

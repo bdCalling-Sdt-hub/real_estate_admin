@@ -5,7 +5,7 @@ import { useUpdateServiceCategoryMutation } from "../redux/api/serviceApi";
 export const EditServicesModal = ({ openAddModal, setOpenAddModal, selectedCategory }) => {
   const [form] = Form.useForm();
   const [updateServiceCategory, { isLoading }] = useUpdateServiceCategoryMutation();
-console.log(selectedCategory?.key)
+
 
   useEffect(() => {
     if (selectedCategory) {

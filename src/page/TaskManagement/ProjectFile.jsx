@@ -45,7 +45,7 @@ export const ProjectFile = () => {
         message.success("File uploaded successfully");
         refetch();
       } catch (error) {
-        console.log(error);
+        
         message.error("File upload failed");
       } finally {
         setUploadLoading(false);

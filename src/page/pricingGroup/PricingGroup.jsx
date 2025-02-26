@@ -13,7 +13,7 @@ export const PricingGroup = () => {
   const pageSize = 10;
   const { data: pricingGroupData } = useGetAllPricingGroupQuery({searchTerm,page: currentPage,
     limit: pageSize,}); 
-  console.log(pricingGroupData);
+
 
 
   const pricingGroups = pricingGroupData?.data?.data?.map(group => ({
@@ -24,12 +24,12 @@ export const PricingGroup = () => {
   })) || [];
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+ 
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record?.key)
+   
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -140,7 +140,6 @@ export const PricingGroup = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
       </div>
     </div>
