@@ -26,7 +26,11 @@ const columns = [
     render: (client) => (
       <div className="flex items-center">
         <Avatar
-          src={client?.profile_image || "https://i.pravatar.cc/40?img=1"}
+          src={
+            client?.profile_image
+              ? `${import.meta.env.VITE_API_URL}${client?.profile_image}`
+              : `https://ui-avatars.com/api/?name=${client?.name}`
+          }
           alt={client?.name}
         />
         <span style={{ marginLeft: 8 }}>{client?.name}</span>
@@ -126,7 +130,9 @@ const menu = (id, setModal2Open, setRemoveModalOpen) => (
     </Menu.Item>
 
     <Menu.Item key="2">
-      <Link to={`/dashboard/order-management/order-details/edit-services/${id}`}>
+      <Link
+        to={`/dashboard/order-management/order-details/edit-services/${id}`}
+      >
         Edit Services
       </Link>
     </Menu.Item>
