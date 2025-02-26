@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CheckOutlined,
   EyeOutlined,
@@ -23,6 +23,7 @@ import { message, Spin, Upload } from "antd";
 import handleFileUpload from "../../utils/handleFileUpload";
 import { useSelector } from "react-redux";
 import { formatAddress } from "../../utils/formatAddress";
+import { useGetProfileQuery } from "../redux/api/userApi";
 export const TaskManagementPage = () => {
   const [modal2Open, setModal2Open] = useState(false);
   const [assignedTasksPage, setAssignedTasksPage] = useState(1);
@@ -71,6 +72,9 @@ export const TaskManagementPage = () => {
       message.error("Task taken failed");
     }
   };
+
+  const { data: profile } = useGetProfileQuery();
+  const role = profile?.data?.role;
   return (
     <div className="p-6 bg-white">
       <div className="grid grid-cols-2 gap-6">
@@ -123,12 +127,14 @@ export const TaskManagementPage = () => {
                               <EyeOutlined />
                             </button>
                           </Link>
-                          <button
-                            onClick={() => setModal2Open(item._id)}
-                            className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"
-                          >
-                            <FaArrowRight />
-                          </button>
+                          {role !== "MEMBER" && (
+                            <button
+                              onClick={() => setModal2Open(item._id)}
+                              className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"
+                            >
+                              <FaArrowRight />
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
