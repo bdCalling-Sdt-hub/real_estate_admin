@@ -75,6 +75,12 @@ const taskApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
+    toggleTaskStatus: builder.mutation({
+      query: (id) => ({
+        url: `/task/update-status/${id}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -91,4 +97,5 @@ export const {
   usePostCommentMutation,
   useGetNewTaskQuery,
   useUpdateTaskStatusMutation,
+  useToggleTaskStatusMutation,
 } = taskApi;

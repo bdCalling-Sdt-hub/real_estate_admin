@@ -17,6 +17,7 @@ import {
   useGetAssignedTasksQuery,
   useGetNewTaskQuery,
   useUpdateTaskStatusMutation,
+  useToggleTaskStatusMutation,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
 import { message, Spin, Upload } from "antd";
@@ -71,7 +72,6 @@ export const TaskManagementPage = () => {
       message.success("Task taken successfully");
       refetchTasks();
     } catch (error) {
- 
       message.error("Task taken failed");
     }
   };
@@ -122,7 +122,24 @@ export const TaskManagementPage = () => {
       message.success("Task status update failed");
     } finally {
       setUpdateTaskLoading(false);
-      refetchNewTasks();
+      refetchTasks();
+    }
+  };
+
+  const [toggleTaskStatus] = useToggleTaskStatusMutation();
+  const [toggleTaskLoading, setToggleTaskLoading] = useState(false);
+
+  const handleToggleAssignedToMeTaskStatus = async ({ _id }) => {
+    setToggleTaskLoading(_id);
+    try {
+      await toggleTaskStatus(_id);
+      message.success("Task status succesfully updated!");
+    } catch (error) {
+      console.log(error);
+      message.error("Task status update failed");
+    } finally {
+      setToggleTaskLoading(false);
+      refetchAssignedTasks();
     }
   };
   return (
@@ -138,7 +155,7 @@ export const TaskManagementPage = () => {
               assignedTasks?.data?.map((task, index) => (
                 <div key={index} className="mb-4 border py-5">
                   <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                    {dayjs(task.createdAt).format("dddd, DD MMMM, YYYY")}
+                    {dayjs(task._id).format("dddd, DD MMMM, YYYY")}
                   </div>
                   <div className=" p-3 rounded-b-lg">
                     {task.tasks.map((item) => (
@@ -155,15 +172,24 @@ export const TaskManagementPage = () => {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          {item.status === "Completed" ? (
-                            <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
+                          <button
+                            onClick={() =>
+                              handleToggleAssignedToMeTaskStatus(item)
+                            }
+                            className={`${
+                              item?.status === "Delivered"
+                                ? "bg-[#009D2A]"
+                                : "bg-[#F38E0A]"
+                            } text-white p-2 w-10 h-10 rounded`}
+                          >
+                            {toggleTaskLoading === item?._id ? (
+                              <Spin />
+                            ) : item.status === "Delivered" ? (
                               <CheckOutlined />
-                            </button>
-                          ) : (
-                            <button className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded">
+                            ) : (
                               <PendingIcon />
-                            </button>
-                          )}
+                            )}
+                          </button>
                           <Link
                             to={`/dashboard/task-management/all-Services/project-file/${item._id}`}
                           >
@@ -172,7 +198,7 @@ export const TaskManagementPage = () => {
                             </button>
                           </Link>
                           <button
-                            onClick={() => setModal2Open1(item._id)}
+                            onClick={() => setModal2Open1(item)}
                             className="bg-[#D80027] text-white text-2xl p-2 w-10 h-10 rounded"
                           >
                             <LiaFileExcel />
@@ -201,7 +227,7 @@ export const TaskManagementPage = () => {
               openProductionWork?.data?.map((task) => (
                 <div key={task._id} className="border py-5">
                   <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                    {dayjs(task.createdAt).format("dddd, DD MMMM, YYYY")}
+                    {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
                   </div>
                   <div className=" p-3 ">
                     {task.tasks.map((item) => (
@@ -252,49 +278,7 @@ export const TaskManagementPage = () => {
         </div>
       </div>
 
-      {/* To Do List and Upload Source Files */}
-      <div className="grid grid-cols-2 gap-6 mt-6">
-        {/* To Do List Section */}
-        <div className="p-4  rounded-lg bg-white">
-          <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 ">
-            To Do List{" "}
-            <button
-              onClick={() => setModal2Open3(true)}
-              className="bg-[#F38E0A] w-8 h-8 rounded text-lg text-white "
-            >
-              +
-            </button>
-          </h3>
-          <div
-            className="overflow-y-auto border py-5"
-            style={{ maxHeight: "300px" }}
-          >
-            {toDoList.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center mb-2  pb-2"
-              >
-                <p>{item.date}</p>
-                <p className="flex-1 text-center">{item.description}</p>
-                <div className="flex items-center gap-2">
-                  <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
-                    <CheckOutlined />
-                  </button>
-                  <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
-                    <EyeOutlined />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <ToDoAdd
-          setModal2Open3={setModal2Open3}
-          modal2Open3={modal2Open3}
-        ></ToDoAdd>
-
-        {/* Upload Source Files Section */}
+      <div className="mt-6">
         <div className="p-4  bg-white ">
           <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
             Upload Source Files
@@ -304,7 +288,7 @@ export const TaskManagementPage = () => {
               newTasks?.data?.data?.map((task, index) => (
                 <div key={index} className="mb-4 border py-5">
                   <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                    {task._id}
+                    {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
                   </div>
                   <div className=" p-3">
                     {task.tasks.map((item, idx) => (

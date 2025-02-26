@@ -3,28 +3,40 @@ import {
   useGetAllTeamMembersQuery,
   useRejectTaskMutation,
 } from "../redux/api/taskApi";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
   const { data: teamMembers } = useGetAllTeamMembersQuery();
   const [rejectTask, { isLoading }] = useRejectTaskMutation();
-
+  const { data: profile } = useGetProfileQuery();
+  const role = profile?.data?.role;
+  console.log({modal2Open1});
+  
   const handleFinish = async (values) => {
+    console.log({ values });
+
     try {
-      await rejectTask({
-        taskId: modal2Open1,
-        memberId: values.member,
-        reason: values.reason,
-      });
+      if (role === "MEMBER") {
+        await rejectTask({
+          taskId: modal2Open1?._id,
+          memberId: profile?.data?._id,
+          reason: values.reason,
+        });
+      } else {
+        // await rejectTask({
+        //   taskId: modal2Open1?._id,
+        //   memberId: values.member,
+        //   reason: values.reason,
+        // });
+      }
       setModal2Open1(false);
       message.success("Task rejected successfully");
       refetchTasks();
     } catch (error) {
-   
       message.error("Task rejection failed");
       refetchTasks();
     }
   };
-
   return (
     <Form layout="vertical" id="rejectForm" onFinish={handleFinish}>
       <Modal
@@ -50,18 +62,26 @@ export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
       >
         <Form.Item
           name="member"
-          label="Select Team Member"
-          rules={[{ required: true, message: "Recipient is required" }]}
+          label={
+            role === "MEMBER" ? "Selected Team Member" : "Select Team Members"
+          }
+          rules={[
+            { required: role !== "MEMBER", message: "Recipient is required" },
+          ]}
           layout="vertical"
         >
-          <Select placeholder="Select a team member">
-            {teamMembers?.data?.length > 0 &&
-              teamMembers?.data?.map((member) => (
-                <Select.Option key={member._id} value={member._id}>
-                  {member.name}
-                </Select.Option>
-              ))}
-          </Select>
+          {role === "MEMBER" ? (
+            <h1 className="font-bold">{profile?.data?.name}</h1>
+          ) : (
+            <Select placeholder="Select a team member" mode="multiple">
+              {teamMembers?.data?.length > 0 &&
+                teamMembers?.data?.map((member) => (
+                  <Select.Option key={member._id} value={member._id}>
+                    {member.name}
+                  </Select.Option>
+                ))}
+            </Select>
+          )}
         </Form.Item>
 
         <Form.Item
