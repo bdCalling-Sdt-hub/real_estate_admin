@@ -32,7 +32,7 @@ const[deletePackage] = useDeletePackageMutation()
   };
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); // Debug to confirm `page` is received
+    
     setCurrentPage(page);
   };
 
@@ -42,7 +42,7 @@ const[deletePackage] = useDeletePackageMutation()
   };
 
   const handleDelete = async (record) => {
-    console.log(record?.key)
+
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -51,7 +51,7 @@ const[deletePackage] = useDeletePackageMutation()
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await deletePackage(record.key).unwrap();
+          const response = await deletePackage(record?.key).unwrap();
           message.success(response.message );
         } catch (error) {
           message.error(error?.data?.message);
@@ -63,13 +63,13 @@ const[deletePackage] = useDeletePackageMutation()
   // Prepare table data from API response
   const tableData =
     packageData?.data?.data?.map((item, index) => ({
-      key: item._id,
+      key: item?._id,
       slNo: index + 1,
-      name: item.name,
-      price: `$${item.price}`,
-      description: item.descriptions,
-      services: item.services,
-      images: item.package_image,
+      name: item?.name,
+      price: `$${item?.price}`,
+      description: item?.descriptions,
+      services: item?.services,
+      images: item?.package_image,
     })) || [];
 
   const columns = [
@@ -176,11 +176,10 @@ const[deletePackage] = useDeletePackageMutation()
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={packageData?.data.meta?.total || 0}
+          total={packageData?.data?.meta?.total || 0}
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
       </div>
 
@@ -208,22 +207,22 @@ const[deletePackage] = useDeletePackageMutation()
             </h2>
             <div className="mb-4">
               <p className="font-semibold">Package Name:</p>
-              <p>{selectedPackage.name}</p>
+              <p>{selectedPackage?.name}</p>
             </div>
             <div className="mb-4">
               <p className="font-semibold">Price:</p>
-              <p>{selectedPackage.price}</p>
+              <p>{selectedPackage?.price}</p>
             </div>
             <div className="mb-4">
               <p className="font-semibold">Description:</p>
-              <p>{selectedPackage.description}</p>
+              <p>{selectedPackage?.description}</p>
             </div>
             <div className="mb-4">
               <p className="font-semibold">Services:</p>
               <ul className="list-disc pl-5">
-                {selectedPackage.services.length > 0 ? (
-                  selectedPackage.services.map((service) => (
-                    <li key={service._id}>{service.title}</li>
+                {selectedPackage?.services?.length > 0 ? (
+                  selectedPackage?.services.map((service) => (
+                    <li key={service?._id}>{service?.title}</li>
                   ))
                 ) : (
                   <p>No services available</p>
@@ -233,8 +232,8 @@ const[deletePackage] = useDeletePackageMutation()
             <div className="mb-4">
               <p className="font-semibold">Images:</p>
               <div className="flex gap-3 flex-wrap">
-                {selectedPackage.images.length > 0 ? (
-                  selectedPackage.images.map((img, index) => (
+                {selectedPackage?.images?.length > 0 ? (
+                  selectedPackage?.images?.map((img, index) => (
                     <img
                       key={index}
                       src={img}

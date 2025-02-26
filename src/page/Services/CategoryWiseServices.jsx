@@ -5,7 +5,7 @@ import { useDeleteServicesMutation, useGetAllServicesQuery } from "../redux/api/
 import { EditServiceMOdal } from "./EditServiceMOdal";
 
 export const CategoryWiseServices = ({category,searchTerm}) => {
-  console.log(category)
+ 
   
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -17,13 +17,13 @@ export const CategoryWiseServices = ({category,searchTerm}) => {
     limit: pageSize,});
 const[deleteServices]= useDeleteServicesMutation()
   const data = serviceData?.data?.data?.map((item, index) => ({
-    key: item._id,
+    key: item?._id,
     slNo: (index + 1).toString().padStart(2, "0"),
-    title: item.title,
-    price: `${item.price}`,
-    description: item.descriptions,
+    title: item?.title,
+    price: `${item?.price}`,
+    description: item?.descriptions,
     
-    serviceImage: item.service_image,
+    serviceImage: item?.service_image,
   })) || [];
 
   const handleDetails = (record) => {
@@ -37,12 +37,12 @@ const[deleteServices]= useDeleteServicesMutation()
   };
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+   
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record?.key)
+   
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -51,8 +51,8 @@ const[deleteServices]= useDeleteServicesMutation()
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await deleteServices(record.key).unwrap();
-          message.success(response.message );
+          const response = await deleteServices(record?.key).unwrap();
+          message.success(response?.message );
         } catch (error) {
           message.error(error?.data?.message);
         }
@@ -136,7 +136,6 @@ const[deleteServices]= useDeleteServicesMutation()
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
       {/* Service Details Modal */}
       <Modal
@@ -151,21 +150,21 @@ const[deleteServices]= useDeleteServicesMutation()
           <div>
             <div className="flex justify-between">
               <h1>Service Name:</h1>
-              <h1>{selectedService.title}</h1>
+              <h1>{selectedService?.title}</h1>
             </div>
             <div className="flex justify-between">
               <h1>Category:</h1>
-              <h1>{selectedService.category}</h1>
+              <h1>{selectedService?.category}</h1>
             </div>
             <div className="flex justify-between">
               <h1>Price:</h1>
-              <h1>{selectedService.price}</h1>
+              <h1>{selectedService?.price}</h1>
             </div>
             <p className="text-lg font-semibold mt-3">Description:</p>
-            <p>{selectedService.description}</p>
+            <p>{selectedService?.description}</p>
             <p className="text-lg font-semibold mb-2 mt-4">Photos</p>
             <div className="grid grid-cols-4 gap-3">
-              {selectedService.serviceImage.map((img, index) => (
+              {selectedService?.serviceImage.map((img, index) => (
                 <img key={index} className="h-[100px]" src={img} alt="Service" />
               ))}
             </div>

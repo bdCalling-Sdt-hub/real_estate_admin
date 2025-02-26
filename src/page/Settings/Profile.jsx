@@ -14,7 +14,7 @@ const Profile = () => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const tab = "Profile";
   const{data:getProfile} = useGetProfileQuery();
-  console.log(getProfile?.data?.profile_image)
+
   const [updateProfile] =useUpdateProfileMutation();
   useEffect(() => {
     if (getProfile?.data) {

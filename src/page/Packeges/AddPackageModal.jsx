@@ -7,20 +7,20 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
   const [addPackage] = useAddPackageMutation();
   const [fileList, setFileList] = useState([]);
   const { data: servicesData, isLoading } = useGetAllServicesSelectQuery();
-  console.log(servicesData)
+ 
   const [form] = Form.useForm();
   const [selectedServiceIds, setSelectedServiceIds] = useState();
 
   useEffect(() => {
-    console.log("Fetched Services Data:", servicesData);
+   
   }, [servicesData]);
   const serviceOptions =
     servicesData?.data?.data?.map((service) => ({
-      value: service._id,
-      label: service.title,
+      value: service?._id,
+      label: service?.title,
     })) || [];
   const handleServiceChange = (value) => {
-    console.log("Selected Service IDs:", value);
+   
     setSelectedServiceIds(value);
   };
   const handleFileChange = ({ fileList: newFileList }) => {
@@ -36,7 +36,7 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
 
     selectedServiceIds.forEach((id) => {
       formData.append("services", id);
-      console.log(id)
+   
     });
 
     fileList.forEach((file) => {
@@ -45,7 +45,7 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
 
     try {
       const response = await addPackage(formData);
-      console.log("Response:", response);
+      
 
       if (response?.data?.success) {
         message.success(response?.data?.message);

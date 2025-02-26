@@ -8,7 +8,7 @@ export const EditServiceMOdal = ({
   setEditModal,
   selectedCategory,
 }) => {
-  console.log(selectedCategory)
+
   const [updateServices] = useUpdateServiceMutation();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
@@ -23,9 +23,9 @@ export const EditServiceMOdal = ({
 
   const onFinish = async (values) => {
     const id = selectedCategory?.key;
-    console.log(id)
+ 
     const data = { ...values };
-    console.log(data)
+
 
     
     const existingImages = fileList
@@ -44,12 +44,12 @@ export const EditServiceMOdal = ({
     });
     
     for (let pair of formData.entries()) {
-      console.log(pair[0] + ':', pair[1]);
+     
     }
   
     try {
       const res = await updateServices({ data: formData, id }).unwrap();
-      console.log(res);
+      
       message.success(res?.message);
 
    

@@ -23,25 +23,25 @@ export const TeamMember = () => {
 
 
   const data = allTeamMember?.data?.result?.map((member, index) => ({
-    key: member._id,
+    key: member?._id,
     slNo: `#${index + 1}`,
-    name: member.name,
-    email: member.email,
-    authId: member.authId,
-    phone: member.phone_number,
-    services: member.serviceId.map(service => service.title).join(", "),
-    servicesId:member.serviceId,
-    role: member.role,
-    roleOfName:member.roleOfName,
-    profile_image: member.profile_image,
-    view_assigned_order:member.view_assigned_order,
-    view_all_order:member.view_all_order,
-    place_on_order_for_client:member.place_on_order_for_client,
-    do_production_work:member.do_production_work,
-    see_the_pricing:member.see_the_pricing,
-    edit_order:member.edit_order,
-    edit_order:member.edit_order,
-    is_admin:member.is_admin
+    name: member?.name,
+    email: member?.email,
+    authId: member?.authId,
+    phone: member?.phone_number,
+    services: member?.serviceId?.map(service => service?.title).join(", "),
+    servicesId:member?.serviceId,
+    role: member?.role,
+    roleOfName:member?.roleOfName,
+    profile_image: member?.profile_image,
+    view_assigned_order:member?.view_assigned_order,
+    view_all_order:member?.view_all_order,
+    place_on_order_for_client:member?.place_on_order_for_client,
+    do_production_work:member?.do_production_work,
+    see_the_pricing:member?.see_the_pricing,
+    edit_order:member?.edit_order,
+    edit_order:member?.edit_order,
+    is_admin:member?.is_admin
 
   })) || [];
 
@@ -52,12 +52,12 @@ export const TeamMember = () => {
   };
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); // Debug to confirm `page` is received
+
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record)
+    
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -66,8 +66,8 @@ export const TeamMember = () => {
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await deleteTeamMember(record.authId).unwrap();
-          message.success(response.message );
+          const response = await deleteTeamMember(record?.authId).unwrap();
+          message.success(response?.message );
         } catch (error) {
           message.error(error?.data?.message);
         }
@@ -89,8 +89,8 @@ export const TeamMember = () => {
       key: "name",
       render: (text, record) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar src={`${imageUrl}/${record.profile_image}`} alt={record.name} />
-          <span style={{ marginLeft: 8 }}>{record.name}</span>
+          <Avatar src={`${imageUrl}/${record?.profile_image}`} alt={record?.name} />
+          <span style={{ marginLeft: 8 }}>{record?.name}</span>
         </div>
       ),
       width: "20%",
@@ -188,7 +188,6 @@ export const TeamMember = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
 
       <AddTeamMember openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />

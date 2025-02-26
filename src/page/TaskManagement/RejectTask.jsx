@@ -19,7 +19,7 @@ export const RejectTask = ({ modal2Open1, setModal2Open1, refetchTasks }) => {
       message.success("Task rejected successfully");
       refetchTasks();
     } catch (error) {
-      console.log(error);
+   
       message.error("Task rejection failed");
       refetchTasks();
     }

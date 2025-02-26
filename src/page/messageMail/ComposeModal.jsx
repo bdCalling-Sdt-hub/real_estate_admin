@@ -3,7 +3,7 @@ import { Modal, Form, Input, Button } from "antd";
 
 export const ComposeModal = ({ modal2Open1, setModal2Open1 }) => {
   const handleFinish = async (values) => {
-    console.log(values);
+    
   };
 
   return (

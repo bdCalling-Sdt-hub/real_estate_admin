@@ -1,70 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, message, Modal } from "antd";
+import { Avatar, Form, Input, message, Modal, Upload } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { imageUrl } from "../redux/api/baseApi";
 import { useUpdateAgentManagementMutation } from "../redux/api/clientManageApi";
-
+import { FaCamera } from "react-icons/fa6";
 export const EditAgent = ({
   openAddModal,
   setOpenAddModal,
   selectAgentManagement,
 }) => {
   const [form] = Form.useForm();
-const [updateAgent] = useUpdateAgentManagementMutation();
-const [selectedFile, setSelectedFile] = useState(null);
-console.log(selectAgentManagement?.authId)
-  const [profileImage, setProfileImage] = useState(null);
-  
-  
+  const [updateAgent] = useUpdateAgentManagementMutation();
+  const [profilePic, setProfilePic] = useState(null);
+
   useEffect(() => {
-    if (selectAgentManagement) {
-      // Populate the form fields
+    if (selectAgentManagement && openAddModal) {
       form.setFieldsValue({
-        name: selectAgentManagement.name,
-        email: selectAgentManagement.email,
-        address: selectAgentManagement.address,
-        phone: selectAgentManagement.phone,
+        name: selectAgentManagement?.name,
+        email: selectAgentManagement?.email,
+        address: selectAgentManagement?.address,
+        phone: selectAgentManagement?.phone,
       });
-      setProfileImage(selectAgentManagement.profile_image);
+      setProfilePic(selectAgentManagement?.profile_image || null);
     }
-  }, [selectAgentManagement, form]);
+  }, [selectAgentManagement, openAddModal]);
+
+  useEffect(() => {
+    if (!openAddModal) {
+      form.resetFields();
+
+      setProfilePic(null);
+    }
+  }, [openAddModal]);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
+    if (e.file && e.file.originFileObj) {
+      setProfilePic(e.file.originFileObj);
+    }
   };
-  
 
   const handleSubmit = async (values) => {
-
-    console.log("Submitted form:", values);
-
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("phone_number", values.phone);
     formData.append("address", values.address);
-    
 
-    // Append the file only if one is selected
-    if (selectedFile) {
-      formData.append("profile_image", selectedFile);
+    if (profilePic instanceof File) {
+      formData.append("profile_image", profilePic);
     }
 
     try {
       const response = await updateAgent({
         data: formData,
-        userId: selectAgentManagement.key,
-        authId: selectAgentManagement.authId,
+        userId: selectAgentManagement?.key,
+        authId: selectAgentManagement?.authId,
       }).unwrap();
-      message.success(response?.message)
-      console.log(response);
+
+      message.success(response?.message);
       setOpenAddModal(false);
     } catch (error) {
-      message.error(error?.data?.message)
-      console.error("Error editing client:", error);
+      message.error(error?.data?.message || "Error updating agent");
+      console.error("Error editing agent:", error);
     }
-
-
   };
 
   return (
@@ -74,55 +71,35 @@ console.log(selectAgentManagement?.authId)
       onCancel={() => setOpenAddModal(false)}
       footer={null}
       width={600}
+      destroyOnClose
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">Edit Agent</h2>
 
         <Form layout="vertical" form={form} onFinish={handleSubmit}>
-          {/* Image Upload / Preview */}
           <div className="relative w-[140px] h-[140px] mx-auto mb-6">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              id="imgUpload"
-              style={{ display: "none" }}
-            />
-            <img
-              style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "2px solid #e5e7eb",
-              }}
+            <Avatar
+              size={140}
               src={
-                selectedFile
-                  ? URL.createObjectURL(selectedFile)
-                  : profileImage
-                  ? `${imageUrl}/${profileImage}`
-                  : "default-placeholder.png"
+                profilePic
+                  ? profilePic instanceof File
+                    ? URL.createObjectURL(profilePic)
+                    : `${imageUrl}/${profilePic}`
+                  : null
               }
-              alt="Client Profile"
+              className="border-4 border-highlight shadow-xl"
             />
-            <label
-              htmlFor="imgUpload"
-              className="
-                absolute bottom-6 right-6
-                bg-[#2A216D]
-                rounded-full
-                w-8 h-8
-                flex items-center justify-center
-                cursor-pointer
-                border border-gray-300 shadow-sm
-                text-xl
-              "
+            <Upload
+              showUploadList={false}
+              accept="image/*"
+              maxCount={1}
+              onChange={handleImageChange}
+              className="absolute bottom-1 right-2 bg-white px-2 py-1 rounded-full cursor-pointer"
             >
-              <IoCameraOutline className="text-white" />
-            </label>
+              <FaCamera className="text-accent w-4 h-4 mt-1" />
+            </Upload>
           </div>
 
-          {/* Agent Name */}
           <Form.Item
             label="Agent Name"
             name="name"
@@ -131,16 +108,14 @@ console.log(selectAgentManagement?.authId)
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
-          {/* Email */}
           <Form.Item
             label="Email"
             name="email"
             rules={[{ required: true, message: "Please enter the email" }]}
           >
-            <Input className="py-3" placeholder="Input here" />
+            <Input className="py-3" placeholder="Input here" disabled />
           </Form.Item>
 
-          {/* Address */}
           <Form.Item
             label="Address"
             name="address"
@@ -149,7 +124,6 @@ console.log(selectAgentManagement?.authId)
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
-          {/* Phone Number */}
           <Form.Item
             label="Phone Number"
             name="phone"
@@ -160,7 +134,6 @@ console.log(selectAgentManagement?.authId)
             <Input className="py-3" placeholder="Input here" />
           </Form.Item>
 
-          {/* Buttons */}
           <div className="flex gap-3 mt-4">
             <button
               type="button"

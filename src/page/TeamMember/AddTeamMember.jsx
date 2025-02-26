@@ -11,8 +11,8 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
 
   const serviceOptions =
     getAllServicesSelect?.data?.data?.map((service) => ({
-      label: service.title,
-      value: service._id,
+      label: service?.title,
+      value: service?._id,
     })) || [];
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,7 +21,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
     viewAssignedOrders: false,
     viewAllOrders: false,
     placeOrder: false,
-    productionWork: false,
+    // productionWork: false,
     seePricing: false,
     editOrders: false,
     isAdmin: false,
@@ -42,7 +42,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       viewAssignedOrders: isChecked ? true : access.viewAssignedOrders,
       viewAllOrders: isChecked ? true : access.viewAllOrders,
       placeOrder: isChecked ? true : access.placeOrder,
-      productionWork: isChecked ? true : access.productionWork,
+      // productionWork: isChecked ? true : access.productionWork,
       seePricing: isChecked ? true : access.seePricing,
       editOrders: isChecked ? true : access.editOrders,
       isAdmin: isChecked,
@@ -55,7 +55,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
   };
 
   const handleServiceChange = (value) => {
-    console.log("Selected services:", value);
+    
   };
 
   const handleFinish = async (values) => {
@@ -88,10 +88,10 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
         "place_on_order_for_client",
         access.placeOrder ? "true" : "false"
       );
-      formData.append(
-        "do_production_work",
-        access.productionWork ? "true" : "false"
-      );
+      // formData.append(
+      //   "do_production_work",
+      //   access.productionWork ? "true" : "false"
+      // );
       formData.append("see_the_pricing", access.seePricing ? "true" : "false");
       formData.append("edit_order", access.editOrders ? "true" : "false");
       formData.append("is_admin", access.isAdmin ? "true" : "false");
@@ -103,7 +103,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       const response = await addTeamMember(formData);
       
       if (response?.error) {
-        message.error(response.error.message || "Invalid Profile Image Type");
+        message.error(response.error.data.message );
         console.error(response.error);
 
       } else {
@@ -112,7 +112,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
         setOpenAddModal(false);
       }
     } catch (error) {
-      message.error(error?.data?.message);
+      message.error(error?.data?.data?.message);
       console.error("Add Team Member Error:", error);
     }
   };
@@ -217,7 +217,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
                 { value: "Manager", label: "Manager" },
               ]}
               onChange={(value) => {
-                console.log("Selected Role:", value); // Log the selected role
+                
               }}
             />
           </Form.Item>
@@ -296,13 +296,13 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
               >
                 Can place an order for clients
               </Checkbox>
-              <Checkbox
+              {/* <Checkbox
                 checked={access.productionWork}
                 disabled={access.isAdmin}
                 onChange={handleCheckboxChange("productionWork")}
               >
                 Can do production work
-              </Checkbox>
+              </Checkbox> */}
               <Checkbox
                 checked={access.seePricing}
                 disabled={access.isAdmin}

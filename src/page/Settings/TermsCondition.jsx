@@ -8,11 +8,8 @@ const TermsCondition = () => {
 
   const editor = useRef(null);
   const [content, setContent] = useState('');
-  // const [isLoading, seLoading] = useState(false)
   const navigate = useNavigate(); 
-  // const handleTerms = () => {
-  //     console.log(content)
-  // }
+
   const config = {
       readonly: false,
       placeholder: 'Start typings...',

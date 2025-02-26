@@ -10,7 +10,7 @@ import { imageUrl } from '../redux/api/baseApi';
 export const InvoiceOrder = () => {
   const [searchTerm, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
   const { data: invoiceOrderData } = useGetInvoiceOrderQuery({
     searchTerm,
     page: currentPage,
@@ -22,12 +22,12 @@ export const InvoiceOrder = () => {
   const invoiceOrder =
     invoiceOrderData?.data?.result?.map((invoice, index) => ({
       key: index + 1,
-      id: invoice._id,
+      id: invoice?._id,
       slNo: `#${index + 1}`,
-      name: invoice.name,
-      totalUnpaidOrders: invoice.totalUnpaidOrders,
-      profile_image: invoice.profile_image,
-      unpaidOrderDetails: invoice.unpaidOrderDetails, 
+      name: invoice?.name,
+      totalUnpaidOrders: invoice?.totalUnpaidOrders,
+      profile_image: invoice?.profile_image,
+      unpaidOrderDetails: invoice?.unpaidOrderDetails, 
     })) || [];
 
   const handlePageChange = (page) => {
@@ -41,19 +41,26 @@ export const InvoiceOrder = () => {
   const [clientId, setClientId] = useState("");
 
   const handleCheckboxChange = (checked, record) => {
-
-    if (checked) {
-      setSelectedRows((prev) => [...prev, record]);
-      setTotalAmount((prevTotal) => prevTotal + record.totalAmount); 
-    } else {
-      
-      setSelectedRows((prev) => prev.filter((row) => row.key !== record.key));
-      setTotalAmount((prevTotal) => prevTotal - record.totalAmount); 
-    }
+    setSelectedRows((prev) => {
+      if (checked) {
+        return [...prev, record]; 
+      } else {
+        return prev.filter((row) => row._id !== record?._id);
+      }
+    });
+  
+    setTotalAmount((prevTotal) => {
+      if (checked) {
+        return prevTotal + record?.totalAmount; 
+      } else {
+        return prevTotal - record?.totalAmount; 
+      }
+    });
   };
+  
 
   const handleCreateInvoice = async () => {
-    const orderIds = selectedRows.map((row) => row._id);
+    const orderIds = selectedRows?.map((row) => row?._id);
     const invoiceData = {
       totalAmount: totalAmount,
       orderIds: orderIds,
@@ -88,7 +95,7 @@ export const InvoiceOrder = () => {
       render: (text, record) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
-            src={`${imageUrl}/${record.profile_image}`}
+            src={`${imageUrl}/${record?.profile_image}`}
             alt={text}
             style={{ width: "20px", height: "20px", marginRight: "10px" }}
           />
@@ -111,8 +118,8 @@ export const InvoiceOrder = () => {
       render: (text, record) => (
         <Button
           onClick={() => {
-            setSelectedInvoiceDetails(record.unpaidOrderDetails);
-            setClientId(record.id);
+            setSelectedInvoiceDetails(record?.unpaidOrderDetails);
+            setClientId(record?.id);
             setOpendetails(true);
           }}
           type="primary"
@@ -165,48 +172,55 @@ export const InvoiceOrder = () => {
       </div>
 
       <Modal
-        centered
-        open={opendetails}
-        onCancel={() => setOpendetails(false)}
-        footer={null}
-        width={900}
-      >
-        <div className="p-4">
-          <h2 className="text-center font-bold mb-6">Invoice Order</h2>
-          <Table
-            columns={[
-              {
-                title: "Select",
-                dataIndex: "select",
-                render: (_, record) => (
-                  <Checkbox
-                    onChange={(e) => handleCheckboxChange(e.target.checked, record)}
-                  />
-                ),
-              },
-              { title: "Order ID", dataIndex: "_id", key: "_id" },
-              { title: "Order Date", dataIndex: "createdAt", key: "createdAt" },
-              { title: "Amount", dataIndex: "totalAmount", key: "totalAmount", render: (text) => `$${text}` },
-            ]}
-            dataSource={selectedInvoiceDetails}
-            pagination={false}
-            bordered={false}
-            className="mb-4"
-          />
-          <div className="flex justify-between items-center font-bold text-lg mb-4">
-            <span>Total Price:</span>
-            <span>{`$${totalAmount}`}</span>
-          </div>
-          <Button
-            type="primary"
-            block
-            className="bg-[#2A216D] text-white rounded-md"
-            onClick={handleCreateInvoice}
-          >
-            Create Invoice
-          </Button>
-        </div>
-      </Modal>
+  centered
+  open={opendetails}
+  onCancel={() => {
+    setOpendetails(false);
+    setSelectedRows([]);
+    setSelectedInvoiceDetails(null); 
+    setTotalAmount(0); 
+  }}
+  footer={null}
+  width={900}
+>
+  <div className="p-4">
+    <h2 className="text-center font-bold mb-6">Invoice Order</h2>
+    <Table
+      columns={[
+        {
+          title: "Select",
+          dataIndex: "select",
+          render: (_, record) => (
+            <Checkbox
+              checked={selectedRows.some((row) => row._id === record._id)}
+              onChange={(e) => handleCheckboxChange(e.target.checked, record)}
+            />
+          ),
+        },
+        { title: "Order ID", dataIndex: "_id", key: "_id" },
+        { title: "Order Date", dataIndex: "createdAt", key: "createdAt" },
+        { title: "Amount", dataIndex: "totalAmount", key: "totalAmount", render: (text) => `$${text}` },
+      ]}
+      dataSource={selectedInvoiceDetails}
+      pagination={false}
+      bordered={false}
+      className="mb-4"
+    />
+    <div className="flex justify-between items-center font-bold text-lg mb-4">
+      <span>Total Price:</span>
+      <span>{`$${totalAmount}`}</span>
+    </div>
+    <Button
+      type="primary"
+      block
+      className="bg-[#2A216D] text-white rounded-md"
+      onClick={handleCreateInvoice}
+    >
+      Create Invoice
+    </Button>
+  </div>
+</Modal>
+
     </div>
   );
 }; 

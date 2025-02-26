@@ -21,7 +21,7 @@ export const ClientManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { data: clientManagementData } = useGetAllClientManagementQuery({searchTerm, page: currentPage,
     limit: pageSize,});
-  console.log(clientManagementData);
+ 
   const[deleteClient] = useDeleteAccountMutation()
   const navigate = useNavigate();
 
@@ -32,16 +32,16 @@ export const ClientManagement = () => {
 
   const data =
     clientManagementData?.data?.result?.map((client, index) => ({
-      key: client._id,
-      authId: client.authId,
+      key: client?._id,
+      authId: client?.authId,
       slNo: `#${index + 1}`,
-      email: client.email,
-      email_notifications: client.email_notifications,
-      email_invoice: client.email_invoice,
-      name: client.name,
-      phone: client.phone_number,
-      address: client.address,
-      profile_image: client.profile_image,
+      email: client?.email,
+      email_notifications: client?.email_notifications,
+      email_invoice: client?.email_invoice,
+      name: client?.name,
+      phone: client?.phone_number,
+      address: client?.address,
+      profile_image: client?.profile_image,
     })) || [];
 
     
@@ -97,10 +97,10 @@ export const ClientManagement = () => {
       render: (text, record) => (
         <div className="flex items-center">
           <Avatar
-            src={`${imageUrl}/${record.profile_image}`}
-            alt={record.name}
+            src={`${imageUrl}/${record?.profile_image}`}
+            alt={record?.name}
           />
-          <span style={{ marginLeft: 8 }}>{record.name}</span>
+          <span style={{ marginLeft: 8 }}>{record?.name}</span>
         </div>
       ),
       width: "20%",
@@ -121,7 +121,7 @@ export const ClientManagement = () => {
       title: "Agent",
       key: "agent",
       render: (record) => (
-        <Link to={`/dashboard/client-management/agent-client/${record.key}`}>
+        <Link to={`/dashboard/client-management/agent-client/${record?.key}`}>
           <Button
             icon={<ArrowRightOutlined />}
             style={{
@@ -160,12 +160,12 @@ export const ClientManagement = () => {
   ];
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+   
     setCurrentPage(page);
   };
 
   const handleDelete = (id) => {
-    console.log(id)
+ 
     Modal.confirm({
       title: "Are you sure you want to delete this client?",
       okText: "Yes",
@@ -224,7 +224,6 @@ export const ClientManagement = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
 
       <AddClientModal

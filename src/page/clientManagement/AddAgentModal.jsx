@@ -4,14 +4,14 @@ import { IoCameraOutline } from "react-icons/io5";
 import { useAddAgentManagementMutation } from "../redux/api/clientManageApi";
 
 export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgentData,id }) => {
-  console.log(id)
+
   
   const client = singleClientAgentData?.data?.map((agent) => ({
-    id: agent.clientId, 
+    id: agent?.clientId, 
   })) || [];
-  console.log(singleClientAgentData)
+  
 
-  console.log(client.length > 0 ? client[0].id : ''); 
+
 
   const [addAgent] = useAddAgentManagementMutation();
   const [passError, setPassError] = useState("");
@@ -23,11 +23,11 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
   };
 
   const handleSubmit = async (values) => {
-    console.log(values)
+  
     const formData = new FormData();
     // Append the form data
     const clientId = client.length > 0 ? client[0].id : '';
-    console.log(id)
+
     formData.append("name", values.name);
     formData.append("clientId", id);
     
@@ -45,7 +45,7 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
 
     try {
       const response = await addAgent( formData ).unwrap(); 
-      console.log(response); 
+     
       setOpenAddModal(false); 
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -150,12 +150,11 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
           </Form.Item>
           {/* <Form.Item label="Give Access To">
                                 <div className="flex flex-col gap-3">
-                                <Checkbox> Place an order with all products </Checkbox>
-                                <Checkbox> Place an order with specific products </Checkbox>
+                                <Checkbox> Place an orders </Checkbox>                        
                                 <Checkbox> Can see the pricing </Checkbox>
                                 <Checkbox> Can see only their order assigned to</Checkbox>
                                 <Checkbox> Can see all orders </Checkbox>
-                                <Checkbox> Can add new team members/agents </Checkbox>
+                                <Checkbox> Can add new agents </Checkbox>
                                 <Checkbox> Can see invoicing</Checkbox>
                                 </div>
                               </Form.Item> */}

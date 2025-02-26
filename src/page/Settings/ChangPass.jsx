@@ -12,7 +12,7 @@ const [changePassword] = useChangePasswordMutation()
 const [passError, setPassError] = useState("");
 const dispatch = useDispatch();
   const handleFinish = async (values) => {
-    console.log("Form Values:", values);
+  
     if (values?.newPassword === values.currentPassword) {
       return setPassError("Your old password cannot be your new password.");
     }
@@ -26,11 +26,11 @@ const dispatch = useDispatch();
       newPassword: values.newPassword,
       confirmPassword: values.confirmPassword,
     };
-    console.log(data)
+   
 
     try {
       const response = await changePassword(data).unwrap(); 
-      console.log(response)
+
       message.success(response?.data);
       dispatch(logout())
      

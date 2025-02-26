@@ -17,14 +17,14 @@ export const AddPricingPage = () => {
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
 
   const clientOptions = clientData?.data?.map((client) => ({
-    label: client.name,
-    value: client._id,
+    label: client?.name,
+    value: client?._id,
   })) || [];
 
   const serviceOptions = allServicesData?.data?.map((service) => ({
-    label: service.title,
-    value: service._id,
-    price: service.price,
+    label: service?.title,
+    value: service?._id,
+    price: service?.price,
   })) || [];
 
   // Handle client selection
@@ -35,7 +35,7 @@ export const AddPricingPage = () => {
   // Handle service selection
   const handleServiceSelect = (serviceIds) => {
     setSelectedServiceIds(serviceIds);
-    const selectedServicesData = allServicesData?.data.filter(service =>
+    const selectedServicesData = allServicesData?.data?.filter(service =>
       serviceIds.includes(service._id)
     );
     setSelectedServices(selectedServicesData);
@@ -58,12 +58,12 @@ export const AddPricingPage = () => {
       })),
     };
 
-    console.log(data);
+   
 
     try {
       const res = await addPricingGroup(data);
       message.success(res?.data?.message);
-      console.log(res);
+      
     } catch (error) {
       message.error(error?.data?.data?.message)
       console.error("Error creating pricing group:", error);
@@ -102,16 +102,16 @@ export const AddPricingPage = () => {
       return; // Don't update the state if it's not a valid number
     }
 
-    // Create a new object with the updated special_price
+    
     newServices[index] = { 
-      ...newServices[index], // Spread the existing properties of the service
-      special_price: updatedSpecialPrice // Update special_price as a number
+      ...newServices[index], 
+      special_price: updatedSpecialPrice 
     };
 
     setSelectedServices(newServices);
 
-    // Log the updated special price to the console
-    console.log(`Updated special price for service ${record.title}: ${updatedSpecialPrice}`);
+   
+   
   }}
 />
 
@@ -154,19 +154,19 @@ export const AddPricingPage = () => {
               options={clientOptions}
             />
             <ul>
-              {selectedClientIds.map((clientId) => {
+              {selectedClientIds?.map((clientId) => {
                 const client = clientData?.data?.find((c) => c._id === clientId);
                 return client ? (
-                  <li key={client._id} className="flex items-center justify-between mb-2">
+                  <li key={client?._id} className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <img
-                        src={`${imageUrl}/${client.profile_image}`}
-                        alt={client.name}
+                        src={`${imageUrl}/${client?.profile_image}`}
+                        alt={client?.name}
                         className="w-8 h-8 rounded"
                       />
-                      <span>{client.name}</span>
+                      <span>{client?.name}</span>
                     </div>
-                    <Button type="link" danger onClick={() => handleRemoveClient(client._id)}>
+                    <Button type="link" danger onClick={() => handleRemoveClient(client?._id)}>
                       Remove
                     </Button>
                   </li>

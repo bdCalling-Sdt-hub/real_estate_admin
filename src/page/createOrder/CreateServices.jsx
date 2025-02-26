@@ -65,7 +65,7 @@ const CreateServices = () => {
 
     // Step 3: Contact Info Tab Validation
     if (activeTab === 3) {
-      console.log({ formData });
+     
       const contactAgent =
         formData?.contactAgent === "true" && formData?.linkedAgents?._id;
       const contactOwner =
@@ -145,7 +145,7 @@ const CreateServices = () => {
 
       navigate("/");
     } catch (error) {
-      console.log(error);
+      
       message.error("Something went wrong");
     }
   };

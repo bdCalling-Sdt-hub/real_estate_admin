@@ -10,7 +10,7 @@ import { imageUrl } from "../redux/api/baseApi";
 
 export const Agent = () => {
   const { id } = useParams();
-  console.log(id)
+ 
   const {
     data: singleClientAgentData,
     isLoading,
@@ -19,7 +19,7 @@ export const Agent = () => {
     { id },
     { refetchOnMountOrArgChange: true }
   );
-  console.log(singleClientAgentData);
+  
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openAddModal1, setOpenAddModal1] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -27,14 +27,14 @@ export const Agent = () => {
 
   const data =
     singleClientAgentData?.data?.map((agent, index) => ({
-      key: agent._id,
+      key: agent?._id,
       slNo: `#${index + 1}`,
-      name: agent.name,
-      authId: agent.authId,
-      email: agent.email,
-      phone: agent.phone_number,
-      address: agent.address,
-      profile_image: agent.profile_image,
+      name: agent?.name,
+      authId: agent?.authId,
+      email: agent?.email,
+      phone: agent?.phone_number,
+      address: agent?.address,
+      profile_image: agent?.profile_image,
     })) || [];
 
   const handleEdit = (record) => {
@@ -56,10 +56,10 @@ export const Agent = () => {
       render: (text, record) => (
         <div className="flex items-center">
           <Avatar
-            src={`${imageUrl}/${record.profile_image}`}
-            alt={record.name}
+            src={`${imageUrl}/${record?.profile_image}`}
+            alt={record?.name}
           />
-          <span style={{ marginLeft: 8 }}>{record.name}</span>
+          <span style={{ marginLeft: 8 }}>{record?.name}</span>
         </div>
       ),
       width: "20%",

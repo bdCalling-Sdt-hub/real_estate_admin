@@ -74,7 +74,7 @@ export const AddServicePage = () => {
       message.success("Packages and Services updated successfully");
       navigate(-1);
     } catch (error) {
-      console.log(error);
+      
       message.error("Failed to update packages and services");
     }
   };

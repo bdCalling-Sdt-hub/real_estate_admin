@@ -71,7 +71,7 @@ export const TaskManagementPage = () => {
       message.success("Task taken successfully");
       refetchTasks();
     } catch (error) {
-      console.log(error);
+ 
       message.error("Task taken failed");
     }
   };

@@ -29,9 +29,9 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("category", categoryId); 
-    formData.append("title", values.title); 
-    formData.append("price", values.price); 
-    formData.append("descriptions", values.description); 
+    formData.append("title", values?.title); 
+    formData.append("price", values?.price); 
+    formData.append("descriptions", values?.description); 
 
     // Add the images to the formData
     fileList.forEach((file) => {
@@ -41,7 +41,7 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
     try {
       const response = await addServices(formData); 
       setOpenAddModal(false); 
-      console.log('response----------',response)
+      
       if (response?.data?.success) {
         message.success(response?.data?.message); 
       } else {

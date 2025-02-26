@@ -37,10 +37,10 @@ export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
     try {
       const response = await addClientData(formData).unwrap();
       message.success(response?.message)
-      console.log(response); // Handle successful response
-      setOpenAddModal(false); // Close modal after successful submission
+     
+      setOpenAddModal(false); 
     } catch (error) {
-      message.error(error?.data?.message)
+      message.error(error?.data?.message || 'invalid profile image type ');
       console.error("Error adding client:", error);
       // Handle error (show error message if needed)
     }

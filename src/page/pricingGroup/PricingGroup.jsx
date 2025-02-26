@@ -13,23 +13,23 @@ export const PricingGroup = () => {
   const pageSize = 10;
   const { data: pricingGroupData } = useGetAllPricingGroupQuery({searchTerm,page: currentPage,
     limit: pageSize,}); 
-  console.log(pricingGroupData);
+
 
 
   const pricingGroups = pricingGroupData?.data?.data?.map(group => ({
-    key: group._id,
-    slNo: `#${group._id.slice(0, 4)}`, 
-    groupName: group.name,
-    numberOfClients: group.clients?.length || 0,
+    key: group?._id,
+    slNo: `#${group?._id.slice(0, 4)}`, 
+    groupName: group?.name,
+    numberOfClients: group?.clients?.length || 0,
   })) || [];
 
   const handlePageChange = (page) => {
-    console.log("Page Changed to:", page); 
+ 
     setCurrentPage(page);
   };
 
   const handleDelete = async (record) => {
-    console.log(record?.key)
+   
     Modal.confirm({
       title: "Are you sure?",
       content: "This action cannot be undone. Do you want to delete this category?",
@@ -38,7 +38,7 @@ export const PricingGroup = () => {
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await deletePricing(record.key).unwrap();
+          const response = await deletePricing(record?.key).unwrap();
           message.success(response.message );
         } catch (error) {
           message.error(error?.data?.message);
@@ -74,7 +74,7 @@ export const PricingGroup = () => {
       key: "action",
       render: (record) => (
         <div>
-          <Link to={`/dashboard/pricing-group/edit-pricing-group/${record.key}`}>
+          <Link to={`/dashboard/pricing-group/edit-pricing-group/${record?.key}`}>
             <button
               shape="circle"
               className="bg-[#2A216D] mr-2 h-10 w-10 rounded text-white text-xl"
@@ -140,7 +140,6 @@ export const PricingGroup = () => {
           onChange={handlePageChange}
           showSizeChanger={false}
         />
-          ;
         </div>
       </div>
     </div>

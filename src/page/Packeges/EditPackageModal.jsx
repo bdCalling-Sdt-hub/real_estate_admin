@@ -9,7 +9,7 @@ export const EditPackageModal = ({
   setEditModal,
   selectedCategory,
 }) => {
-  console.log("Selected Category Data:", selectedCategory);
+
 
   const { data: servicesData, isLoading } = useGetAllServicesSelectQuery();
   const [form] = Form.useForm();
@@ -20,18 +20,18 @@ export const EditPackageModal = ({
   useEffect(() => {
     if (selectedCategory) {
       form.setFieldsValue({
-        name: selectedCategory.name,
-        price: selectedCategory.price.replace("$", ""),
-        descriptions: selectedCategory.description,
-        services: selectedCategory.services?.map((service) => service._id) || [],
+        name: selectedCategory?.name,
+        price: selectedCategory?.price?.replace("$", ""),
+        descriptions: selectedCategory?.description,
+        services: selectedCategory?.services?.map((service) => service?._id) || [],
       });
 
       setSelectedServices(
-        selectedCategory.services?.map((service) => service._id) || []
+        selectedCategory?.services?.map((service) => service?._id) || []
       );
 
       setFileList(
-        selectedCategory.images?.map((url, index) => ({
+        selectedCategory?.images?.map((url, index) => ({
           uid: index,
           name: `image-${index}.png`,
           status: "done",
@@ -44,11 +44,11 @@ export const EditPackageModal = ({
   // Map services for dropdown (show all available services)
   const serviceOptions =
     servicesData?.data?.data?.map((service) => ({
-      value: service._id,
-      label: service.title,
+      value: service?._id,
+      label: service?.title,
     })) || [];
   const handleServiceChange = (value) => {
-    console.log("Selected Service IDs:", value);
+    
     setSelectedServices(value);
   };
 
@@ -65,7 +65,7 @@ export const EditPackageModal = ({
 
   const onFinish = async (values) => {
     const id = selectedCategory?.key;
-    console.log("Package ID:", id);
+
 
     const existingImages = fileList
       .filter((file) => file.url)
@@ -89,11 +89,11 @@ export const EditPackageModal = ({
       formData.append("package_image", file);
     });
 
-    console.log("Final FormData:", [...formData.entries()]);
+
 
     try {
       const res = await updatePackage({ data: formData, id }).unwrap();
-      console.log("API Response:", res);
+      
       message.success(res?.message);
 
       form.resetFields();
