@@ -1,14 +1,11 @@
+import dayjs from "dayjs";
+
 export const formatDateTime = (data: any) => {
   const date = new Date(data.date);
   const startTime = new Date(data.start_time);
   const endTime = new Date(data.end_time);
 
-  const formattedDate = date
-    .toLocaleDateString("en-GB")
-    .split("/")
-    .reverse()
-    .join("/")
-    .slice(0, -2); // Convert to DD/MM/YY
+  const formattedDate = dayjs(date).format("DD/MM/YYYY")
 
   const formatTime = (time) => {
     return time

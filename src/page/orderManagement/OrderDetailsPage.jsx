@@ -1,11 +1,11 @@
-import { Avatar, Button, Dropdown, Menu, Modal } from "antd";
+import { Avatar, Button, Dropdown, Modal } from "antd";
 import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { PurchasedPackageSection } from "./PurchasedPackageSection";
 import { MassageBox } from "./MassageBox";
 import { DetailsNote } from "./DetailsNote";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { EditShedualModal } from "./EditShedualModal";
 import {
   useGetOrderByIdQuery,
@@ -237,6 +237,7 @@ export const OrderDetailsPage = () => {
         setModal2Open={setModal2Open}
         modal2Open={modal2Open}
         schedule={data?.data?.schedule}
+        refetch={refetch}
       />
       <Modal
         open={removeModalOpen}
