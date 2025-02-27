@@ -115,7 +115,7 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
           pagination={false}
           bordered
           onRow={(record) => ({
-            onClick: () => handleRowClick(record),
+            onClick: () => handleRowClick({record, authId}),
           })}
           rowClassName="cursor-pointer"
         />
