@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Button, Avatar, Modal, Form, Input } from "antd";
+import { Button, Avatar, Modal } from "antd";
 import {
   EditOutlined,
   MailOutlined,
-  StarOutlined,
   PlusOutlined,
   PhoneOutlined,
   HomeOutlined,
@@ -13,7 +12,6 @@ import { FavouriteMassage } from "./FavouriteMassage";
 import { TbMessageDots } from "react-icons/tb";
 import { FaRegStar } from "react-icons/fa";
 import { ContactCreate } from "./ContactCreate";
-import { UserDetailsPage } from "./UserDetailsPage";
 import { ComposeModal } from "./ComposeModal";
 export const MassageSidbar = () => {
   const [selectedTab, setSelectedTab] = useState("all");
