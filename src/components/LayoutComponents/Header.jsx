@@ -20,6 +20,7 @@ import { LiaUsersSolid } from "react-icons/lia";
 import { useGetProfileQuery } from "../../page/redux/api/userApi";
 import { imageUrl } from "../../page/redux/api/baseApi";
 import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
+import { useGetAllNotificationQuery, useUpdateSeenNotificationMutation } from "../../page/redux/api/clientManageApi";
 
 const items = [
   {
@@ -128,6 +129,8 @@ const Header = () => {
  
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [expandedKeys, setExpandedKeys] = useState([]);
+  const { data: notificationData } = useGetAllNotificationQuery();
+  const [updateSeenNotif] = useUpdateSeenNotificationMutation();
   const navigate = useNavigate();
   // const location = useLocation();
 
@@ -157,6 +160,13 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+  };
+  const unSeenNotification = notificationData?.data?.notifications?.filter(data => !data.status);
+  const handleOnclick = () => {
+    if (unSeenNotification?.length) {
+      // Update the notifications status to seen (true) when clicked
+      updateSeenNotif();
+    }
   };
   return (
     <div className="bg-[#FEFEFE] text-white pt-[24px]">
@@ -220,7 +230,7 @@ const Header = () => {
 
           <div className="relative">
             <Link to={"/dashboard/Settings/notification"}>
-              <div className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-slate-100 text-black ">
+            <div onClick={handleOnclick} className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-neutral-100 text-[#2A216D] ">
                 <span>
                   <LuBell />
                 </span>
@@ -360,8 +370,8 @@ const Header = () => {
               </div>
             </Drawer>
 
-            <span className="absolute top-0 right-0 -mr-2  w-5 h-5 bg-white text-black text-xs flex items-center justify-center rounded-full">
-              0
+            <span className="absolute top-0 right-0 -mr-2  w-5 h-5 bg-[#2A216D] text-white text-xs flex items-center justify-center rounded-full">
+              {unSeenNotification?.length || "0"}
             </span>
           </div>
 

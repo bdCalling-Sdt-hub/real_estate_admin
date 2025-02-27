@@ -116,15 +116,35 @@ const client = baseApi.injectEndpoints({
     //   providesTags: ["updateProfile"],
     // }),
 
-    // getAllServicesSelect: builder.query({
-    //   query: () => {
-    //     return {
-    //       url: `/service/services?limit=100`,
-    //       method: "GET",
-    //     };
-    //   },
-    //   providesTags: ["updateProfile"],
-    // }),
+    getAllNotification: builder.query({
+      query: () => {
+        return {
+          url: `/notification/get-admin-notifications`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+    deleteNotification: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/notification/delete/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
+    updateSeenNotification: builder.mutation({
+      query: () => {
+        return {
+          url: `/notification/seen-notification`,
+          method: "PATCH",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
 
     // addServices: builder.mutation({
     //     query: (data) => {
@@ -172,6 +192,8 @@ export const {
  useAddTeamMemberMutation,
  useUpdateTeamMemberMutation,
  useDeleteAccountMutation,
- 
+ useGetAllNotificationQuery,
+ useDeleteNotificationMutation,
+ useUpdateSeenNotificationMutation
   
 } = client;
