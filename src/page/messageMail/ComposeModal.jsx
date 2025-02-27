@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
 import { useGetAllEmailsQuery } from "../redux/api/messageApi";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "./quill.css";
 
-export const ComposeModal = ({ modal2Open1, setModal2Open1 }) => {
+export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: emails } = useGetAllEmailsQuery({ searchTerm });
+  const [content, setContent] = useState("");
 
   const emailOptions = emails?.data?.map((e) => ({
     label: e.email,
@@ -14,14 +18,40 @@ export const ComposeModal = ({ modal2Open1, setModal2Open1 }) => {
   const handleFinish = async (values) => {
     console.log({ values });
   };
+
+  const quillConfig = {
+    formats: [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "blockquote",
+      "list",
+      "bullet",
+      "indent",
+    ],
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [
+          { list: "ordered" },
+          { list: "bullet" },
+          { indent: "-1" },
+          { indent: "+1" },
+        ],
+      ],
+    },
+  };
   return (
     <Modal
       title="New Message"
       centered
-      open={modal2Open1}
-      onCancel={() => setModal2Open1(false)}
+      open={composeModalOpen}
+      onCancel={() => setComposeModalOpen(false)}
       footer={[
-        <Button key="discard" onClick={() => setModal2Open1(false)}>
+        <Button key="discard" onClick={() => setComposeModalOpen(false)}>
           Discard
         </Button>,
         <Button
@@ -63,10 +93,13 @@ export const ComposeModal = ({ modal2Open1, setModal2Open1 }) => {
           label=""
           rules={[{ required: true, message: "Message body is required" }]}
         >
-          <Input.TextArea
-            rows={10}
-            placeholder="Type your message here..."
-            style={{ resize: "none" }}
+          <ReactQuill
+            className="mt-6 custom-quill bg-white"
+            value={content}
+            onChange={setContent}
+            placeholder="Write your email..."
+            formats={quillConfig.formats}
+            modules={quillConfig.modules}
           />
         </Form.Item>
       </Form>

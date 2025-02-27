@@ -1,0 +1,26 @@
+.custom-quill {
+  position: relative;
+}
+
+.custom-quill .ql-container {
+  border-radius: 10px;
+  border: 1px solid #ccc !important;
+  overflow: hidden;
+  min-height: 200px;
+  padding-bottom: 4rem;
+}
+
+.custom-quill .ql-toolbar {
+  border-radius: 10px;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: #e1e1e1;
+  z-index: 9999;
+}
+
+.custom-quill .ql-editor {
+  min-height: 150px;
+  padding: 16px;
+  cursor: text;
+}

@@ -40,7 +40,6 @@ export const TeamMember = () => {
     do_production_work:member?.do_production_work,
     see_the_pricing:member?.see_the_pricing,
     edit_order:member?.edit_order,
-    edit_order:member?.edit_order,
     is_admin:member?.is_admin
 
   })) || [];
