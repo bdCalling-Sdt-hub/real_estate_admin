@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, Table, message } from "antd";
+import { Form, Input, Button, Select, Table, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { useGetAllClientQuery, useGetServicesAllQuery, useGetSinglePriceQuery, useUpdatePricingMutation } from "../redux/api/packageApi";
@@ -13,6 +13,7 @@ export const EditPricingPage = () => {
   );
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const { data: clientData } = useGetAllClientQuery();
   const { data: allServicesData } = useGetServicesAllQuery();
   const [updatePricing] = useUpdatePricingMutation();
@@ -66,6 +67,7 @@ export const EditPricingPage = () => {
         special_price: Number(service.special_price),  
       })),
     };
+    setLoading(true);
 
     try {
       await updatePricing({ id, data });
@@ -73,6 +75,7 @@ export const EditPricingPage = () => {
     } catch (error) {
       message.error("Failed to update pricing group");
     }
+    setLoading(false);
   };
 
   const pricingColumns = [
@@ -200,9 +203,17 @@ export const EditPricingPage = () => {
 
           {/* Save Button */}
           <div className="flex justify-end">
-            <Button type="primary" htmlType="submit" className="mt-4 bg-[#2A216D] text-white p-2 rounded">
-              Save
-            </Button>
+          <button
+              type="submit"
+              className="px-4 py-3 w-[200px] bg-[#2A216D] text-white rounded-md"
+              disabled={loading} 
+            >
+              {loading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Update"
+              )}
+            </button>
           </div>
         </Form>
       </div>

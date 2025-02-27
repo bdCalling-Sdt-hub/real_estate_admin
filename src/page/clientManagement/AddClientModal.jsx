@@ -1,22 +1,22 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, Modal, message } from "antd";
+import { Form, Input, Checkbox, Modal, message, Spin } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useAddClientManagementMutation } from "../redux/api/clientManageApi";
 
 export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
   const [addClientData] = useAddClientManagementMutation();
-  const [image, setImage] = useState(null);  // Store the image file itself
+  const [fileList, setFileList] = useState([]);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);  
   const [passError, setPassError] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [emailInvoice, setEmailInvoice] = useState(false);
-
-  // Handle file input and store the file itself, not the URL
   const handleImageChange = (e) => {
-    const file = e.target.files[0];  // Get the actual file from input
-    setImage(file);  // Store the file in the state, not the URL
+    const file = e.target.files[0]; 
+    setImage(file);  
   };
 
-  // Form submission
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -25,14 +25,13 @@ export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
     formData.append("address", values.address);
     formData.append("password", values.newPassword);
     formData.append("confirmPassword", values.confirmPassword);
-    formData.append("role", "CLIENT"); // Hardcoded role for the client
+    formData.append("role", "CLIENT");
     formData.append("email_notifications", emailNotifications);
     formData.append("email_invoice", emailInvoice);
-
-    // If an image file is selected, append it to the form data
     if (image) {
-      formData.append("profile_image", image);  // Append the file itself
+      formData.append("profile_image", image);  
     }
+    setLoading(true);
 
     try {
       const response = await addClientData(formData).unwrap();
@@ -42,21 +41,28 @@ export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
     } catch (error) {
       message.error(error?.data?.message || 'invalid profile image type ');
       console.error("Error adding client:", error);
-      // Handle error (show error message if needed)
+      
     }
+    setFileList([]);
+    setLoading(false);
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setOpenAddModal(false);
+  };
   return (
     <Modal
       centered
       open={openAddModal}
-      onCancel={() => setOpenAddModal(false)}
+      onCancel={handleCancel}
       footer={null}
       width={600}
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">New Company/Client</h2>
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit}>
           <div className="relative w-[140px] h-[140px] mx-auto mb-6">
             <input
               type="file"
@@ -164,18 +170,23 @@ export const AddClientModal = ({ openAddModal, setOpenAddModal }) => {
           </Form.Item>
 
           <div className="flex gap-3 mt-4">
-            <button
+          <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal(false)}
+              onClick={handleCancel}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} 
             >
-              Add
+              {loading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Add"
+              )}
             </button>
           </div>
         </Form>

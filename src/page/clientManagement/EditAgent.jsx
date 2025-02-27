@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, Form, Input, message, Modal, Upload } from "antd";
+import { Avatar, Form, Input, message, Modal, Spin, Upload } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { imageUrl } from "../redux/api/baseApi";
 import { useUpdateAgentManagementMutation } from "../redux/api/clientManageApi";
@@ -9,6 +9,7 @@ export const EditAgent = ({
   setOpenAddModal,
   selectAgentManagement,
 }) => {
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [updateAgent] = useUpdateAgentManagementMutation();
   const [profilePic, setProfilePic] = useState(null);
@@ -48,7 +49,7 @@ export const EditAgent = ({
     if (profilePic instanceof File) {
       formData.append("profile_image", profilePic);
     }
-
+    setLoading(true);
     try {
       const response = await updateAgent({
         data: formData,
@@ -62,6 +63,7 @@ export const EditAgent = ({
       message.error(error?.data?.message || "Error updating agent");
       console.error("Error editing agent:", error);
     }
+    setLoading(false);
   };
 
   return (
@@ -145,8 +147,13 @@ export const EditAgent = ({
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
             >
-              Save
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </Form>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Checkbox, Modal, message, Avatar, Upload } from "antd";
+import { Form, Input, Checkbox, Modal, message, Avatar, Upload, Spin } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useUpdateClientManagementMutation } from "../redux/api/clientManageApi";
 import { imageUrl } from "../redux/api/baseApi";
@@ -11,6 +11,7 @@ export const EditClientModal = ({
 }) => {
   const [updateClient] = useUpdateClientManagementMutation();
   const [profilePic, setProfilePic] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [emailInvoice, setEmailInvoice] = useState(false);
   const [form] = Form.useForm();
@@ -63,6 +64,7 @@ export const EditClientModal = ({
     if (profilePic instanceof File) {
       formData.append("profile_image", profilePic);
     }
+    setLoading(true);
 
     try {
       const response = await updateClient({
@@ -76,6 +78,7 @@ export const EditClientModal = ({
       message.error(error?.data?.message);
       console.error("Error editing client:", error);
     }
+    setLoading(false);
   };
 
   return (
@@ -208,8 +211,13 @@ export const EditClientModal = ({
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading}
             >
-              Save
+              {loading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </Form>

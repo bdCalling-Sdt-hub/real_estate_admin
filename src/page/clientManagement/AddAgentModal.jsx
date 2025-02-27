@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, Modal } from "antd";
+import { Form, Input, Checkbox, Modal, message, Spin } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useAddAgentManagementMutation } from "../redux/api/clientManageApi";
 
@@ -10,9 +10,9 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
     id: agent?.clientId, 
   })) || [];
   
-
-
-
+  const [fileList, setFileList] = useState([]);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [addAgent] = useAddAgentManagementMutation();
   const [passError, setPassError] = useState("");
   const [image, setImage] = useState(null);  
@@ -42,28 +42,37 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
     if (image) {
       formData.append("profile_image", image);  
     }
-
+    setLoading(true);
     try {
       const response = await addAgent( formData ).unwrap(); 
-     
+     message.success(response?.message)
+     form.resetFields();
       setOpenAddModal(false); 
     } catch (error) {
+      message.error(error?.data?.message)
       console.error("Error adding agent:", error);
-
     }
+    setFileList([]);
+    setLoading(false);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setOpenAddModal(false);
   };
 
   return (
     <Modal
       centered
       open={openAddModal}
-      onCancel={() => setOpenAddModal(false)}
+      onCancel={handleCancel}
       footer={null}
       width={600}
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">Add Agent</h2>
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit}>
           <div className="relative w-[140px] h-[140px] mx-auto mb-6">
             <input
               type="file"
@@ -162,18 +171,23 @@ export const AddAgentModal = ({ openAddModal, setOpenAddModal, singleClientAgent
           {passError && <p className="text-red-600 -mt-4 mb-2">{passError}</p>}
 
           <div className="flex gap-3 mt-4">
-            <button
+          <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal(false)}
+              onClick={handleCancel} // Cancel action
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
             >
-              Add
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Add"
+              )}
             </button>
           </div>
         </Form>

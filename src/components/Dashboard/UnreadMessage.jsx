@@ -48,8 +48,8 @@ export const UnreadMessage = () => {
       key: 'client',
       render: (client) => (
         <div className="flex items-center">
-          <Avatar src={client.avatar} alt={client.name} />
-          <span style={{ marginLeft: 8 }}>{client.name}</span>
+          <Avatar src={client?.avatar} alt={client?.name} />
+          <span style={{ marginLeft: 8 }}>{client?.name}</span>
         </div>
       ),
     },

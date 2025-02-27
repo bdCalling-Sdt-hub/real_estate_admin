@@ -18,16 +18,16 @@ export const RecentOrder = () => {
   if (isLoading) return <div>Loading...</div>;
 
   const data = recentOrder?.data?.data?.map((order) => ({
-    key: order._id,
-    orderId: order.orderId,
-    orderDate: new Date(order.createdAt).toLocaleDateString(),
+    key: order?._id,
+    orderId: order?.orderId,
+    orderDate: new Date(order?.createdAt).toLocaleDateString(),
     client: {
-      avatar: `${imageUrl}/${order.client.profile_image}`,
-      name: order.client.name,
+      avatar: `${imageUrl}/${order?.client?.profile_image}`,
+      name: order?.client?.name,
     },
-    address: `${order.address.streetName} ${order.address.streetAddress}, ${order.address.city}, ${order.address.zipCode}`,
-    services: order.totalTasks,
-    status: order.status,
+    address: `${order?.address?.streetName} ${order?.address?.streetAddress}, ${order?.address?.city}, ${order?.address?.zipCode}`,
+    services: order?.totalTasks,
+    status: order?.status,
     payment: "Unpaid",
   }));
 
@@ -47,8 +47,8 @@ export const RecentOrder = () => {
       key: "client",
       render: (client) => (
         <div className="flex items-center">
-          <Avatar src={client.avatar} alt={client.name} />
-          <span style={{ marginLeft: 8 }}>{client.name}</span>
+          <Avatar src={client?.avatar} alt={client?.name} />
+          <span style={{ marginLeft: 8 }}>{client?.name}</span>
         </div>
       ),
     },

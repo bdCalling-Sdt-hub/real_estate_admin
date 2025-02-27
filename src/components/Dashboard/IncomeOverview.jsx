@@ -10,12 +10,12 @@ export const IncomeOverview = () => {
 
   // Transforming the API data into table data format
   const data = order?.data?.map((item) => ({
-    key: item.order._id, // Using the order ID as the key
-    orderId: `#${item.order._id.slice(0, 6)}`, // Shortened Order ID for display
+    key: item?.order?._id, // Using the order ID as the key
+    orderId: `#${item?.order?._id.slice(0, 6)}`, // Shortened Order ID for display
     address: `${item.order?.address?.streetName} ${item?.order?.order?.address?.streetAddress}, ${item?.order?.address?.city}, ${item?.order?.address?.zipCode}`,
-    services: item.totalTasks,
-    appointments: new Date(item.order.schedule.date).toLocaleString(), // Formatting the date
-    status: item.order.status,
+    services: item?.totalTasks,
+    appointments: new Date(item?.order?.schedule?.date).toLocaleString(), // Formatting the date
+    status: item?.order?.status,
   }));
 
   const columns = [

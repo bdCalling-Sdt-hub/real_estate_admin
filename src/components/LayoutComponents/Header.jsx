@@ -175,7 +175,7 @@ const Header = () => {
               <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
                 <span className="px-3">Total Order</span>{" "}
                 <div className="bg-[#9B3C7B] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.totalOrders}
+                {status?.data?.totalOrders || "0"}
                 </div>
               </div>
             </div></Link>
@@ -184,10 +184,10 @@ const Header = () => {
                 <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
                   <span className="px-3">In-Progress</span>{" "}
                   <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                  {status?.data?.pendingOrders}
+                  {status?.data?.pendingOrders || "0"}
                   </div>
                   <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                  {status?.data?.totalOrders}
+                  {status?.data?.totalOrders || "0"}
                   </div>
                 </div>
               </div>
@@ -197,10 +197,10 @@ const Header = () => {
               <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
                 <span className="px-3">Completed</span>{" "}
                 <div className="bg-green-800 p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.completeOrders} 
+                {status?.data?.completeOrders || "0"} 
                 </div>
                 <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                {status?.data?.totalOrders}
+                {status?.data?.totalOrders || "0"}
                 </div>
               </div>
             </div></Link>
@@ -376,7 +376,7 @@ const Header = () => {
               </div>
               <div className="text-end text-black">
                 <h3 className="text-lg font-semibold">{getProfile?.data?.name}</h3>
-                <h4 className="text-sm">Admin</h4>
+                <h4 className="text-sm">{getProfile?.data?.role}</h4>
               </div>
             </div>
           </Link>

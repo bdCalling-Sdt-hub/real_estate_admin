@@ -20,21 +20,19 @@ const items = [
 export const OrderTrends = () => {
   const [year, setSelectedYear] = useState("2025");
 
-  // সঠিকভাবে API-তে year পাঠানো হচ্ছে
   const { data: growth, isLoading } = useGetUserGrowthQuery(year);
 
-  // Year চেঞ্জ হ্যান্ডেল করার সঠিক উপায়
+
   const handleYearChange = (value) => {
     setSelectedYear(value);
   };
 
-  // API ডাটা প্রসেস করে চার্টের জন্য প্রস্তুত করা
   const chartData = useMemo(() => {
     if (!growth || !growth.data) return [];
 
-    return growth.data.data.map((item) => ({
-      name: item.month,
-      uv: item.count,
+    return growth?.data?.data?.map((item) => ({
+      name: item?.month,
+      uv: item?.count,
     }));
   }, [growth]);
 

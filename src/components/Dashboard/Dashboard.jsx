@@ -33,7 +33,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                      {status?.data?.Completed} 
+                      {status?.data?.Completed || "0"} 
                     </p>
                   </div>
                   <p className="text-center">Completed</p>
@@ -41,7 +41,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.Delivered}
+                    {status?.data?.Delivered || "0"}
                     </p>
                   </div>
                   <p className="text-center">Delivered</p>
@@ -49,7 +49,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.['In-Production']}
+                    {status?.data?.['In-Production'] || "0"}
                     </p>
                   </div>
                   <p className="text-center">In-Production</p>
@@ -57,7 +57,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.Pending}
+                    {status?.data?.Pending || "0"}
                     </p>
                   </div>
                   <p className="text-center">Pending</p>
@@ -65,7 +65,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.Revisions}
+                    {status?.data?.Revisions || "0"}
                     </p>
                   </div>
                   <p className="text-center">Revisions</p>
@@ -73,7 +73,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.Scheduled}
+                    {status?.data?.Scheduled || "0"}
                     </p>
                   </div>
                   <p className="text-center">Scheduled</p>
@@ -81,7 +81,7 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-center">
                     <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
-                    {status?.data?.Submitted}
+                    {status?.data?.Submitted || "0"}
                     </p>
                   </div>
                   <p className="text-center">Submitted</p>
@@ -101,7 +101,7 @@ const Dashboard = () => {
                 alt=""
               />
               </div>
-              <p className="text-center text-2xl font-bold">{orderStatus?.data?.todayOrders} </p>
+              <p className="text-center text-2xl font-bold">{orderStatus?.data?.todayOrders || "0"} </p>
             </div>
           </div>
           <div className="border-r border-slate-300 flex items-center justify-center">
@@ -113,7 +113,7 @@ const Dashboard = () => {
                   <TbCalendarClock />
                 </div>
                 </div>
-                <p className="text-center text-2xl font-bold">{orderStatus?.data?.pendingOrders}</p>
+                <p className="text-center text-2xl font-bold">{orderStatus?.data?.pendingOrders || "0"}</p>
             
             </div>
           </div>

@@ -8,6 +8,7 @@ import {
   message,
   Avatar,
   Upload,
+  Spin,
 } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useUpdateTeamMemberMutation } from "../redux/api/clientManageApi";
@@ -21,6 +22,7 @@ export const EditTeamMember = ({
   selectedTeamMember,
 }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [updateTeamMember] = useUpdateTeamMemberMutation();
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -112,6 +114,7 @@ export const EditTeamMember = ({
 
       const memberId = selectedTeamMember?.key;
       const authId = selectedTeamMember?.authId;
+      setLoading(true);
       const response = await updateTeamMember({
         data: formData,
         memberId,
@@ -130,6 +133,7 @@ export const EditTeamMember = ({
       message.error(error?.data?.message);
       console.error("Update Team Member Error:", error);
     }
+    setLoading(false);
   };
 
   const handleIsAdminChange = (e) => {
@@ -332,8 +336,13 @@ export const EditTeamMember = ({
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
             >
-              Save
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </Form>
