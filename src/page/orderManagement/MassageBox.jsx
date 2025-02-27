@@ -89,7 +89,7 @@ const Messages = () => {
     <div className="border rounded-md p-4">
       <div ref={messageContainerRef} className="h-[400px] overflow-y-auto mb-4">
         {messages.map((msg, index) =>
-          msg.isRevision ? (
+          msg?.isRevision ? (
             <RevisionMessage key={index} msg={msg} authId={authId} />
           ) : (
             <div
@@ -103,8 +103,8 @@ const Messages = () => {
               {(msg?.senderId?._id || msg?.senderId) !== authId && (
                 <img
                   src={
-                    msg.senderId.profile_image ||
-                    `https://ui-avatars.com/api/?name=${msg.senderId.name}`
+                    msg?.senderId?.profile_image ||
+                    `https://ui-avatars.com/api/?name=${msg?.senderId?.name}`
                   }
                   alt="User"
                   className="w-10 h-10 rounded-full mr-3"
@@ -118,10 +118,10 @@ const Messages = () => {
                       : "bg-gray-200 text-gray-700"
                   } p-3 rounded-md max-w-md w-fit`}
                 >
-                  {msg.message}
+                  {msg?.message}
                 </div>
                 <span className="text-gray-400 text-sm mt-1 inline-block">
-                  {dayjs(msg.createdAt).format("DD/MM/YYYY hh:mm A")}
+                  {dayjs(msg?.createdAt).format("DD/MM/YYYY hh:mm A")}
                 </span>
               </div>
             </div>
@@ -162,7 +162,7 @@ const RevisionMessage = ({ msg, authId }) => {
         <div>
           <p className="text-[#2A216D] font-medium">Revision Request</p>
           <span className="text-gray-400 text-xs inline-block">
-            {dayjs(msg.createdAt).format("DD/MM/YYYY hh:mm A")}
+            {dayjs(msg?.createdAt).format("DD/MM/YYYY hh:mm A")}
           </span>
         </div>
         <div className="flex items-center gap-2">
