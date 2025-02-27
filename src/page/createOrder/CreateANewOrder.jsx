@@ -32,7 +32,12 @@ export const CreateANewOrder = ({ setActiveTab, formData, setFormData }) => {
         <div className="flex flex-col bg-white p-11 gap-5 rounded">
           {clientData?.data &&
             clientData.data?.map((client) => (
-              <ClientCard key={client._id} client={client} handleClientChange={handleClientChange} selectedClient={selectedClient} />
+              <ClientCard
+                key={client._id}
+                client={client}
+                handleClientChange={handleClientChange}
+                selectedClient={selectedClient}
+              />
             ))}
           <button
             className="bg-[#2A216D] text-white text-center py-2 rounded"
@@ -51,9 +56,16 @@ const ClientCard = ({ client, handleClientChange, selectedClient }) => {
     ? `${imageUrl}${client.profile_image}`
     : `https://ui-avatars.com/api/?name=${client.name}`;
   return (
-    <Checkbox checked={selectedClient === client._id} onChange={() => handleClientChange(client._id)}>
+    <Checkbox
+      checked={selectedClient === client._id}
+      onChange={() => handleClientChange(client._id)}
+    >
       <div className="flex items-center gap-5">
-        <img className="w-[40px] rounded-full" src={image} alt={client.name} />
+        <img
+          className="w-[40px] h-[40px] object-cover rounded-full"
+          src={image}
+          alt={client.name}
+        />
         <span className="font-semibold">{client.name}</span>
       </div>
     </Checkbox>

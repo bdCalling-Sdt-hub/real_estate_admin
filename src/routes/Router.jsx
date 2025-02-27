@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/message-mail",
-        element: <MessageMail></MessageMail>,
+        element: <MessageMail />,
       },
       {
         path: "/dashboard/message-mail/user-details",
@@ -119,7 +119,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/pricing-group/edit-pricing-group/:id",
-        element: <EditPricingPage></EditPricingPage>
+        element: <EditPricingPage></EditPricingPage>,
       },
       {
         path: "/dashboard/report",

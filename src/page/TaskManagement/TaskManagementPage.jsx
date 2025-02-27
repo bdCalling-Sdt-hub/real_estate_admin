@@ -102,7 +102,7 @@ export const TaskManagementPage = () => {
                   <div className=" p-3 ">
                     {task.tasks.map((item) => (
                       <div
-                        key={item._id}
+                        key={item?._id}
                         className="flex justify-between items-center mb-2 pb-2"
                       >
                         <div>
@@ -115,13 +115,13 @@ export const TaskManagementPage = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => handleTakeTask(item._id)}
+                            onClick={() => handleTakeTask(item?._id)}
                             className="bg-[#9B3C7B] text-white px-4 py-2 rounded"
                           >
                             Take
                           </button>
                           <Link
-                            to={`/dashboard/task-management/all-Services/project-file/${item._id}`}
+                            to={`/dashboard/task-management/all-Services/project-file/${item?._id}`}
                           >
                             <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
                               <EyeOutlined />
@@ -129,7 +129,7 @@ export const TaskManagementPage = () => {
                           </Link>
                           {role !== "MEMBER" && (
                             <button
-                              onClick={() => setModal2Open(item._id)}
+                              onClick={() => setModal2Open(item?._id)}
                               className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"
                             >
                               <FaArrowRight />
@@ -263,7 +263,7 @@ const AssignedToMe = ({
               <div className="p-3 rounded-b-lg">
                 {task.tasks.map((item) => (
                   <div
-                    key={item._id}
+                    key={item?._id}
                     className="flex justify-between items-center mb-2 pb-2"
                   >
                     <div>
@@ -283,14 +283,14 @@ const AssignedToMe = ({
                       >
                         {toggleTaskLoading === item?._id ? (
                           <Spin />
-                        ) : item.status === "Delivered" ? (
+                        ) : item?.status === "Delivered" ? (
                           <CheckOutlined />
                         ) : (
                           <PendingIcon />
                         )}
                       </button>
                       <Link
-                        to={`/dashboard/task-management/all-Services/project-file/${item._id}`}
+                        to={`/dashboard/task-management/all-Services/project-file/${item?._id}`}
                       >
                         <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
                           <EyeOutlined />
@@ -398,7 +398,7 @@ const UploadSourceFiles = ({ newTasks, refetchTasks }) => {
                         <button
                           onClick={() =>
                             handleUpdateTaskStatus({
-                              id: item._id,
+                              id: item?._id,
                               status: item?.status,
                             })
                           }
@@ -408,7 +408,7 @@ const UploadSourceFiles = ({ newTasks, refetchTasks }) => {
                               : "bg-[#F38E0A]"
                           } text-white p-2 w-10 h-10 rounded`}
                         >
-                          {updateTaskLoading === item._id ? (
+                          {updateTaskLoading === item?._id ? (
                             <Spin />
                           ) : item?.status === "Submitted" ? (
                             <CheckOutlined />
@@ -417,7 +417,7 @@ const UploadSourceFiles = ({ newTasks, refetchTasks }) => {
                           )}
                         </button>
                         <Upload {...uploadProps(item)}>
-                          {uploadLoading === item._id ? (
+                          {uploadLoading === item?._id ? (
                             <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
                               <Spin />
                             </button>

@@ -5,7 +5,7 @@ import { ContactInforTab } from "./ContactInforTab";
 import { ConfirmSection } from "./ConfirmDection";
 import { FaArrowLeftLong, FaArrowRightLong, FaCheck } from "react-icons/fa6";
 import { CreateANewOrder } from "./CreateANewOrder";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useCreateOrderMutation } from "../redux/api/ordersApi";
 const CreateServices = () => {
@@ -99,7 +99,7 @@ const CreateServices = () => {
   const navigate = useNavigate();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
-  const handleCreateOrder = () => {
+  const handleCreateOrder = async () => {
     const formDataForAPI = new FormData();
     const serviceIds = formData.services
       .filter((service) => !service.package_image)
@@ -115,8 +115,7 @@ const CreateServices = () => {
       contactOwner: formData.contactAgent === "false" ? true : false,
       address: formData.address,
       contactInfo: formData.contactInfo,
-      linkedAgents:
-        formData.contactAgent === "true" ? [formData.linkedAgents._id] : [],
+      linkedAgents: [formData.linkedAgents._id],
       locations: {
         lat: formData.address.lat,
         lng: formData.address.lng,
@@ -132,7 +131,7 @@ const CreateServices = () => {
     formDataForAPI.append("data", JSON.stringify(data));
 
     try {
-      createOrder(formDataForAPI);
+      await createOrder(formDataForAPI);
       message.success("Order created successfully");
       // Reset form data
       setFormData({
@@ -164,6 +163,7 @@ const CreateServices = () => {
         handleNext={handleNext}
         handlePrevious={handlePrevious}
         tabs={tabs}
+        isLoading={isLoading}
       />
     </div>
   );
@@ -198,7 +198,13 @@ const TabHeader = ({ tabs, activeTab }) => (
   </div>
 );
 
-const TabFooter = ({ activeTab, handleNext, handlePrevious, tabs }) => (
+const TabFooter = ({
+  activeTab,
+  handleNext,
+  handlePrevious,
+  tabs,
+  isLoading,
+}) => (
   <div className="flex justify-center mt-11">
     <div
       className="flex gap-5"
@@ -216,25 +222,26 @@ const TabFooter = ({ activeTab, handleNext, handlePrevious, tabs }) => (
         <FaArrowLeftLong className="text-lg mr-2 mt-1" />
         Previous
       </button>
-      <button
-        className="border border-[#2A216D] text-[#2A216D] flex items-center"
-        onClick={handleNext}
-        disabled={activeTab === tabs.length + 1}
-        style={{
-          padding: "7px 40px",
-          cursor: activeTab === tabs.length + 1 ? "not-allowed" : "pointer",
-        }}
-      >
-        {activeTab === tabs.length ? (
-          <>
-            Confirm <FaCheck className="text-lg ml-2 mt-1" />
-          </>
-        ) : (
-          <>
-            Next <FaArrowRightLong className="text-lg ml-2 mt-1" />
-          </>
-        )}
-      </button>
+      {isLoading ? (
+        <button className="border border-[#2A216D] text-[#2A216D] flex items-center">
+          <Spin className="px-6" />
+        </button>
+      ) : (
+        <button
+          className="border border-[#2A216D] text-[#2A216D] flex items-center"
+          onClick={handleNext}
+          disabled={activeTab === tabs.length + 1}
+          style={{
+            padding: "7px 40px",
+            backgroundColor: activeTab === tabs.length + 1 ? "" : "",
+            color: "",
+            border: "",
+            cursor: activeTab === tabs.length + 1 ? "not-allowed" : "pointer",
+          }}
+        >
+          Next <FaArrowRightLong className="text-lg ml-2 mt-1" />
+        </button>
+      )}
     </div>
   </div>
 );
