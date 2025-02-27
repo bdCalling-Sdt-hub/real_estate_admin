@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
 import { useGetAllEmailsQuery } from "../redux/api/messageApi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./quill.css";
+import parseJWT from "../../utils/parseJWT";
+import { useSelector } from "react-redux";
+import { io } from "socket.io-client";
 
 export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,10 +17,6 @@ export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
     label: e.email,
     value: e._id,
   }));
-
-  const handleFinish = async (values) => {
-    console.log({ values });
-  };
 
   const quillConfig = {
     formats: [
@@ -43,6 +42,32 @@ export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
         ],
       ],
     },
+  };
+
+  const token = useSelector((state) => state.logInUser.token);
+  const { authId } = parseJWT(token);
+
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  const handleFinish = async ({ body, subject, to }) => {
+    const payload = {
+      receiverId: to,
+      text: body,
+      subject,
+      email: emailOptions.find((e) => e.value === to).label,
+    };
+
+    socket.emit("new-email-message", payload);
+    setComposeModalOpen(false);
   };
   return (
     <Modal

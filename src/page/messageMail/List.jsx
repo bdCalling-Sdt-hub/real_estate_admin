@@ -1,130 +1,106 @@
 import { Table, Avatar } from "antd";
 import { DeleteOutlined, StarOutlined, StarFilled } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
+import parseJWT from "../../utils/parseJWT";
+import dayjs from "dayjs";
 
 const List = ({ tab, handleRowClick, setDeleteModal }) => {
-  const data = [
-    {
-      key: "1",
-      sender: {
-        name: "Albert Mike",
-        avatar: "https://via.placeholder.com/20",
-      },
-      subject: "Request For Information",
-      preview:
-        "I hope you are doing well. I have a small request. Can you pleas...",
-      time: "1:45 AM",
-      starred: true,
-    },
-    {
-      key: "2",
-      sender: {
-        name: "Leslie Alexander",
-        avatar: "https://via.placeholder.com/20",
-      },
-      subject: "Invitation For Meeting",
-      preview:
-        "Good Morning, I hope this email finds you well. I am writing to ext...",
-      time: "3:34 AM",
-      starred: false,
-    },
-    {
-      key: "3",
-      sender: {
-        name: "Bessie Cooper",
-        avatar: "https://via.placeholder.com/20",
-      },
-      subject: "Holiday Notice",
-      preview:
-        "Good Evening, I hope you are doing well. I have a small request. Can you p...",
-      time: "Apr 2",
-      starred: false,
-    },
-    {
-      key: "4",
-      sender: {
-        name: "Cody Fisher",
-        avatar: "https://via.placeholder.com/20",
-      },
-      subject: "Offer Letter",
-      preview:
-        "Thank you for applying. I hope you are doing well. I have a small request. Can...",
-      time: "Mar 31",
-      starred: true,
-    },
-  ];
+  const token = useSelector((state) => state.logInUser.token);
+  const { authId } = parseJWT(token);
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState(null);
 
   const columns = [
     {
       title: "",
       dataIndex: "starred",
       key: "starred",
-      render: (starred, contact) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggleFav(contact);
-          }}
-        >
-          {starred ? (
-            <StarFilled style={{ color: "#FFD700" }} />
-          ) : (
-            <StarOutlined style={{ color: "#d9d9d9" }} />
-          )}
-        </button>
-      ),
+      render: (_, contact) => {
+        const isFavorite = contact.favorite.length > 0; // Adjust based on your logic
+        return (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleFav(contact);
+            }}
+          >
+            {isFavorite ? (
+              <StarFilled style={{ color: "#FFD700" }} />
+            ) : (
+              <StarOutlined style={{ color: "#d9d9d9" }} />
+            )}
+          </button>
+        );
+      },
       width: "5%",
     },
     {
-      title: "Sender",
+      title: "Email",
       dataIndex: "sender",
       key: "sender",
-      render: (sender) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar
-            src={sender.avatar}
-            alt={sender.name}
-            style={{ marginRight: "10px" }}
-          />
-
-          {sender.name}
-        </div>
-      ),
+      render: (_, record) => {
+        if (!record.messages.length) return "Unknown";
+        const sender = record.participants.find((p) => p._id !== authId) || {};
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Avatar
+              src={
+                sender.profile_image
+                  ? `${import.meta.env.VITE_API_URL}${sender.profile_image}`
+                  : `https://ui-avatars.com/api/?name=${sender.name}`
+              }
+              alt={sender.name}
+              style={{ marginRight: "10px" }}
+            />
+            {sender.name || "Unknown"}
+          </div>
+        );
+      },
       width: "20%",
     },
     {
       title: "Subject",
       dataIndex: "subject",
       key: "subject",
-      render: (text, record) => (
-        <div>
-          <strong>{text}</strong> - {record.preview}
-        </div>
-      ),
+      render: (_, record) => {
+        if (!record.messages.length) return "No Subject";
+        const message = record.messages[0];
+        return (
+          <div>
+            <strong>{message.subject}</strong> -{" "}
+            {message.message.replace(/<\/?[^>]+(>|$)/g, "")}
+          </div>
+        );
+      },
       width: "50%",
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
-      width: "10%",
-    },
-    {
-      title: "Action",
-      key: "action",
-      align: "center",
-      render: (_, message) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setDeleteModal(message);
-          }}
-        >
-          <DeleteOutlined className="hover:text-red-500" />
-        </button>
-      ),
-      width: "5%",
+      align: "right",
+      render: (_, record) =>
+        dayjs(record.createdAt).format("MMM D, YYYY h:mm A"),
+      width: "15%",
     },
   ];
+
+  useEffect(() => {
+    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    setSocket(newSocket);
+
+    newSocket.emit("conversion-list");
+
+    newSocket.on("conversion-list", (message) => {
+      setMessages(message);
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
 
   const handleToggleFav = (id) => {
     console.log(id);
@@ -134,7 +110,7 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
       <h1 className="text-lg font-semibold mb-4">{tab}</h1>
       <div style={{ overflowX: "auto", maxHeight: "75vh", overflowY: "auto" }}>
         <Table
-          dataSource={data}
+          dataSource={messages}
           columns={columns}
           pagination={false}
           bordered
