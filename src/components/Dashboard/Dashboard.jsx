@@ -5,8 +5,13 @@ import logo from "../../assets/header/profileLogo.png";
 import order from "../../assets/header/order.png";
 import { TbCalendarClock } from "react-icons/tb";
 import { UnreadMessage } from "./UnreadMessage";
+import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
 
 const Dashboard = () => {
+  const { data: status } = useGetStatusQuery();
+  
+  const { data: orderStatus } = useGetOrderStatusQuery();
+
   return (
     <div className="p-2 min-h-screen">
       <div className="grid grid-cols-2 gap-5">
@@ -21,33 +26,65 @@ const Dashboard = () => {
               <h1 className="text-2xl font-semibold">Good Morning, Robert!</h1>
             </div>
           </div>
-          <div className="grid grid-cols-5 px-4 py-4">
+          <div className=" px-4 py-4">
             <h1 className="col-span-1 text-xl">Assign Tasks:</h1>
             <div className="col-span-4">
-              <div className="flex justify-between">
+              <div className="flex justify-between pt-4">
                 <div>
                   <div className="flex justify-center">
-                    <p className="bg-[#F38E0A] p-2 h-[60px] w-[60px] rounded-full text-2xl flex items-center justify-center text-white">
-                      20
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                      {status?.data?.Completed} 
                     </p>
                   </div>
-                  <p className="text-center">Total Tasks</p>
+                  <p className="text-center">Completed</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
-                    <p className="bg-[#F38E0A] p-2 h-[60px] w-[60px] rounded-full text-2xl flex items-center justify-center text-white">
-                      15
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.Delivered}
                     </p>
                   </div>
-                  <p className="text-center">Production Tasks</p>
+                  <p className="text-center">Delivered</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
-                    <p className="bg-[#F38E0A] p-2 h-[60px] w-[60px] rounded-full text-2xl flex items-center justify-center text-white">
-                      05
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.['In-Production']}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">In-Production</p>
+                </div>
+                <div>
+                  <div className="flex justify-center">
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.Pending}
+                    </p>
+                  </div>
+                  <p className="text-center">Pending</p>
+                </div>
+                <div>
+                  <div className="flex justify-center">
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.Revisions}
+                    </p>
+                  </div>
+                  <p className="text-center">Revisions</p>
+                </div>
+                <div>
+                  <div className="flex justify-center">
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.Scheduled}
+                    </p>
+                  </div>
+                  <p className="text-center">Scheduled</p>
+                </div>
+                <div>
+                  <div className="flex justify-center">
+                    <p className="bg-[#F38E0A] p-2 h-[45px] w-[45px] rounded-full text-2xl flex items-center justify-center text-white">
+                    {status?.data?.Submitted}
+                    </p>
+                  </div>
+                  <p className="text-center">Submitted</p>
                 </div>
               </div>
             </div>
@@ -64,7 +101,7 @@ const Dashboard = () => {
                 alt=""
               />
               </div>
-              <p className="text-center text-2xl font-bold">82,677</p>
+              <p className="text-center text-2xl font-bold">{orderStatus?.data?.todayOrders} </p>
             </div>
           </div>
           <div className="border-r border-slate-300 flex items-center justify-center">
@@ -76,7 +113,7 @@ const Dashboard = () => {
                   <TbCalendarClock />
                 </div>
                 </div>
-                <p className="text-center text-2xl font-bold">45,000</p>
+                <p className="text-center text-2xl font-bold">{orderStatus?.data?.pendingOrders}</p>
             
             </div>
           </div>

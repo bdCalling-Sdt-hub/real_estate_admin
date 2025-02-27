@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import logo from "../../assets/header/profileLogo.png";
+import  { useEffect, useState } from "react";
+
 import { FaArrowLeft } from "react-icons/fa";
 import { IoCameraOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState();
   const [form] = Form.useForm();
-  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateLoading] = useState(false);
   const tab = "Profile";
   const{data:getProfile} = useGetProfileQuery();
 
@@ -40,7 +40,7 @@ const Profile = () => {
       .unwrap()
       .then(() => {
         message.success("Profile updated successfully");
-        // Redirect after success
+ 
       })
       .catch((error) => {
         message.error( error?.data?.message || "Failed To Update Profile");

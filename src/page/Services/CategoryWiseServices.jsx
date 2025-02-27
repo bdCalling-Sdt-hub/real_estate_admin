@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Table, Modal, message,Pagination, } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { useDeleteServicesMutation, useGetAllServicesQuery } from "../redux/api/serviceApi";
+import { useDeleteServicesMutation, useGetAllCategoryWiseQuery, useGetAllServicesQuery } from "../redux/api/serviceApi";
 import { EditServiceMOdal } from "./EditServiceMOdal";
 
 export const CategoryWiseServices = ({category,searchTerm}) => {
+  console.log(category)
  
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,8 +14,9 @@ export const CategoryWiseServices = ({category,searchTerm}) => {
   const [modalOpen, setModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
-  const { data: serviceData, isLoading } = useGetAllServicesQuery({category,searchTerm:searchTerm,page: currentPage,
+  const { data: serviceData, isLoading } = useGetAllCategoryWiseQuery({category,searchTerm:searchTerm,page: currentPage,
     limit: pageSize,});
+    console.log(serviceData)
 const[deleteServices]= useDeleteServicesMutation()
   const data = serviceData?.data?.data?.map((item, index) => ({
     key: item?._id,
@@ -22,7 +24,6 @@ const[deleteServices]= useDeleteServicesMutation()
     title: item?.title,
     price: `${item?.price}`,
     description: item?.descriptions,
-    
     serviceImage: item?.service_image,
   })) || [];
 

@@ -1,17 +1,10 @@
 import { LuBell } from "react-icons/lu";
-import profilee from "../../../src/assets/header/profileLogo.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaJediOrder } from "react-icons/fa";
 
 import { useRef, useState } from "react";
 import { Drawer, Input, Radio, Space } from "antd";
 
-import dashboard from "../../assets/routerImg/dashboard.png";
-import categorie from "../../assets/routerImg/categorie.png";
-import create from "../../assets/routerImg/create.png";
-import settings from "../../assets/routerImg/settings.png";
-import subscription from "../../assets/routerImg/subscription.png";
-import user from "../../assets/routerImg/user.png";
 import logo from "../../assets/header/logo1.png";
 
 import { FaChevronRight } from "react-icons/fa";
@@ -24,6 +17,9 @@ import { RiImageEditLine, RiMoneyDollarBoxLine } from "react-icons/ri";
 import { GoPackage } from "react-icons/go";
 import { PiClockUserLight, PiInvoice } from "react-icons/pi";
 import { LiaUsersSolid } from "react-icons/lia";
+import { useGetProfileQuery } from "../../page/redux/api/userApi";
+import { imageUrl } from "../../page/redux/api/baseApi";
+import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
 
 const items = [
   {
@@ -128,10 +124,15 @@ const items = [
 ];
 
 const Header = () => {
+   const{data:getProfile} = useGetProfileQuery();
+ 
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [expandedKeys, setExpandedKeys] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
+
+  const { data: status } = useGetOrderStatusQuery();
+  
 
   const contentRef = useRef({});
 
@@ -141,10 +142,7 @@ const Header = () => {
     );
   };
 
-  const onClick = (key) => {
-    setSelectedKey(key);
-  };
-
+ 
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState("left");
   const showDrawer = () => {
@@ -172,40 +170,41 @@ const Header = () => {
       <div className="lg:flex justify-between ">
         <div className="">
           <div className="mt-1 lg:flex gap-6 lg:ml-7 space-y-3 lg:space-y-0">
-            <Link to={"/dashboard/order-management/submitted"}>
+          <Link to={'/dashboard/order-management/all'}>
+            <div>
+              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
+                <span className="px-3">Total Order</span>{" "}
+                <div className="bg-[#9B3C7B] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                {status?.data?.totalOrders}
+                </div>
+              </div>
+            </div></Link>
+            <Link to={"/dashboard/order-management/progress"}>
               <div>
                 <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                  <span className="px-3">Submitted</span>{" "}
+                  <span className="px-3">In-Progress</span>{" "}
                   <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                    05
+                  {status?.data?.pendingOrders}
                   </div>
                   <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                    24
+                  {status?.data?.totalOrders}
                   </div>
                 </div>
               </div>
             </Link>
-            <Link to={'/dashboard/order-management/production'}>
+            <Link to={'/dashboard/order-management/completed'}>
             <div>
               <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">In Production</span>{" "}
-                <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                  05
+                <span className="px-3">Completed</span>{" "}
+                <div className="bg-green-800 p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                {status?.data?.completeOrders} 
                 </div>
                 <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                  24
+                {status?.data?.totalOrders}
                 </div>
               </div>
             </div></Link>
-            <Link to={'/dashboard/order-management/revisions'}>
-            <div>
-              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">Revision Needed</span>{" "}
-                <div className="bg-[#D80027] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                  05
-                </div>
-              </div>
-            </div></Link>
+            
           </div>
         </div>
 
@@ -370,13 +369,13 @@ const Header = () => {
             <div className="flex gap-3">
               <div>
                 <img
-                  className="w-[45px] h-[45px]"
-                  src={profilee}
+                  className="w-[45px] h-[45px] rounded-full"
+                  src={`${imageUrl}${getProfile?.data?.profile_image}`}
                   alt="profile"
                 />
               </div>
-              <div className="text-end">
-                <h3>{"Loading..."}</h3>
+              <div className="text-end text-black">
+                <h3 className="text-lg font-semibold">{getProfile?.data?.name}</h3>
                 <h4 className="text-sm">Admin</h4>
               </div>
             </div>
