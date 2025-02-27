@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Avatar, Modal, Popover } from "antd";
 import {
   EditOutlined,
@@ -10,12 +10,19 @@ import { MainMassage } from "./MainMassage";
 import { TbMessageDots } from "react-icons/tb";
 import { FaRegStar } from "react-icons/fa";
 import { ComposeModal } from "./ComposeModal";
+import { useNavigate } from "react-router-dom";
 
 export const MassageSidbar = () => {
   const [selectedTab, setSelectedTab] = useState("All");
   const [composeModalOpen, setComposeModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const contacts = ["John", "Jane"];
+
+  const handleSelectTab = (val) => {
+    setSelectedTab(val);
+    navigate(`/dashboard/message-mail`);
+  };
   return (
     <div className="flex gap-4">
       <div className="bg-white h-screen p-4 w-[20%]">
@@ -36,7 +43,7 @@ export const MassageSidbar = () => {
 
         <div className="mb-8">
           <div
-            onClick={() => setSelectedTab("All")}
+            onClick={() => handleSelectTab("All")}
             className={` py-2.5  cursor-pointer ${
               selectedTab === "All"
                 ? "bg-[#EAE9F0] text-[#2A216D] rounded "
@@ -52,7 +59,7 @@ export const MassageSidbar = () => {
             </div>
           </div>
           <div
-            onClick={() => setSelectedTab("Favorite")}
+            onClick={() => handleSelectTab("Favorite")}
             className={` py-2.5 mt-3 cursor-pointer ${
               selectedTab === "Favorite"
                 ? "bg-[#EAE9F0] text-[#2A216D] rounded"
