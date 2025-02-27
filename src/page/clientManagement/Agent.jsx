@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Avatar, Button, Input, Pagination } from "antd";
+import { Table, Avatar, Button, Input, Pagination, Modal, message } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddAgentModal } from "./AddAgentModal";
 import { EditAgent } from "./EditAgent";
-import { useGetSingleClientManagementQuery } from "../redux/api/clientManageApi";
+import { useDeleteAccountMutation, useGetSingleClientManagementQuery } from "../redux/api/clientManageApi";
 import { imageUrl } from "../redux/api/baseApi";
 
 export const Agent = () => {
@@ -19,7 +19,7 @@ export const Agent = () => {
     { id },
     { refetchOnMountOrArgChange: true }
   );
-  
+  const[deleteClient] = useDeleteAccountMutation()
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openAddModal1, setOpenAddModal1] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -41,6 +41,25 @@ export const Agent = () => {
     setSelectedCategory(record);
     setOpenAddModal1(true);
   };
+
+  const handleDelete = (id) => {
+ 
+    Modal.confirm({
+      title: "Are you sure you want to delete this client?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          const response = await deleteClient(id.authId).unwrap();
+          message.success(response?.message);
+        } catch (error) {
+          message.error(error.data?.message);
+        }
+      },
+    });
+  };
+
 
   const columns = [
     {
@@ -90,6 +109,7 @@ export const Agent = () => {
           </button>
           <button
             shape="circle"
+            onClick={() => handleDelete(record)}
             className="bg-[#D80027] h-10 w-10 rounded text-white text-xl"
           >
             <DeleteOutlined />

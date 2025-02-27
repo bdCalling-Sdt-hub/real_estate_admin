@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Button, Upload, Select, message } from "antd";
+import { Form, Input, Modal, Button, Upload, Select, message, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useAddPackageMutation } from "../redux/api/packageApi";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
@@ -7,7 +7,7 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
   const [addPackage] = useAddPackageMutation();
   const [fileList, setFileList] = useState([]);
   const { data: servicesData, isLoading } = useGetAllServicesSelectQuery();
- 
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [selectedServiceIds, setSelectedServiceIds] = useState();
 
@@ -42,13 +42,14 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
     fileList.forEach((file) => {
       formData.append("package_image", file.originFileObj);
     });
-
+    setLoading(true);
     try {
       const response = await addPackage(formData);
       
 
       if (response?.data?.success) {
         message.success(response?.data?.message);
+        setLoading(false); 
         form.resetFields();
         setFileList([]);
         setSelectedServiceIds([]);
@@ -56,17 +57,26 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
       } else {
         message.error(response?.error?.data?.message || "Failed to add package");
       }
+      setFileList([]);
+      setLoading(false);
     } catch (error) {
       message.error("Error submitting form");
       console.error("Error submitting form:", error);
     }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setOpenAddModal(false);
+  };
+
   return (
     <Modal
       centered
       open={openAddModal}
-      onCancel={() => setOpenAddModal(false)}
+      onCancel={handleCancel}
+      
       footer={null}
       width={600}
     >
@@ -131,20 +141,24 @@ export const AddPackageModal = ({ openAddModal, setOpenAddModal }) => {
 
           {/* Buttons */}
           <div className="flex gap-3 mt-4">
-            <Button
+          <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal(false)}
+              onClick={handleCancel}
             >
               Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
+            </button>
+            <button
+              type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} 
             >
-              Add
-            </Button>
+              {loading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Add"
+              )}
+            </button>
           </div>
         </Form>
       </div>

@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Button, Upload, Select, message } from "antd";
+import { Form, Input, Modal, Button, Upload, Select, message, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
 import { useUpdatePackageMutation } from "../redux/api/packageApi";
@@ -15,6 +15,7 @@ export const EditPackageModal = ({
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [updatePackage] = useUpdatePackageMutation();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export const EditPackageModal = ({
       formData.append("package_image", file);
     });
 
-
+    setLoading(true);
 
     try {
       const res = await updatePackage({ data: formData, id }).unwrap();
@@ -99,10 +100,12 @@ export const EditPackageModal = ({
       form.resetFields();
       setFileList((prevFileList) => prevFileList.filter((file) => file.url));
       setEditModal(false);
+      setLoading(false);
     } catch (error) {
       message.error(error?.data?.message || "An error occurred.");
       console.error("API Error:", error);
     }
+    setLoading(false);
   };
 
   return (
@@ -181,20 +184,24 @@ export const EditPackageModal = ({
 
           {/* Buttons */}
           <div className="flex gap-3 mt-4">
-            <Button
+          <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
               onClick={() => setEditModal(false)}
             >
               Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
+            </button>
+            <button
+              type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} 
             >
-              Save Changes
-            </Button>
+              {loading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Update"
+              )}
+            </button>
           </div>
         </Form>
       </div>

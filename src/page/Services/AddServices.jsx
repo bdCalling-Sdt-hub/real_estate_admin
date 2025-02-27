@@ -1,13 +1,15 @@
-import { Form, Input, Modal, Upload, Button, message } from "antd";
+import { Form, Input, Modal, Upload, Button, message, Spin } from "antd";
 import { useState } from "react";
 import { useAddServicesMutation } from "../redux/api/serviceApi";
 
 export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, categoryId }) => {
   const [fileList, setFileList] = useState([]);
-  const [addServices] = useAddServicesMutation(); // Add the mutation for submitting the data
+  const [form] = Form.useForm();
+  const [addServices] = useAddServicesMutation();
+  const [loading, setLoading] = useState(false);
 
   const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList); // Track the files being uploade
+    setFileList(newFileList);
   };
 
   const onPreview = async (file) => {
@@ -25,47 +27,55 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
     imgWindow?.document.write(image.outerHTML);
   };
 
-  // Form submission handler
   const handleSubmit = async (values) => {
     const formData = new FormData();
-    formData.append("category", categoryId); 
-    formData.append("title", values?.title); 
-    formData.append("price", values?.price); 
-    formData.append("descriptions", values?.description); 
+    formData.append("category", categoryId);
+    formData.append("title", values?.title);
+    formData.append("price", values?.price);
+    formData.append("descriptions", values?.description);
 
-    // Add the images to the formData
     fileList.forEach((file) => {
       formData.append("service_image", file.originFileObj);
     });
-
+    setLoading(true);
     try {
-      const response = await addServices(formData); 
-      setOpenAddModal(false); 
-      
+      const response = await addServices(formData);
+      setOpenAddModal(false);
+
       if (response?.data?.success) {
-        message.success(response?.data?.message); 
+        message.success(response?.data?.message);
+        form.resetFields();
+        setLoading(false);
       } else {
         message.error(response?.error?.data?.message);
       }
-      
-      setFileList([]); 
+
+      setFileList([]);
+      setLoading(false);
     } catch (error) {
-      message.error(error?.error?.data?.message)
+      message.error(error?.error?.data?.message);
       console.error("Error submitting form:", error);
     }
+  };
+
+  // Reset form and file list on cancel or close
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setOpenAddModal(false);
   };
 
   return (
     <Modal
       centered
       open={openAddModal}
-      onCancel={() => setOpenAddModal(false)}
+      onCancel={handleCancel} // Use the handleCancel function for the cancel action
       footer={null}
       width={600}
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">Add Service</h2>
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit}>
           {/* Category Field */}
           <p className="pb-2">Category</p>
           <h1 className="border py-2 rounded-md px-2 mb-6">{selectedCategory}</h1>
@@ -100,7 +110,6 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
           {/* Photos */}
           <Form.Item label="Photos">
             <Upload
-              
               listType="picture-card"
               fileList={fileList}
               onChange={onChange}
@@ -116,17 +125,21 @@ export const AddServices = ({ openAddModal, setOpenAddModal, selectedCategory, c
             <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal(false)}
+              onClick={handleCancel} // Cancel action
             >
               Cancel
             </button>
-            <Button
-              type="primary"
-              htmlType="submit"
+            <button
+              type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
             >
-              Add
-            </Button>
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Add"
+              )}
+            </button>
           </div>
         </Form>
       </div>

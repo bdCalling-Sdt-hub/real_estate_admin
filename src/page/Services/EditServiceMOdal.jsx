@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Upload, message } from "antd";
+import { Form, Input, Modal, Spin, Upload, message } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { useUpdateServiceMutation } from "../redux/api/serviceApi";
@@ -9,7 +9,7 @@ export const EditServiceMOdal = ({
   selectedCategory,
 }) => {
 
-  const [updateServices] = useUpdateServiceMutation();
+  const [updateServices, { isLoading }] = useUpdateServiceMutation();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
 
@@ -155,8 +155,13 @@ export const EditServiceMOdal = ({
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={isLoading} 
             >
-              Save Changes
+              {isLoading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </Form>

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Select, Table, message } from "antd";
+import { Form, Input, Button, Select, Table, message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useAddPricingMutation, useGetAllClientQuery, useGetServicesAllQuery } from "../redux/api/packageApi";
+import {
+  useAddPricingMutation,
+  useGetAllClientQuery,
+  useGetServicesAllQuery,
+} from "../redux/api/packageApi";
 import { imageUrl } from "../redux/api/baseApi";
 
 export const AddPricingPage = () => {
@@ -11,21 +15,23 @@ export const AddPricingPage = () => {
   const { data: allServicesData } = useGetServicesAllQuery();
   const [addPricingGroup] = useAddPricingMutation();
   const [form] = Form.useForm();
-  
+  const [loading, setLoading] = useState(false);
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
 
-  const clientOptions = clientData?.data?.map((client) => ({
-    label: client?.name,
-    value: client?._id,
-  })) || [];
+  const clientOptions =
+    clientData?.data?.map((client) => ({
+      label: client?.name,
+      value: client?._id,
+    })) || [];
 
-  const serviceOptions = allServicesData?.data?.map((service) => ({
-    label: service?.title,
-    value: service?._id,
-    price: service?.price,
-  })) || [];
+  const serviceOptions =
+    allServicesData?.data?.map((service) => ({
+      label: service?.title,
+      value: service?._id,
+      price: service?.price,
+    })) || [];
 
   // Handle client selection
   const handleClientSelect = (clientIds) => {
@@ -35,7 +41,7 @@ export const AddPricingPage = () => {
   // Handle service selection
   const handleServiceSelect = (serviceIds) => {
     setSelectedServiceIds(serviceIds);
-    const selectedServicesData = allServicesData?.data?.filter(service =>
+    const selectedServicesData = allServicesData?.data?.filter((service) =>
       serviceIds.includes(service._id)
     );
     setSelectedServices(selectedServicesData);
@@ -50,24 +56,24 @@ export const AddPricingPage = () => {
   const handleSubmit = async (values) => {
     // Preparing the data with special_price from the input fields
     const data = {
-      name: values.pricingGroupName, 
-      clients: selectedClientIds, 
+      name: values.pricingGroupName,
+      clients: selectedClientIds,
       services: selectedServices.map((service) => ({
-        serviceId: service._id, 
-        special_price: service.special_price, 
+        serviceId: service._id,
+        special_price: service.special_price,
       })),
     };
 
-   
+    setLoading(true);
 
     try {
       const res = await addPricingGroup(data);
       message.success(res?.data?.message);
-      
+      setLoading(false);
     } catch (error) {
-      message.error(error?.data?.data?.message)
+      message.error(error?.data?.data?.message);
+      setLoading(false);
       console.error("Error creating pricing group:", error);
-      message.error("An error occurred while creating the pricing group.");
     }
   };
 
@@ -88,39 +94,29 @@ export const AddPricingPage = () => {
       key: "special_price",
       render: (text, record, index) => (
         <Input
-  defaultValue={record.price} 
-  onChange={(e) => {
-    const newServices = [...selectedServices];
+          defaultValue={record.price}
+          onChange={(e) => {
+            const newServices = [...selectedServices];
 
+            const updatedSpecialPrice = parseFloat(e.target.value);
 
-    const updatedSpecialPrice = parseFloat(e.target.value); 
+            if (isNaN(updatedSpecialPrice)) {
+              message.error("Invalid special_price: Must be a number.");
 
-    // Check if the value is a valid number
-    if (isNaN(updatedSpecialPrice)) {
-      message.error("Invalid special_price: Must be a number.")
-    
-      return; // Don't update the state if it's not a valid number
-    }
+              return;
+            }
 
-    
-    newServices[index] = { 
-      ...newServices[index], 
-      special_price: updatedSpecialPrice 
-    };
+            newServices[index] = {
+              ...newServices[index],
+              special_price: updatedSpecialPrice,
+            };
 
-    setSelectedServices(newServices);
-
-   
-   
-  }}
-/>
-
-      
-
+            setSelectedServices(newServices);
+          }}
+        />
       ),
     },
   ];
-  
 
   return (
     <div className="bg-white p-4">
@@ -155,9 +151,14 @@ export const AddPricingPage = () => {
             />
             <ul>
               {selectedClientIds?.map((clientId) => {
-                const client = clientData?.data?.find((c) => c._id === clientId);
+                const client = clientData?.data?.find(
+                  (c) => c._id === clientId
+                );
                 return client ? (
-                  <li key={client?._id} className="flex items-center justify-between mb-2">
+                  <li
+                    key={client?._id}
+                    className="flex items-center justify-between mb-2"
+                  >
                     <div className="flex items-center gap-2">
                       <img
                         src={`${imageUrl}/${client?.profile_image}`}
@@ -166,7 +167,11 @@ export const AddPricingPage = () => {
                       />
                       <span>{client?.name}</span>
                     </div>
-                    <Button type="link" danger onClick={() => handleRemoveClient(client?._id)}>
+                    <Button
+                      type="link"
+                      danger
+                      onClick={() => handleRemoveClient(client?._id)}
+                    >
                       Remove
                     </Button>
                   </li>
@@ -177,7 +182,9 @@ export const AddPricingPage = () => {
 
           {/* Select Services */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Add Services/Products</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Add Services/Products
+            </h3>
             <Select
               mode="multiple"
               style={{ width: "100%" }}
@@ -204,9 +211,17 @@ export const AddPricingPage = () => {
 
           {/* Save Button */}
           <div className="flex justify-end">
-            <Button type="primary" htmlType="submit" className="mt-4 bg-[#2A216D] text-white p-2 rounded">
-              Save
-            </Button>
+            <button
+              type="submit"
+              className="px-4 py-3 w-[200px] bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Add"
+              )}
+            </button>
           </div>
         </Form>
       </div>

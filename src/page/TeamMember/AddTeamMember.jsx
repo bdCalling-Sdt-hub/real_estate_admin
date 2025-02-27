@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, Modal, Select, message } from "antd";
+import { Form, Input, Checkbox, Modal, Select, message, Spin } from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { useAddTeamMemberMutation } from "../redux/api/clientManageApi";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
 
 export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [addTeamMember] = useAddTeamMemberMutation();
   const { data: getAllServicesSelect } = useGetAllServicesSelectQuery();
 
@@ -100,10 +102,13 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
           formData.append("serviceId", serviceId);
         });
       }
+      setLoading(true);
       const response = await addTeamMember(formData);
       
       if (response?.error) {
         message.error(response.error.data.message );
+        
+        setLoading(false);
         console.error(response.error);
 
       } else {
@@ -115,13 +120,21 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       message.error(error?.data?.data?.message);
       console.error("Add Team Member Error:", error);
     }
+  
+      setLoading(false);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setOpenAddModal(false);
   };
 
   return (
     <Modal
       centered
       open={openAddModal}
-      onCancel={() => setOpenAddModal(false)}
+      onCancel={handleCancel}
       footer={null}
       width={600}
     >
@@ -325,18 +338,23 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
 
           {/* Buttons */}
           <div className="flex gap-3 mt-4">
-            <button
+          <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
-              onClick={() => setOpenAddModal(false)}
+              onClick={handleCancel} // Cancel action
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
+              disabled={loading} // Disable button while loading
             >
-              Add
+              {loading ? (
+                <Spin size="small" /> // Show spin loader when loading
+              ) : (
+                "Add"
+              )}
             </button>
           </div>
         </Form>

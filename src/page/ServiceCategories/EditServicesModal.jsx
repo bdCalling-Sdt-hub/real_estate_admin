@@ -1,11 +1,10 @@
-import { Form, Input, Modal, message } from "antd";
+import { Form, Input, Modal, message, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { useUpdateServiceCategoryMutation } from "../redux/api/serviceApi";
 
 export const EditServicesModal = ({ openAddModal, setOpenAddModal, selectedCategory }) => {
   const [form] = Form.useForm();
   const [updateServiceCategory, { isLoading }] = useUpdateServiceCategoryMutation();
-
 
   useEffect(() => {
     if (selectedCategory) {
@@ -17,17 +16,16 @@ export const EditServicesModal = ({ openAddModal, setOpenAddModal, selectedCateg
     try {
       const response = await updateServiceCategory({
         id: selectedCategory.key,
-        data: { name: values.categoryName }, // ✅ Fix
+        data: { name: values?.categoryName },
       }).unwrap();
-      
-      message.success(response.message );
+
+      message.success(response?.message);
       form.resetFields();
       setOpenAddModal(false);
     } catch (error) {
-      message.error(error?.data?.message );
+      message.error(error?.data?.message);
     }
   };
-  
 
   return (
     <Modal
@@ -39,8 +37,8 @@ export const EditServicesModal = ({ openAddModal, setOpenAddModal, selectedCateg
     >
       <div className="mb-6 mt-4">
         <h2 className="text-center font-bold text-lg mb-11">Edit Category</h2>
-        
-        {/* 🔹 **Form with Default Values** */}
+
+        {/* 🛠️ Form with Default Values */}
         <Form layout="vertical" form={form} onFinish={handleSubmit}>
           <Form.Item
             label="Category Name"
@@ -61,9 +59,13 @@ export const EditServicesModal = ({ openAddModal, setOpenAddModal, selectedCateg
             <button
               type="submit"
               className="px-4 py-3 w-full bg-[#2A216D] text-white rounded-md"
-              disabled={isLoading}
+              disabled={isLoading} 
             >
-              {isLoading ? "Updating..." : "Update"}
+              {isLoading ? (
+                <Spin size="small" /> 
+              ) : (
+                "Update"
+              )}
             </button>
           </div>
         </Form>
