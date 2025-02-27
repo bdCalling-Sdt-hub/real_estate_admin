@@ -5,11 +5,12 @@ import logo from "../../assets/header/profileLogo.png";
 import order from "../../assets/header/order.png";
 import { TbCalendarClock } from "react-icons/tb";
 import { UnreadMessage } from "./UnreadMessage";
-import { useGetStatusQuery } from "../../page/redux/api/dashboardApi";
+import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
 
 const Dashboard = () => {
   const { data: status } = useGetStatusQuery();
-
+  
+  const { data: orderStatus } = useGetOrderStatusQuery();
 
   return (
     <div className="p-2 min-h-screen">
@@ -35,7 +36,7 @@ const Dashboard = () => {
                       {status?.data?.Completed} 
                     </p>
                   </div>
-                  <p className="text-center">Total Tasks</p>
+                  <p className="text-center">Completed</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -43,7 +44,7 @@ const Dashboard = () => {
                     {status?.data?.Delivered}
                     </p>
                   </div>
-                  <p className="text-center">Production Tasks</p>
+                  <p className="text-center">Delivered</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -51,7 +52,7 @@ const Dashboard = () => {
                     {status?.data?.['In-Production']}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">In-Production</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -59,7 +60,7 @@ const Dashboard = () => {
                     {status?.data?.Pending}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">Pending</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -67,7 +68,7 @@ const Dashboard = () => {
                     {status?.data?.Revisions}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">Revisions</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -75,7 +76,7 @@ const Dashboard = () => {
                     {status?.data?.Scheduled}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">Scheduled</p>
                 </div>
                 <div>
                   <div className="flex justify-center">
@@ -83,7 +84,7 @@ const Dashboard = () => {
                     {status?.data?.Submitted}
                     </p>
                   </div>
-                  <p className="text-center">Other Tasks</p>
+                  <p className="text-center">Submitted</p>
                 </div>
               </div>
             </div>
@@ -100,7 +101,7 @@ const Dashboard = () => {
                 alt=""
               />
               </div>
-              <p className="text-center text-2xl font-bold">82,677</p>
+              <p className="text-center text-2xl font-bold">{orderStatus?.data?.todayOrders} </p>
             </div>
           </div>
           <div className="border-r border-slate-300 flex items-center justify-center">
@@ -112,7 +113,7 @@ const Dashboard = () => {
                   <TbCalendarClock />
                 </div>
                 </div>
-                <p className="text-center text-2xl font-bold">45,000</p>
+                <p className="text-center text-2xl font-bold">{orderStatus?.data?.pendingOrders}</p>
             
             </div>
           </div>

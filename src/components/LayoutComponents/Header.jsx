@@ -19,7 +19,7 @@ import { PiClockUserLight, PiInvoice } from "react-icons/pi";
 import { LiaUsersSolid } from "react-icons/lia";
 import { useGetProfileQuery } from "../../page/redux/api/userApi";
 import { imageUrl } from "../../page/redux/api/baseApi";
-import { useGetStatusQuery } from "../../page/redux/api/dashboardApi";
+import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
 
 const items = [
   {
@@ -131,7 +131,7 @@ const Header = () => {
   const navigate = useNavigate();
   // const location = useLocation();
 
-  const { data: status } = useGetStatusQuery();
+  const { data: status } = useGetOrderStatusQuery();
   
 
   const contentRef = useRef({});
@@ -170,40 +170,41 @@ const Header = () => {
       <div className="lg:flex justify-between ">
         <div className="">
           <div className="mt-1 lg:flex gap-6 lg:ml-7 space-y-3 lg:space-y-0">
-            <Link to={"/dashboard/order-management/submitted"}>
+          <Link to={'/dashboard/order-management/all'}>
+            <div>
+              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
+                <span className="px-3">Total Order</span>{" "}
+                <div className="bg-[#9B3C7B] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                {status?.data?.totalOrders}
+                </div>
+              </div>
+            </div></Link>
+            <Link to={"/dashboard/order-management/progress"}>
               <div>
                 <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                  <span className="px-3">Submitted</span>{" "}
+                  <span className="px-3">In-Progress</span>{" "}
                   <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                    05
+                  {status?.data?.pendingOrders}
                   </div>
                   <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                    24
+                  {status?.data?.totalOrders}
                   </div>
                 </div>
               </div>
             </Link>
-            <Link to={'/dashboard/order-management/production'}>
+            <Link to={'/dashboard/order-management/completed'}>
             <div>
               <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">In Production</span>{" "}
-                <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.Pending} 
+                <span className="px-3">Completed</span>{" "}
+                <div className="bg-green-800 p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                {status?.data?.completeOrders} 
                 </div>
                 <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                {status?.data?.Delivered}
+                {status?.data?.totalOrders}
                 </div>
               </div>
             </div></Link>
-            <Link to={'/dashboard/order-management/revisions'}>
-            <div>
-              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">Revision Needed</span>{" "}
-                <div className="bg-[#D80027] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.Revisions}
-                </div>
-              </div>
-            </div></Link>
+            
           </div>
         </div>
 

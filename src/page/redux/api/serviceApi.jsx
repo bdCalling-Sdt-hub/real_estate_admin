@@ -55,8 +55,20 @@ const service = baseApi.injectEndpoints({
 
     getAllServices: builder.query({
       query: ({ clientId, categoryId }) => {
+        console.log(clientId, categoryId);
         return {
           url: `/service/get-client-service/${clientId}?categoryId=${categoryId}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
+    getAllCategoryWise: builder.query({
+      query: ({category,page,limit,searchTerm }) => {
+        console.log(category);
+        return {
+          url: `/service/services?category=${category}&page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
           method: "GET",
         };
       },
@@ -237,5 +249,6 @@ export const {
   useUpdateServiceMutation,
   useDeleteServicesMutation,
   useGetAllServicesSelectQuery,
-  useDeleteServicesCategoriesMutation
+  useDeleteServicesCategoriesMutation,
+  useGetAllCategoryWiseQuery
 } = service;

@@ -8,7 +8,7 @@ import { imageUrl } from "../../page/redux/api/baseApi";
 export const RecentOrder = () => {
   const [page, setCurrentPage] = useState(1);
   
-  const pageSize = 3;
+  const pageSize = 10;
   const { data: recentOrder, isLoading } = useGetRecentOrderQuery({
     page,
     limit: pageSize,
@@ -84,7 +84,7 @@ export const RecentOrder = () => {
   return (
     <div className="">
       <h2 className="text-xl font-medium pt-3 pl-6">Recent Orders</h2>
-      <div className="">
+      <div className="h-[400px] overflow-y-auto">
         <Table
           dataSource={data}
           columns={columns}

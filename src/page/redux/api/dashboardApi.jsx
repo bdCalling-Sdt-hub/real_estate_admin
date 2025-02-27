@@ -42,6 +42,15 @@ const dash = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
+    getOrderStatus: builder.query({
+      query: () => {
+        return {
+          url: `/orders/get-order-status-count`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
    
   }),
 });
@@ -50,6 +59,7 @@ export const {
   useGetStatusQuery,
   useGetRecentOrderQuery,
   useGetTodayOrderQuery,
-  useGetUserGrowthQuery
+  useGetUserGrowthQuery,
+  useGetOrderStatusQuery
   
 } = dash;
