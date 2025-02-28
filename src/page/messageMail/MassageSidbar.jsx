@@ -21,6 +21,10 @@ export const MassageSidbar = () => {
   const navigate = useNavigate();
 
   const [contacts, setContacts] = useState([]);
+  const [counts, setCounts] = useState({
+    all: 0,
+    favorites: 0,
+  });
 
   const handleSelectTab = (val) => {
     setSelectedTab(val);
@@ -37,6 +41,12 @@ export const MassageSidbar = () => {
 
     socket.on("contact-list", (contacts) => {
       setContacts(contacts.map((contact) => contact.participants[0]));
+    });
+
+    socket.emit("conversion-list");
+
+    socket.on("conversion-list", (message) => {
+      setCounts((p) => ({ ...p, all: message.length }));
     });
 
     return () => {
@@ -73,9 +83,9 @@ export const MassageSidbar = () => {
             <div className="flex justify-between px-5">
               <span className="flex gap-2">
                 <TbMessageDots className="text-2xl" />
-                Message
+                All
               </span>
-              <span>120</span>
+              <span>{counts.all}</span>
             </div>
           </div>
           <div

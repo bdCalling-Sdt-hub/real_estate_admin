@@ -9,7 +9,13 @@ const messageApi = baseApi.injectEndpoints({
         return `/auth/get-all-user?${params.toString()}`;
       },
     }),
+    toggleFavorite: builder.mutation({
+      query: ({ conversationId, types }) => ({
+        url: `/message/favorite?conversationId=${conversationId}&types=${types}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllEmailsQuery } = messageApi;
+export const { useGetAllEmailsQuery, useToggleFavoriteMutation } = messageApi;

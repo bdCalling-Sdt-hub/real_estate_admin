@@ -1,5 +1,5 @@
 import { Table, Avatar } from "antd";
-import { DeleteOutlined, StarOutlined, StarFilled } from "@ant-design/icons";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";

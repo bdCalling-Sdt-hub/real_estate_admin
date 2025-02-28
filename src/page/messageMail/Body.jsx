@@ -82,7 +82,7 @@ const Body = () => {
     setContent("");
   };
   return (
-    <main className="p-9">
+    <main className="p-9 bg-white overflow-y-auto h-[80vh]">
       <header>
         <Button
           icon={<ArrowLeft />}
