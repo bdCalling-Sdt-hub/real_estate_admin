@@ -17,19 +17,22 @@ export const MassageSidbar = () => {
   const navigate = useNavigate();
 
   const [contacts, setContacts] = useState([]);
-  const { data: favContacts } = useGetFavoriteListQuery();
+  const { data: favContacts, refetch: refetchFavs } = useGetFavoriteListQuery();
   const [count, setCount] = useState(0);
 
   const handleSelectTab = (val) => {
     setSelectedTab(val);
     navigate(`/dashboard/message-mail`);
+    refetchFavs();
   };
 
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJWT(token);
+  const { authId, role } = parseJWT(token);
 
   useEffect(() => {
-    const socket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    const socket = io(
+      `${import.meta.env.VITE_API_URL}?id=${authId}&role=${role}`
+    );
 
     socket.emit("contact-list");
 
@@ -130,7 +133,11 @@ export const MassageSidbar = () => {
         </div>
       </div>
       <div className="w-[80%]">
-        <MainMassage tab={selectedTab} favContacts={favContacts} />
+        <MainMassage
+          tab={selectedTab}
+          favContacts={favContacts}
+          refetchFavs={refetchFavs}
+        />
       </div>
 
       <ComposeModal

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import List from "./List";
 import Body from "./Body";
 
-export const MainMassage = ({ tab, favContacts }) => {
+export const MainMassage = ({ tab, favContacts, refetchFavs }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [params] = useSearchParams();
   const id = params.get("id");
@@ -32,6 +32,7 @@ export const MainMassage = ({ tab, favContacts }) => {
         <List
           tab={tab}
           favContacts={favContacts}
+          refetchFavs={refetchFavs}
           handleRowClick={handleRowClick}
         />
       )}

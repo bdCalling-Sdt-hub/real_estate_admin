@@ -45,12 +45,14 @@ export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
   };
 
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJWT(token);
+  const { authId, role } = parseJWT(token);
 
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    const newSocket = io(
+      `${import.meta.env.VITE_API_URL}?id=${authId}&role=${role}`
+    );
     setSocket(newSocket);
 
     return () => {

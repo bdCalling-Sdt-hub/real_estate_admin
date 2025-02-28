@@ -7,10 +7,12 @@ import parseJWT from "../../utils/parseJWT";
 import dayjs from "dayjs";
 import { useToggleFavoriteMutation } from "../redux/api/messageApi";
 
-const List = ({ tab, handleRowClick, favContacts }) => {
+const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJWT(token);
+  const { authId, role } = parseJWT(token);
+
   const [messages, setMessages] = useState(null);
+  const [favMessages, setFavMessages] = useState(favContacts?.data);
 
   const columns = [
     {
@@ -18,7 +20,8 @@ const List = ({ tab, handleRowClick, favContacts }) => {
       dataIndex: "starred",
       key: "starred",
       render: (_, contact) => {
-        const isFavorite = contact.favorite.length > 0; // Adjust based on your logic
+        const isFavorite =
+          tab === "Favorite" ? true : contact.favorite.includes(authId);
         return (
           <button
             onClick={(e) => {
@@ -70,7 +73,7 @@ const List = ({ tab, handleRowClick, favContacts }) => {
         return (
           <div>
             <strong>{message.subject}</strong> -{" "}
-            {message.message.replace(/<\/?[^>]+(>|$)/g, "")}
+            {message?.message?.replace(/<\/?[^>]+(>|$)/g, "")}
           </div>
         );
       },
@@ -88,7 +91,15 @@ const List = ({ tab, handleRowClick, favContacts }) => {
   ];
 
   useEffect(() => {
-    const socket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    if (favContacts) {
+      setFavMessages(favContacts?.data);
+    }
+  }, [favContacts]);
+
+  useEffect(() => {
+    const socket = io(
+      `${import.meta.env.VITE_API_URL}?id=${authId}&role=${role}`
+    );
 
     socket.emit("conversion-list");
 
@@ -114,10 +125,12 @@ const List = ({ tab, handleRowClick, favContacts }) => {
           ...messages.find((x) => x._id === id),
           favorite: isFavorite ? [] : [authId],
         },
-      ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       setMessages(msgs);
-      message.success("Added to favorites");
+      setFavMessages((prev) => prev.filter((msg) => msg._id != id));
+      refetchFavs();
+      message.success(`${isFavorite ? "Removed from" : "Added to"} favorites`);
     } catch (error) {
       console.log(error);
       message.success("Failed adding to favorites");
@@ -128,7 +141,7 @@ const List = ({ tab, handleRowClick, favContacts }) => {
       <h1 className="text-lg font-semibold mb-4">{tab}</h1>
       <div style={{ overflowX: "auto", maxHeight: "75vh", overflowY: "auto" }}>
         <Table
-          dataSource={tab === "All" ? messages : favContacts?.data || []}
+          dataSource={tab === "All" ? messages : favMessages || []}
           columns={columns}
           pagination={false}
           bordered
