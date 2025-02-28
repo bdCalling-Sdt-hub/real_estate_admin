@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaJediOrder } from "react-icons/fa";
 
 import { useRef, useState } from "react";
-import { Drawer, Input, Radio, Space } from "antd";
+import { AutoComplete, Drawer, Input, Radio, Space } from "antd";
 
 import logo from "../../assets/header/logo1.png";
 
@@ -19,8 +19,15 @@ import { PiClockUserLight, PiInvoice } from "react-icons/pi";
 import { LiaUsersSolid } from "react-icons/lia";
 import { useGetProfileQuery } from "../../page/redux/api/userApi";
 import { imageUrl } from "../../page/redux/api/baseApi";
-import { useGetOrderStatusQuery, useGetStatusQuery } from "../../page/redux/api/dashboardApi";
-import { useGetAllNotificationQuery, useUpdateSeenNotificationMutation } from "../../page/redux/api/clientManageApi";
+import {
+  useGetOrderStatusQuery,
+  useGetSearchQuery,
+  useGetStatusQuery,
+} from "../../page/redux/api/dashboardApi";
+import {
+  useGetAllNotificationQuery,
+  useUpdateSeenNotificationMutation,
+} from "../../page/redux/api/clientManageApi";
 
 const items = [
   {
@@ -125,8 +132,10 @@ const items = [
 ];
 
 const Header = () => {
-   const{data:getProfile} = useGetProfileQuery();
- 
+  const { data: getProfile } = useGetProfileQuery();
+  const { data: AllSearch } = useGetSearchQuery();
+  console.log(AllSearch);
+
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [expandedKeys, setExpandedKeys] = useState([]);
   const { data: notificationData } = useGetAllNotificationQuery();
@@ -135,7 +144,6 @@ const Header = () => {
   // const location = useLocation();
 
   const { data: status } = useGetOrderStatusQuery();
-  
 
   const contentRef = useRef({});
 
@@ -145,7 +153,12 @@ const Header = () => {
     );
   };
 
- 
+  const options = AllSearch?.data?.map(item => ({
+    value: `${item.address.streetName} - ${item.taskIds?.map(task => task.serviceId?.title).join(", ")}`,
+    key: item._id,  // Store the _id as a key
+    label: `${item.address.streetName} - ${item.taskIds?.map(task => task.serviceId?.title).join(", ")}`, // Used for display
+  })) || [];
+
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState("left");
   const showDrawer = () => {
@@ -161,7 +174,9 @@ const Header = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
-  const unSeenNotification = notificationData?.data?.notifications?.filter(data => !data.status);
+  const unSeenNotification = notificationData?.data?.notifications?.filter(
+    (data) => !data.status
+  );
   const handleOnclick = () => {
     if (unSeenNotification?.length) {
       // Update the notifications status to seen (true) when clicked
@@ -180,57 +195,84 @@ const Header = () => {
       <div className="lg:flex justify-between ">
         <div className="">
           <div className="mt-1 lg:flex gap-6 lg:ml-7 space-y-3 lg:space-y-0">
-          <Link to={'/dashboard/order-management/all'}>
-            <div>
-              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">Total Order</span>{" "}
-                <div className="bg-[#9B3C7B] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.totalOrders || "0"}
+            <Link to={"/dashboard/order-management/all"}>
+              <div>
+                <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
+                  <span className="px-3">Total Order</span>{" "}
+                  <div className="bg-[#9B3C7B] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                    {status?.data?.totalOrders || "0"}
+                  </div>
                 </div>
               </div>
-            </div></Link>
+            </Link>
             <Link to={"/dashboard/order-management/progress"}>
               <div>
                 <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
                   <span className="px-3">In-Progress</span>{" "}
                   <div className="bg-[#F38E0A] p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                  {status?.data?.pendingOrders || "0"}
+                    {status?.data?.pendingOrders || "0"}
                   </div>
                   <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                  {status?.data?.totalOrders || "0"}
+                    {status?.data?.totalOrders || "0"}
                   </div>
                 </div>
               </div>
             </Link>
-            <Link to={'/dashboard/order-management/completed'}>
-            <div>
-              <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
-                <span className="px-3">Completed</span>{" "}
-                <div className="bg-green-800 p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
-                {status?.data?.completeOrders || "0"} 
-                </div>
-                <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
-                {status?.data?.totalOrders || "0"}
+            <Link to={"/dashboard/order-management/completed"}>
+              <div>
+                <div className="bg-slate-200 py-1 px-1 rounded-full text-black flex items-center ">
+                  <span className="px-3">Completed</span>{" "}
+                  <div className="bg-green-800 p-2  rounded-full text-white w-[35px] h-[35px] flex items-center justify-center">
+                    {status?.data?.completeOrders || "0"}
+                  </div>
+                  <div className="bg-[#9B3C7B] p-2 rounded-full text-white w-[35px] h-[35px] flex items-center justify-center -ml-1">
+                    {status?.data?.totalOrders || "0"}
+                  </div>
                 </div>
               </div>
-            </div></Link>
-            
+            </Link>
           </div>
         </div>
 
         <div></div>
         <div className="flex gap-8 p-1 px-6">
           <div>
-            <Input
-              className="py-2 rounded-full"
+          <AutoComplete
+      style={{
+        width: 400,
+        borderRadius: "50px",
+      }}
+      options={options.map(option => ({
+        value: option.label, // Use the label as value (string) for filtering
+        key: option.key,
+        label: (
+          <Link to={`/dashboard/order-management/order-details/${option.key}`} style={{ display: 'block', width: '100%' }}>
+            {option.label} {/* The clickable text */}
+          </Link>
+        ),
+      }))}
+      placeholder="Try to type a street name"
+      filterOption={(inputValue, option) =>
+        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+      }
+      onSelect={(value, option) => {
+        console.log('Selected value:', value); // The value you selected (streetName - serviceId.title)
+        console.log('Selected option _id:', option.key); // The corresponding _id of the selected option
+      }}
+    />
+            {/* <Input
+              
               placeholder="Search here..."
               style={{ width: 400 }}
-            />
+            /> */}
           </div>
 
           <div className="relative">
             <Link to={"/dashboard/Settings/notification"}>
-            <div onClick={handleOnclick} className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-neutral-100 text-[#2A216D] ">
+              <div
+                onClick={handleOnclick}
+                className="w-[45px] h-[45px] flex items-center justify-center text-xl rounded-full bg-neutral-100 text-[#2A216D] "
+              >
                 <span>
                   <LuBell />
                 </span>
@@ -385,7 +427,9 @@ const Header = () => {
                 />
               </div>
               <div className="text-end text-black">
-                <h3 className="text-lg font-semibold">{getProfile?.data?.name}</h3>
+                <h3 className="text-lg font-semibold">
+                  {getProfile?.data?.name}
+                </h3>
                 <h4 className="text-sm">{getProfile?.data?.role}</h4>
               </div>
             </div>

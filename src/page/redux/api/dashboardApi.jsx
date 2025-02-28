@@ -51,6 +51,16 @@ const dash = baseApi.injectEndpoints({
       },
       providesTags: ["updateProfile"],
     }),
+    
+    getSearch: builder.query({
+      query: () => {
+        return {
+          url: `/orders/get-with-search`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
    
   }),
 });
@@ -60,6 +70,7 @@ export const {
   useGetRecentOrderQuery,
   useGetTodayOrderQuery,
   useGetUserGrowthQuery,
-  useGetOrderStatusQuery
+  useGetOrderStatusQuery,
+  useGetSearchQuery
   
 } = dash;

@@ -25,7 +25,7 @@ export const MassageSidbar = () => {
   };
   return (
     <div className="flex gap-4">
-      <div className="bg-white h-screen p-4 w-[20%]">
+      <div className="bg-white h-[84vh] p-4 w-[20%]">
         <Button
           onClick={() => setComposeModalOpen(true)}
           type="primary"

@@ -143,9 +143,9 @@ export const EditClientModal = ({
               accept="image/*"
               maxCount={1}
               onChange={handleImageChange}
-              className="absolute bottom-1 right-2 bg-white px-2 py-1 rounded-full cursor-pointer"
+              className="absolute bottom-3 right-2 bg-[#0f0143] text-white px-1 rounded-full cursor-pointer"
             >
-              <FaCamera className="text-accent w-4 h-4 mt-1" />
+              <IoCameraOutline className="text-accent w-5 h-5 mt-1" />
             </Upload>
           </div>
 

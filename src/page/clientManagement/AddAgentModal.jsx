@@ -68,6 +68,7 @@ export const AddAgentModal = ({
     Object.keys(permissions).forEach((key) => {
       formData.append(key, permissions[key]);
     });
+
     if (image) {
       formData.append("profile_image", image);
     }
@@ -81,7 +82,7 @@ export const AddAgentModal = ({
       message.error(error?.data?.message);
       console.error("Error adding agent:", error);
     }
-    setFileList([]);
+    
     setLoading(false);
   };
 

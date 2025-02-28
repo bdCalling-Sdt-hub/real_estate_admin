@@ -81,6 +81,7 @@ export const EditAgent = ({
 
       message.success(response?.message);
       setOpenAddModal(false);
+      setLoading(false);
     } catch (error) {
       message.error(error?.data?.message || "Error updating agent");
       console.error("Error editing agent:", error);
@@ -113,14 +114,14 @@ export const EditAgent = ({
               }
               className="border-4 border-highlight shadow-xl"
             />
-            <Upload
+           <Upload
               showUploadList={false}
               accept="image/*"
               maxCount={1}
               onChange={handleImageChange}
-              className="absolute bottom-1 right-2 bg-white px-2 py-1 rounded-full cursor-pointer"
+              className="absolute bottom-3 right-2 bg-[#0f0143] text-white px-1  rounded-full cursor-pointer"
             >
-              <FaCamera className="text-accent w-4 h-4 mt-1" />
+              <IoCameraOutline className="text-accent w-5 h-5 mt-1" />
             </Upload>
           </div>
 

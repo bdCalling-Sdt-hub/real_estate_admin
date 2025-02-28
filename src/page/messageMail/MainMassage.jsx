@@ -27,7 +27,7 @@ export const MainMassage = ({ tab }) => {
     navigate(`/dashboard/message-mail?id=${secondParticipantId}`);
   };
   return (
-    <div className="bg-white p-4 h-screen">
+    <div className="bg-white p-4 h-[84vh]">
       {selectedMessage ? (
         <Body id={selectedMessage} />
       ) : (
