@@ -1,36 +1,19 @@
 import { Avatar, Button } from "antd";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { DeleteOutlined, StarOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./quill.css";
+import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
+import parseJWT from "../../utils/parseJWT";
 
 const Body = () => {
   const navigate = useNavigate();
   const [reply, setReply] = useState(false);
   const [content, setContent] = useState("");
-
-  const email = {
-    subject: "Request For Information",
-    from: {
-      name: "Albert Mike",
-      email: "albertmikephd@gmail.com",
-      img: "https://ui-avatars.com/api/?name=Albert Mike",
-    },
-    to: {
-      name: "Me",
-      email: "stevesmith24@gmail.com",
-    },
-    body: `Dear Smith
-I hope this email finds you well. My name is Alb Mike, and I am writing to inquire about a new project your esteemed real estate company is undertaking.
-I have been following the impressive work of Bproperty for some time now, and I am particularly interested in staying updated on your latest ventures. Understanding the innovative approaches and high-quality developments your company consistently delivers, I am very excited to learn more about your newest project. I understand that you may be busy, however your assistance in providing this information would be greatly valued. Please feel free to reach out to me via email or phone at your convenience.
-Thank you for your time and attention to this request. I look forward to hearing from you soon and potentially exploring opportunities to collaborate or invest in your exciting new project.
-Warm regards,
-Albert Mike`,
-    attachments: ["https://ui-avatars.com/api/?name=mike"],
-  };
 
   const quillConfig = {
     formats: [
@@ -57,6 +40,49 @@ Albert Mike`,
       ],
     },
   };
+
+  const token = useSelector((state) => state.logInUser.token);
+  const { authId } = parseJWT(token);
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState(null);
+  const [params] = useSearchParams();
+  const id = params.get("id");
+
+  useEffect(() => {
+    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    setSocket(newSocket);
+
+    newSocket.emit("message-getall", { receiverId: id, page: 1 });
+
+    newSocket.on("message-getall", (messages) => {
+      setMessages(messages);
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  const clientIsReceiver = messages?.messages[0]?.receiverId?._id === authId;
+
+  const handleReply = () => {
+    const payload = {
+      receiverId: !clientIsReceiver
+        ? messages?.messages[0]?.receiverId?._id
+        : messages?.messages[0]?.senderId?._id,
+      text: content,
+      subject: messages?.messages[0]?.subject,
+      email: !clientIsReceiver
+        ? messages?.messages[0]?.receiverId?.email
+        : messages?.messages[0]?.senderId?.email,
+    };
+
+    socket.emit("new-email-message", payload);
+    setReply(false);
+    setContent("");
+  };
+  console.log(messages);
+  
   return (
     <main className="p-9">
       <header>
@@ -68,38 +94,10 @@ Albert Mike`,
         >
           Details
         </Button>
-        <div className="flex justify-between mt-5">
-          <h1 className="text-[22px] font-medium">{email.subject}</h1>
-          <div className="flex gap-2">
-            <Button
-              icon={<StarOutlined style={{ fontSize: "18px" }} />}
-              type="text"
-            />
-            <Button
-              icon={<DeleteOutlined style={{ fontSize: "18px" }} />}
-              type="text"
-            />
-          </div>
-        </div>
       </header>
-      <div className="flex items-center gap-[10px] mt-5">
-        <Avatar
-          src={email.from.img}
-          alt={email.from.name}
-          className="w-12 h-12"
-        />
-        <div className="flex flex-col">
-          <div className="flex items-center gap-[6px]">
-            <h1 className="font-semibold">{email.from.name}</h1>
-            <span className="text-sm font-normal">{`<${email.from.email}>`}</span>
-          </div>
-          <span className="text-sm font-normal">To: {email.to.email}</span>
-        </div>
-      </div>
-      <p
-        className="mt-[18px]"
-        dangerouslySetInnerHTML={{ __html: email.body }}
-      />
+      {messages?.messages?.map((message) => (
+        <Message message={message} />
+      ))}
       <Button
         type="primary"
         onClick={() => setReply((p) => !p)}
@@ -146,6 +144,7 @@ Albert Mike`,
             modules={quillConfig.modules}
           />
           <Button
+            onClick={handleReply}
             type="primary"
             className="bg-[#2A216D] text-white absolute right-4 bottom-4"
             size="large"
@@ -174,3 +173,39 @@ Albert Mike`,
 };
 
 export default Body;
+
+const Message = ({ message }) => {
+  return (
+    <div className="border rounded-md mb-6 p-4 mt-5">
+      <div className="flex justify-between">
+        <h1 className="text-[22px] font-medium">{message?.subject}</h1>
+      </div>
+      <div className="flex items-center gap-[10px] mt-5">
+        <Avatar
+          src={
+            message?.senderId?.profile_image
+              ? `${import.meta.env.VITE_API_URL}${
+                  message?.senderId?.profile_image
+                }`
+              : `https://ui-avatars.com/api/?name=${message?.senderId?.name}`
+          }
+          alt={message?.senderId?.name}
+          className="w-12 h-12"
+        />
+        <div className="flex flex-col">
+          <div className="flex items-center gap-[6px]">
+            <h1 className="font-semibold">{message?.senderId?.name}</h1>
+            <span className="text-sm font-normal">{`<${message?.senderId?.email}>`}</span>
+          </div>
+          <span className="text-sm font-normal">
+            To: {message?.receiverId?.email}
+          </span>
+        </div>
+      </div>
+      <p
+        className="mt-[18px]"
+        dangerouslySetInnerHTML={{ __html: message?.message }}
+      />
+    </div>
+  );
+};

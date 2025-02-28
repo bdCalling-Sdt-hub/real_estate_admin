@@ -19,9 +19,12 @@ export const MainMassage = ({ tab }) => {
     }
   }, [id]);
 
-  const handleRowClick = (val) => {
-    setSelectedMessage(val.key);
-    navigate(`/dashboard/message-mail?id=${val.key}`);
+  const handleRowClick = ({ record, authId }) => {
+    const secondParticipantId = record.participants.filter(
+      (p) => p != authId
+    )[0]?._id;
+
+    navigate(`/dashboard/message-mail?id=${secondParticipantId}`);
   };
   return (
     <div className="bg-white p-4 h-screen">
