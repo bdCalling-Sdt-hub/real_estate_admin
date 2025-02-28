@@ -10,6 +10,7 @@ import {
 } from "../redux/api/ordersApi";
 import Loading from "../../components/Loading";
 import { useEffect, useState } from "react";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const EditServices = () => {
   const navigate = useNavigate();
@@ -73,10 +74,10 @@ export const EditServices = () => {
       message.success("Packages and Services updated successfully");
       refetch();
     } catch (error) {
-     
       message.error("Failed to update packages and services");
     }
   };
+  const { data: profile } = useGetProfileQuery();
   return (
     <div className="bg-white p-4">
       <div
@@ -149,15 +150,17 @@ export const EditServices = () => {
             </div>
           </div>
         ))}
-        <div className="flex justify-between items-center text-lg font-semibold mb-6">
-          <span>Total Amount</span>
-          <span>
-            {Number(totalAmount).toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </span>
-        </div>
+        {profile?.data?.see_the_pricing && (
+          <div className="flex justify-between items-center text-lg font-semibold mb-6">
+            <span>Total Amount</span>
+            <span>
+              {Number(totalAmount).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </span>
+          </div>
+        )}
         {/* Action Buttons */}
         <div className="flex justify-center gap-4">
           <button

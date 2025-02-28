@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import { Modal } from "antd";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import { useGetProfileQuery } from "../redux/api/userApi";
 export const EditServicesCard = ({ pkg, handleRemovePackage, type }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
@@ -35,6 +36,7 @@ export const EditServicesCard = ({ pkg, handleRemovePackage, type }) => {
   };
   const images = pkg?.package_image || pkg?.service_image;
   const title = pkg?.name || pkg?.title;
+  const { data: profile } = useGetProfileQuery();
   return (
     <div>
       <div className="border rounded-lg shadow-md overflow-hidden mb-4">
@@ -69,13 +71,15 @@ export const EditServicesCard = ({ pkg, handleRemovePackage, type }) => {
               ))}
           </p>
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-[#D80027]">
-              Price:{" "}
-              {Number(pkg?.price).toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </span>
+            {profile?.data?.see_the_pricing && (
+              <span className="text-lg font-semibold text-[#D80027]">
+                Price:{" "}
+                {Number(pkg?.price).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </span>
+            )}
             <button
               onClick={() => handleRemovePackage({ id: pkg?._id, type })}
               className="bg-[#D80027] text-white px-4 py-2 rounded shadow-md hover:bg-red-600"

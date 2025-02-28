@@ -1,24 +1,28 @@
-import { Form, Input, message, Modal, Pagination } from "antd";
+import { Input, message, Modal, Pagination } from "antd";
 import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-import { Table, Button } from "antd";
+import { Table } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { AddPackageModal } from "./AddPackageModal";
 import { EditPackageModal } from "./EditPackageModal";
-import img from "../../assets/header/11.png";
-import img1 from "../../assets/header/22.png";
-import { useDeletePackageMutation, useGetAllPackageQuery } from "../redux/api/packageApi";
-
+import {
+  useDeletePackageMutation,
+  useGetAllPackageQuery,
+} from "../redux/api/packageApi";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const Packeges = () => {
   const [searchTerm, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-  const { data: packageData } = useGetAllPackageQuery({searchTerm,page: currentPage,
-    limit: pageSize,});
-const[deletePackage] = useDeletePackageMutation()
+  const { data: packageData } = useGetAllPackageQuery({
+    searchTerm,
+    page: currentPage,
+    limit: pageSize,
+  });
+  const [deletePackage] = useDeletePackageMutation();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -32,7 +36,6 @@ const[deletePackage] = useDeletePackageMutation()
   };
 
   const handlePageChange = (page) => {
-    
     setCurrentPage(page);
   };
 
@@ -42,17 +45,17 @@ const[deletePackage] = useDeletePackageMutation()
   };
 
   const handleDelete = async (record) => {
-
     Modal.confirm({
       title: "Are you sure?",
-      content: "This action cannot be undone. Do you want to delete this category?",
+      content:
+        "This action cannot be undone. Do you want to delete this category?",
       okText: "Yes, Delete",
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
         try {
           const response = await deletePackage(record?.key).unwrap();
-          message.success(response.message );
+          message.success(response.message);
         } catch (error) {
           message.error(error?.data?.message);
         }
@@ -136,6 +139,7 @@ const[deletePackage] = useDeletePackageMutation()
     },
   ];
 
+  const { data: profile } = useGetProfileQuery();
   return (
     <div className="bg-white p-4 h-screen">
       <div
@@ -152,7 +156,11 @@ const[deletePackage] = useDeletePackageMutation()
           </button>
           <span className="text-lg font-semibold">Packages</span>
         </h1>
-        <Input onChange={(e) => setSearch(e.target.value)} placeholder="Search here..." style={{ width: 300 }} />
+        <Input
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search here..."
+          style={{ width: 300 }}
+        />
       </div>
 
       <div className="">
@@ -167,19 +175,15 @@ const[deletePackage] = useDeletePackageMutation()
       </div>
 
       <div className="pt-5">
-        <Table
-          dataSource={tableData}
-          columns={columns}
-          pagination={false}
-        />
+        <Table dataSource={tableData} columns={columns} pagination={false} />
         <div className="mt-4 flex justify-end">
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={packageData?.data?.meta?.total || 0}
-          onChange={handlePageChange}
-          showSizeChanger={false}
-        />
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={packageData?.data?.meta?.total || 0}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+          />
         </div>
       </div>
 
@@ -209,10 +213,12 @@ const[deletePackage] = useDeletePackageMutation()
               <p className="font-semibold">Package Name:</p>
               <p>{selectedPackage?.name}</p>
             </div>
-            <div className="mb-4">
-              <p className="font-semibold">Price:</p>
-              <p>{selectedPackage?.price}</p>
-            </div>
+            {profile?.data?.see_the_pricing && (
+              <div className="mb-4">
+                <p className="font-semibold">Price:</p>
+                <p>{selectedPackage?.price}</p>
+              </div>
+            )}
             <div className="mb-4">
               <p className="font-semibold">Description:</p>
               <p>{selectedPackage?.description}</p>

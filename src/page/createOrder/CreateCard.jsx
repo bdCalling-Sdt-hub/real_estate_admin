@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import { Modal } from "antd";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const CreateCard = ({ _package, formData, setFormData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +52,7 @@ export const CreateCard = ({ _package, formData, setFormData }) => {
     }
   };
   const images = _package?.package_image || _package?.service_image;
+  const { data: profile } = useGetProfileQuery();
   return (
     <div>
       <div
@@ -91,9 +93,11 @@ export const CreateCard = ({ _package, formData, setFormData }) => {
           </ul>
         </div>
         <div className="border-t flex justify-between p-3 items-center">
-          <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
-            Price: ${_package.price.toLocaleString()}
-          </p>
+          {profile?.data?.see_the_pricing && (
+            <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
+              Price: ${_package.price.toLocaleString()}
+            </p>
+          )}
           <button
             style={{
               padding: "5px 20px",
@@ -102,6 +106,7 @@ export const CreateCard = ({ _package, formData, setFormData }) => {
               border: "none",
               borderRadius: "3px",
               cursor: "pointer",
+              marginLeft: "auto"
             }}
             onClick={() => handleAddService()}
           >

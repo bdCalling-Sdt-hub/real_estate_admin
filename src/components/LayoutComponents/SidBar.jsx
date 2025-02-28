@@ -160,6 +160,7 @@ const SidBar = () => {
     navigate("/login");
   };
 
+  const { data: profile } = useGetProfileQuery();
   return (
     <div className="custom-sidebar h-auto  bg-[#FEFEFE] shadow-sm">
       {/* Logo */}
@@ -169,13 +170,15 @@ const SidBar = () => {
             <img src={logo} alt="Logo" className="w-[160px]" />
           </div>
         </div>
-        <div className="mx-5 mb-6 fixed z-40 top-[100px] w-[280px] ">
-          <Link to={"/dashboard/create-new-order"}>
-            <button className="bg-[#2A216D] text-white py-2 w-full rounded">
-              + Create Order
-            </button>
-          </Link>
-        </div>
+        {profile?.data?.place_on_order_for_client && (
+          <div className="mx-5 mb-6 fixed z-40 top-[100px] w-[280px] ">
+            <Link to={"/dashboard/create-new-order"}>
+              <button className="bg-[#2A216D] text-white py-2 w-full rounded">
+                + Create Order
+              </button>
+            </Link>
+          </div>
+        )}
         <div className="bg-white h-[152px] fixed w-[320px]"></div>
       </div>
 

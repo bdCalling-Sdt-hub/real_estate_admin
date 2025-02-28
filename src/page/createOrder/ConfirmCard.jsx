@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import { Modal } from "antd";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import { useGetProfileQuery } from "../redux/api/userApi";
 export const ConfirmCard = ({ service }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
@@ -36,6 +37,7 @@ export const ConfirmCard = ({ service }) => {
 
   const images = service?.service_image || service?.package_image;
   const name = service?.title || service?.name;
+  const { data: profile } = useGetProfileQuery();
   return (
     <div>
       <div
@@ -72,11 +74,13 @@ export const ConfirmCard = ({ service }) => {
             ))}
           </ul>
         </div>
-        <div className="border-t flex justify-between p-3 items-center">
-          <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
-            Price: ${service?.price.toLocaleString()}
-          </p>
-        </div>
+        {profile?.data?.see_the_pricing && (
+          <div className="border-t flex justify-between p-3 items-center">
+            <p style={{ color: "#9B3C7B", fontWeight: "bold" }}>
+              Price: ${service?.price.toLocaleString()}
+            </p>
+          </div>
+        )}
       </div>
       {/* Modal with Swiper */}
       <Modal

@@ -134,8 +134,6 @@ const items = [
 const Header = () => {
   const { data: getProfile } = useGetProfileQuery();
   const { data: AllSearch } = useGetSearchQuery();
-  console.log(AllSearch);
-
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [expandedKeys, setExpandedKeys] = useState([]);
   const { data: notificationData } = useGetAllNotificationQuery();

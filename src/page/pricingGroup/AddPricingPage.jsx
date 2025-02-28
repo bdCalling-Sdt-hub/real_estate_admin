@@ -8,6 +8,7 @@ import {
   useGetServicesAllQuery,
 } from "../redux/api/packageApi";
 import { imageUrl } from "../redux/api/baseApi";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const AddPricingPage = () => {
   const navigate = useNavigate();
@@ -77,6 +78,7 @@ export const AddPricingPage = () => {
     }
   };
 
+  const { data: profile } = useGetProfileQuery();
   const pricingColumns = [
     {
       title: "Service Title",
@@ -87,34 +89,46 @@ export const AddPricingPage = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (price) => {
+        if (profile?.data?.see_the_pricing) {
+          return price;
+        } else {
+          return "N/A";
+        }
+      },
     },
     {
       title: "Special Price",
       dataIndex: "special_price",
       key: "special_price",
-      render: (text, record, index) => (
-        <Input
-          defaultValue={record.price}
-          onChange={(e) => {
-            const newServices = [...selectedServices];
+      render: (text, record, index) => {
+        if (!profile?.data?.see_the_pricing) {
+          return "N/A";
+        }
+        return (
+          <Input
+            defaultValue={record.price}
+            onChange={(e) => {
+              const newServices = [...selectedServices];
 
-            const updatedSpecialPrice = parseFloat(e.target.value);
+              const updatedSpecialPrice = parseFloat(e.target.value);
 
-            if (isNaN(updatedSpecialPrice)) {
-              message.error("Invalid special_price: Must be a number.");
+              if (isNaN(updatedSpecialPrice)) {
+                message.error("Invalid special_price: Must be a number.");
 
-              return;
-            }
+                return;
+              }
 
-            newServices[index] = {
-              ...newServices[index],
-              special_price: updatedSpecialPrice,
-            };
+              newServices[index] = {
+                ...newServices[index],
+                special_price: updatedSpecialPrice,
+              };
 
-            setSelectedServices(newServices);
-          }}
-        />
-      ),
+              setSelectedServices(newServices);
+            }}
+          />
+        );
+      },
     },
   ];
 

@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Select, Table, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useGetAllClientQuery, useGetServicesAllQuery, useGetSinglePriceQuery, useUpdatePricingMutation } from "../redux/api/packageApi";
+import {
+  useGetAllClientQuery,
+  useGetServicesAllQuery,
+  useGetSinglePriceQuery,
+  useUpdatePricingMutation,
+} from "../redux/api/packageApi";
 import { imageUrl } from "../redux/api/baseApi";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const EditPricingPage = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const { data: singlePricing, isLoading } = useGetSinglePriceQuery(
     { id },
     { refetchOnMountOrArgChange: true }
@@ -17,7 +23,7 @@ export const EditPricingPage = () => {
   const { data: clientData } = useGetAllClientQuery();
   const { data: allServicesData } = useGetServicesAllQuery();
   const [updatePricing] = useUpdatePricingMutation();
-  
+
   const [form] = Form.useForm();
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -29,14 +35,20 @@ export const EditPricingPage = () => {
         name: singlePricing?.data?.name,
       });
 
-      setSelectedClientIds(singlePricing?.data?.clients?.map(client => client?._id));
-      setSelectedServiceIds(singlePricing.data?.services?.map(service => service?.serviceId?._id));
-      
+      setSelectedClientIds(
+        singlePricing?.data?.clients?.map((client) => client?._id)
+      );
+      setSelectedServiceIds(
+        singlePricing.data?.services?.map((service) => service?.serviceId?._id)
+      );
+
       // Initialize the special prices
-      const servicesWithPrice = singlePricing?.data?.services?.map(service => ({
-        ...service.serviceId,
-        special_price: service?.special_price,  // Add the special_price to each service
-      }));
+      const servicesWithPrice = singlePricing?.data?.services?.map(
+        (service) => ({
+          ...service.serviceId,
+          special_price: service?.special_price, // Add the special_price to each service
+        })
+      );
       setSelectedServices(servicesWithPrice);
     }
   }, [isLoading, singlePricing, form]);
@@ -47,7 +59,7 @@ export const EditPricingPage = () => {
 
   const handleServiceSelect = (serviceIds) => {
     setSelectedServiceIds(serviceIds);
-    const selectedServicesData = allServicesData?.data?.filter(service =>
+    const selectedServicesData = allServicesData?.data?.filter((service) =>
       serviceIds.includes(service?._id)
     );
     setSelectedServices(selectedServicesData);
@@ -64,7 +76,7 @@ export const EditPricingPage = () => {
       clients: selectedClientIds,
       services: selectedServices.map((service, index) => ({
         serviceId: service?._id,
-        special_price: Number(service.special_price),  
+        special_price: Number(service.special_price),
       })),
     };
     setLoading(true);
@@ -78,6 +90,7 @@ export const EditPricingPage = () => {
     setLoading(false);
   };
 
+  const { data: profile } = useGetProfileQuery();
   const pricingColumns = [
     {
       title: "Service Title",
@@ -89,29 +102,37 @@ export const EditPricingPage = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (text, record) => <span>{record?.price}</span>,
+      render: (text, record) => {
+        if (!profile?.data?.see_the_pricing) {
+          return "N/A";
+        }
+        return <span>{record?.price}</span>;
+      },
     },
     {
       title: "Special Price",
       dataIndex: "special_price",
       key: "special_price",
       render: (text, record, index) => {
+        if (!profile?.data?.see_the_pricing) {
+          return "N/A";
+        }
         return (
           <Input
-          type="number"
-            value={record.special_price } 
+            type="number"
+            value={record.special_price}
             onChange={(e) => {
               const updatedServices = [...selectedServices];
               updatedServices[index] = {
                 ...updatedServices[index],
-                special_price: (e.target.value), 
+                special_price: e.target.value,
               };
-              setSelectedServices(updatedServices);  
+              setSelectedServices(updatedServices);
             }}
           />
         );
-      }
-    }
+      },
+    },
   ];
 
   return (
@@ -150,9 +171,14 @@ export const EditPricingPage = () => {
             />
             <ul>
               {selectedClientIds.map((clientId) => {
-                const client = clientData?.data?.find((c) => c._id === clientId);
+                const client = clientData?.data?.find(
+                  (c) => c._id === clientId
+                );
                 return client ? (
-                  <li key={client?._id} className="flex items-center justify-between mb-2">
+                  <li
+                    key={client?._id}
+                    className="flex items-center justify-between mb-2"
+                  >
                     <div className="flex items-center gap-2">
                       <img
                         src={`${imageUrl}/${client?.profile_image}`}
@@ -161,7 +187,11 @@ export const EditPricingPage = () => {
                       />
                       <span>{client?.name}</span>
                     </div>
-                    <Button type="link" danger onClick={() => handleRemoveClient(client?._id)}>
+                    <Button
+                      type="link"
+                      danger
+                      onClick={() => handleRemoveClient(client?._id)}
+                    >
                       Remove
                     </Button>
                   </li>
@@ -172,7 +202,9 @@ export const EditPricingPage = () => {
 
           {/* Select Services */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Add Services/Products</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Add Services/Products
+            </h3>
             <Select
               mode="multiple"
               style={{ width: "100%" }}
@@ -182,7 +214,7 @@ export const EditPricingPage = () => {
               options={allServicesData?.data?.map((service) => ({
                 label: service?.title,
                 value: service?._id,
-                price: service?.price,
+                price: profile?.data?.see_the_pricing ? service?.price : "N/A",
               }))}
             />
           </div>
@@ -203,16 +235,12 @@ export const EditPricingPage = () => {
 
           {/* Save Button */}
           <div className="flex justify-end">
-          <button
+            <button
               type="submit"
               className="px-4 py-3 w-[200px] bg-[#2A216D] text-white rounded-md"
-              disabled={loading} 
+              disabled={loading}
             >
-              {loading ? (
-                <Spin size="small" /> 
-              ) : (
-                "Update"
-              )}
+              {loading ? <Spin size="small" /> : "Update"}
             </button>
           </div>
         </Form>

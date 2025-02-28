@@ -16,6 +16,7 @@ import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { imageUrl } from "../redux/api/baseApi";
 import { formatDateTime } from "../../utils/formatDateTime";
 import { menu } from "./constant";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const OrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export const OrderDetailsPage = () => {
   const { id } = useParams();
 
   const { data, isLoading, refetch } = useGetOrderByIdQuery(id);
+  const { data: profile } = useGetProfileQuery();
   if (isLoading) return <Loading />;
   return (
     <div className="p-6 bg-white min-h-screen">
@@ -72,17 +74,19 @@ export const OrderDetailsPage = () => {
                   <p className="text-gray-500">{data?.data?.clientId?.name}</p>
                 </div>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold text-right">
-                  Total Price
-                </h2>
-                <p className="text-purple-600 font-bold text-lg">
-                  {data?.data?.totalAmount.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  })}
-                </p>
-              </div>
+              {profile?.data?.see_the_pricing && (
+                <div>
+                  <h2 className="text-xl font-semibold text-right">
+                    Total Price
+                  </h2>
+                  <p className="text-purple-600 font-bold text-lg">
+                    {data?.data?.totalAmount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="border flex justify-between p-3 rounded-md">

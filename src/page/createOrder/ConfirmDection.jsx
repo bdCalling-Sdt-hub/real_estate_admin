@@ -3,8 +3,11 @@ import { ConfirmCard } from "./ConfirmCard";
 import { imageUrl } from "../redux/api/baseApi";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { Upload } from "antd";
+import { useGetProfileQuery } from "../redux/api/userApi";
 
 export const ConfirmSection = ({ formData, setFormData }) => {
+  const { data: profile } = useGetProfileQuery();
+
   const totalAmount = formData?.services?.reduce(
     (acc, service) => acc + service?.price,
     0
@@ -113,16 +116,17 @@ export const ConfirmSection = ({ formData, setFormData }) => {
             formData={formData}
             setFormData={setFormData}
           />
-
-          <div className="flex justify-between mt-12">
-            <h3 className="text-lg font-semibold mb-2">Total Amount:</h3>
-            <h3 className="text-lg font-semibold mb-2">
-              {totalAmount.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </h3>
-          </div>
+          {profile?.data?.see_the_pricing && (
+            <div className="flex justify-between mt-12">
+              <h3 className="text-lg font-semibold mb-2">Total Amount:</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                {totalAmount.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </h3>
+            </div>
+          )}
         </div>
       </div>
     </div>

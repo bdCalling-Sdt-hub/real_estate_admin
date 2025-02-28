@@ -13,7 +13,6 @@ export const RecentOrder = () => {
     page,
     limit: pageSize,
   });
-  console.log(recentOrder?.data?.meta);
 
   if (isLoading) return <div>Loading...</div>;
 
