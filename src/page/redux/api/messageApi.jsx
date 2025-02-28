@@ -15,7 +15,14 @@ const messageApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
+    getFavoriteList: builder.query({
+      query: () => `/message/favorite/get-all`,
+    }),
   }),
 });
 
-export const { useGetAllEmailsQuery, useToggleFavoriteMutation } = messageApi;
+export const {
+  useGetAllEmailsQuery,
+  useToggleFavoriteMutation,
+  useGetFavoriteListQuery,
+} = messageApi;

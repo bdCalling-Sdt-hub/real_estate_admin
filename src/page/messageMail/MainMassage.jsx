@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import DeleteModal from "./DeleteModal";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import List from "./List";
 import Body from "./Body";
 
-export const MainMassage = ({ tab }) => {
-  const [deleteModal, setDeleteModal] = useState(false);
+export const MainMassage = ({ tab, favContacts }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [params] = useSearchParams();
   const id = params.get("id");
@@ -33,11 +31,10 @@ export const MainMassage = ({ tab }) => {
       ) : (
         <List
           tab={tab}
+          favContacts={favContacts}
           handleRowClick={handleRowClick}
-          setDeleteModal={setDeleteModal}
         />
       )}
-      <DeleteModal open={deleteModal} setOpen={setDeleteModal} />
     </div>
   );
 };

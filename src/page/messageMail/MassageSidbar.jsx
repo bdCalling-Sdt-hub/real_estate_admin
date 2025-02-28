@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Avatar, Modal, Popover } from "antd";
-import {
-  EditOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { Button, Avatar, Popover } from "antd";
+import { EditOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import { MainMassage } from "./MainMassage";
 import { TbMessageDots } from "react-icons/tb";
 import { FaRegStar } from "react-icons/fa";
@@ -14,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import parseJWT from "../../utils/parseJWT";
+import { useGetFavoriteListQuery } from "../redux/api/messageApi";
 
 export const MassageSidbar = () => {
   const [selectedTab, setSelectedTab] = useState("All");
@@ -21,10 +17,8 @@ export const MassageSidbar = () => {
   const navigate = useNavigate();
 
   const [contacts, setContacts] = useState([]);
-  const [counts, setCounts] = useState({
-    all: 0,
-    favorites: 0,
-  });
+  const { data: favContacts } = useGetFavoriteListQuery();
+  const [count, setCount] = useState(0);
 
   const handleSelectTab = (val) => {
     setSelectedTab(val);
@@ -46,7 +40,7 @@ export const MassageSidbar = () => {
     socket.emit("conversion-list");
 
     socket.on("conversion-list", (message) => {
-      setCounts((p) => ({ ...p, all: message.length }));
+      setCount(message.length);
     });
 
     return () => {
@@ -85,7 +79,7 @@ export const MassageSidbar = () => {
                 <TbMessageDots className="text-2xl" />
                 All
               </span>
-              <span>{counts.all}</span>
+              <span>{count}</span>
             </div>
           </div>
           <div
@@ -101,7 +95,7 @@ export const MassageSidbar = () => {
                 <FaRegStar className="text-2xl" />
                 Favorite
               </span>
-              <span>230</span>
+              <span>{favContacts?.data?.length || 0}</span>
             </div>
           </div>
         </div>
@@ -136,7 +130,7 @@ export const MassageSidbar = () => {
         </div>
       </div>
       <div className="w-[80%]">
-        <MainMassage tab={selectedTab} />
+        <MainMassage tab={selectedTab} favContacts={favContacts} />
       </div>
 
       <ComposeModal

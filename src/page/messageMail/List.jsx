@@ -1,12 +1,13 @@
-import { Table, Avatar } from "antd";
+import { Table, Avatar, message } from "antd";
 import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import parseJWT from "../../utils/parseJWT";
 import dayjs from "dayjs";
+import { useToggleFavoriteMutation } from "../redux/api/messageApi";
 
-const List = ({ tab, handleRowClick, setDeleteModal }) => {
+const List = ({ tab, handleRowClick, favContacts }) => {
   const token = useSelector((state) => state.logInUser.token);
   const { authId } = parseJWT(token);
   const [messages, setMessages] = useState(null);
@@ -22,7 +23,7 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleFav(contact);
+              handleToggleFav({ id: contact._id, isFavorite });
             }}
           >
             {isFavorite ? (
@@ -100,15 +101,34 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
     };
   }, []);
 
-  const handleToggleFav = (id) => {
-    console.log(id);
+  const [toggleFavorite] = useToggleFavoriteMutation();
+  const handleToggleFav = async ({ id, isFavorite }) => {
+    try {
+      await toggleFavorite({
+        conversationId: id,
+        types: isFavorite ? "remove" : "add",
+      });
+      const msgs = [
+        ...messages.filter((x) => x._id != id),
+        {
+          ...messages.find((x) => x._id === id),
+          favorite: isFavorite ? [] : [authId],
+        },
+      ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setMessages(msgs);
+      message.success("Added to favorites");
+    } catch (error) {
+      console.log(error);
+      message.success("Failed adding to favorites");
+    }
   };
   return (
     <>
       <h1 className="text-lg font-semibold mb-4">{tab}</h1>
       <div style={{ overflowX: "auto", maxHeight: "75vh", overflowY: "auto" }}>
         <Table
-          dataSource={messages}
+          dataSource={tab === "All" ? messages : favContacts?.data || []}
           columns={columns}
           pagination={false}
           bordered
