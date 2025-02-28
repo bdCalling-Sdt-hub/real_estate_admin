@@ -9,7 +9,6 @@ import dayjs from "dayjs";
 const List = ({ tab, handleRowClick, setDeleteModal }) => {
   const token = useSelector((state) => state.logInUser.token);
   const { authId } = parseJWT(token);
-  const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState(null);
 
   const columns = [
@@ -88,17 +87,16 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
   ];
 
   useEffect(() => {
-    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
-    setSocket(newSocket);
+    const socket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
 
-    newSocket.emit("conversion-list");
+    socket.emit("conversion-list");
 
-    newSocket.on("conversion-list", (message) => {
+    socket.on("conversion-list", (message) => {
       setMessages(message);
     });
 
     return () => {
-      newSocket.disconnect();
+      socket.disconnect();
     };
   }, []);
 
@@ -115,7 +113,7 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
           pagination={false}
           bordered
           onRow={(record) => ({
-            onClick: () => handleRowClick({record, authId}),
+            onClick: () => handleRowClick({ record, authId }),
           })}
           rowClassName="cursor-pointer"
         />

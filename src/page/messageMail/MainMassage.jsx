@@ -21,7 +21,7 @@ export const MainMassage = ({ tab }) => {
 
   const handleRowClick = ({ record, authId }) => {
     const secondParticipantId = record.participants.filter(
-      (p) => p != authId
+      (p) => p._id != authId
     )[0]?._id;
 
     navigate(`/dashboard/message-mail?id=${secondParticipantId}`);

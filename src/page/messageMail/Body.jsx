@@ -81,8 +81,6 @@ const Body = () => {
     setReply(false);
     setContent("");
   };
-  console.log(messages);
-  
   return (
     <main className="p-9">
       <header>
