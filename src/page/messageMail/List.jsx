@@ -1,16 +1,18 @@
-import { Table, Avatar } from "antd";
-import { DeleteOutlined, StarOutlined, StarFilled } from "@ant-design/icons";
+import { Table, Avatar, message } from "antd";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import parseJWT from "../../utils/parseJWT";
 import dayjs from "dayjs";
+import { useToggleFavoriteMutation } from "../redux/api/messageApi";
 
-const List = ({ tab, handleRowClick, setDeleteModal }) => {
+const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJWT(token);
-  const [socket, setSocket] = useState(null);
+  const { authId, role } = parseJWT(token);
+
   const [messages, setMessages] = useState(null);
+  const [favMessages, setFavMessages] = useState(favContacts?.data);
 
   const columns = [
     {
@@ -18,12 +20,13 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
       dataIndex: "starred",
       key: "starred",
       render: (_, contact) => {
-        const isFavorite = contact.favorite.length > 0; // Adjust based on your logic
+        const isFavorite =
+          tab === "Favorite" ? true : contact.favorite.includes(authId);
         return (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleFav(contact);
+              handleToggleFav({ id: contact._id, isFavorite });
             }}
           >
             {isFavorite ? (
@@ -70,7 +73,7 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
         return (
           <div>
             <strong>{message.subject}</strong> -{" "}
-            {message.message.replace(/<\/?[^>]+(>|$)/g, "")}
+            {message?.message?.replace(/<\/?[^>]+(>|$)/g, "")}
           </div>
         );
       },
@@ -88,34 +91,62 @@ const List = ({ tab, handleRowClick, setDeleteModal }) => {
   ];
 
   useEffect(() => {
-    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
-    setSocket(newSocket);
+    if (favContacts) {
+      setFavMessages(favContacts?.data);
+    }
+  }, [favContacts]);
 
-    newSocket.emit("conversion-list");
+  useEffect(() => {
+    const socket = io(
+      `${import.meta.env.VITE_API_URL}?id=${authId}&role=${role}`
+    );
 
-    newSocket.on("conversion-list", (message) => {
+    socket.emit("conversion-list");
+
+    socket.on("conversion-list", (message) => {
       setMessages(message);
     });
 
     return () => {
-      newSocket.disconnect();
+      socket.disconnect();
     };
   }, []);
 
-  const handleToggleFav = (id) => {
-    console.log(id);
+  const [toggleFavorite] = useToggleFavoriteMutation();
+  const handleToggleFav = async ({ id, isFavorite }) => {
+    try {
+      await toggleFavorite({
+        conversationId: id,
+        types: isFavorite ? "remove" : "add",
+      });
+      const msgs = [
+        ...messages.filter((x) => x._id != id),
+        {
+          ...messages.find((x) => x._id === id),
+          favorite: isFavorite ? [] : [authId],
+        },
+      ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+      setMessages(msgs);
+      setFavMessages((prev) => prev.filter((msg) => msg._id != id));
+      refetchFavs();
+      message.success(`${isFavorite ? "Removed from" : "Added to"} favorites`);
+    } catch (error) {
+      console.log(error);
+      message.success("Failed adding to favorites");
+    }
   };
   return (
     <>
       <h1 className="text-lg font-semibold mb-4">{tab}</h1>
       <div style={{ overflowX: "auto", maxHeight: "75vh", overflowY: "auto" }}>
         <Table
-          dataSource={messages}
+          dataSource={tab === "All" ? messages : favMessages || []}
           columns={columns}
           pagination={false}
           bordered
           onRow={(record) => ({
-            onClick: () => handleRowClick({record, authId}),
+            onClick: () => handleRowClick({ record, authId }),
           })}
           rowClassName="cursor-pointer"
         />

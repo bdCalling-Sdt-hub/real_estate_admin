@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import DeleteModal from "./DeleteModal";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import List from "./List";
 import Body from "./Body";
 
-export const MainMassage = ({ tab }) => {
-  const [deleteModal, setDeleteModal] = useState(false);
+export const MainMassage = ({ tab, favContacts, refetchFavs }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [params] = useSearchParams();
   const id = params.get("id");
@@ -21,7 +19,7 @@ export const MainMassage = ({ tab }) => {
 
   const handleRowClick = ({ record, authId }) => {
     const secondParticipantId = record.participants.filter(
-      (p) => p != authId
+      (p) => p._id != authId
     )[0]?._id;
 
     navigate(`/dashboard/message-mail?id=${secondParticipantId}`);
@@ -33,11 +31,11 @@ export const MainMassage = ({ tab }) => {
       ) : (
         <List
           tab={tab}
+          favContacts={favContacts}
+          refetchFavs={refetchFavs}
           handleRowClick={handleRowClick}
-          setDeleteModal={setDeleteModal}
         />
       )}
-      <DeleteModal open={deleteModal} setOpen={setDeleteModal} />
     </div>
   );
 };

@@ -1,9 +1,3 @@
-import dashboard from "../../assets/routerImg/dashboard.png";
-import categorie from "../../assets/routerImg/categorie.png";
-import create from "../../assets/routerImg/create.png";
-import settings from "../../assets/routerImg/settings.png";
-import subscription from "../../assets/routerImg/subscription.png";
-import user from "../../assets/routerImg/user.png";
 import logo from "../../assets/header/logo1.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -19,6 +13,7 @@ import { IoBagOutline, IoSettingsOutline } from "react-icons/io5";
 import { logout } from "../../page/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { VscNotebook } from "react-icons/vsc";
+import { useGetProfileQuery } from "../../page/redux/api/userApi";
 
 const items = [
   {
@@ -161,7 +156,7 @@ const SidBar = () => {
 
   // Logout Function
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logout());
     navigate("/login");
   };
 
@@ -181,9 +176,7 @@ const SidBar = () => {
             </button>
           </Link>
         </div>
-        <div className="bg-white h-[152px] fixed w-[320px]">
-         
-        </div>
+        <div className="bg-white h-[152px] fixed w-[320px]"></div>
       </div>
 
       {/* Sidebar Menu */}

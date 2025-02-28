@@ -42,14 +42,16 @@ const Body = () => {
   };
 
   const token = useSelector((state) => state.logInUser.token);
-  const { authId } = parseJWT(token);
+  const { authId, role } = parseJWT(token);
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState(null);
   const [params] = useSearchParams();
   const id = params.get("id");
 
   useEffect(() => {
-    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
+    const newSocket = io(
+      `${import.meta.env.VITE_API_URL}?id=${authId}&role=${role}`
+    );
     setSocket(newSocket);
 
     newSocket.emit("message-getall", { receiverId: id, page: 1 });
@@ -81,10 +83,8 @@ const Body = () => {
     setReply(false);
     setContent("");
   };
-  console.log(messages);
-  
   return (
-    <main className="p-9">
+    <main className="p-9 bg-white overflow-y-auto h-[80vh]">
       <header>
         <Button
           icon={<ArrowLeft />}
