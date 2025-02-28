@@ -23,7 +23,8 @@ export const EditServices = () => {
   useEffect(() => {
     setPackagesAndServices(data?.data);
   }, [data]);
-
+  
+  const { data: profile } = useGetProfileQuery();
   if (isLoading) return <Loading />;
 
   const services = {};
@@ -77,7 +78,6 @@ export const EditServices = () => {
       message.error("Failed to update packages and services");
     }
   };
-  const { data: profile } = useGetProfileQuery();
   return (
     <div className="bg-white p-4">
       <div
@@ -94,7 +94,7 @@ export const EditServices = () => {
           </button>
           <span className="text-lg font-semibold">Edit Services</span>
         </h1>
-        <Dropdown overlay={() => menu(id)} trigger={["click"]}>
+        <Dropdown overlay={() => menu({ id, profile })} trigger={["click"]}>
           <Button
             className="border border-black rounded-full text-black flex items-center"
             onClick={(e) => e.preventDefault()}

@@ -99,7 +99,6 @@ export const EditOrder = () => {
         message.success("Order updated successfully");
       }
     } catch (error) {
-     
       message.error("Something went wrong");
     }
   };
@@ -120,7 +119,7 @@ export const EditOrder = () => {
           <span className="text-lg font-semibold">Edit Order</span>
         </h1>
 
-        <Dropdown overlay={() => menu(id)} trigger={["click"]}>
+        <Dropdown overlay={() => menu({ id })} trigger={["click"]}>
           <Button
             className="border border-black rounded-full text-black flex items-center"
             onClick={(e) => e.preventDefault()}

@@ -51,7 +51,9 @@ export const OrderDetailsPage = () => {
           <span className="text-lg font-semibold">Order Details</span>
         </h1>
         <Dropdown
-          overlay={() => menu(id, setModal2Open, setRemoveModalOpen)}
+          overlay={() =>
+            menu({ id, setModal2Open, setRemoveModalOpen, profile })
+          }
           trigger={["click"]}
         >
           <Button
