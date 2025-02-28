@@ -83,10 +83,6 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
         access.viewAssignedOrders ? "true" : "false"
       );
       formData.append(
-        "view_all_order",
-        access.viewAllOrders ? "true" : "false"
-      );
-      formData.append(
         "place_on_order_for_client",
         access.placeOrder ? "true" : "false"
       );

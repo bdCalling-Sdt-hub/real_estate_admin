@@ -14,7 +14,6 @@ import { IoCameraOutline } from "react-icons/io5";
 import { useUpdateTeamMemberMutation } from "../redux/api/clientManageApi";
 import { useGetAllServicesSelectQuery } from "../redux/api/serviceApi";
 import { imageUrl } from "../redux/api/baseApi";
-import { FaCamera } from "react-icons/fa6";
 
 export const EditTeamMember = ({
   openAddModal,

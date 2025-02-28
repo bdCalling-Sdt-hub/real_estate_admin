@@ -35,6 +35,7 @@ export const TeamMember = () => {
     roleOfName:member?.roleOfName,
     profile_image: member?.profile_image,
     view_assigned_order:member?.view_assigned_order,
+    can_manage_teammembers:member?.can_manage_teammembers,
     view_all_order:member?.view_all_order,
     place_on_order_for_client:member?.place_on_order_for_client,
     do_production_work:member?.do_production_work,
@@ -45,6 +46,7 @@ export const TeamMember = () => {
   })) || [];
 
   const handleEdit = (record) => {
+    console.log(record);
     
     setSelectedTeamMember(record);
     setOpenAddModal1(true);
