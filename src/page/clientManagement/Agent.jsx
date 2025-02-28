@@ -19,6 +19,7 @@ export const Agent = () => {
     { id },
     { refetchOnMountOrArgChange: true }
   );
+  console.log(singleClientAgentData)
   const[deleteClient] = useDeleteAccountMutation()
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openAddModal1, setOpenAddModal1] = useState(false);
@@ -35,12 +36,25 @@ export const Agent = () => {
       phone: agent?.phone_number,
       address: agent?.address,
       profile_image: agent?.profile_image,
+      place_an_order:agent?.place_an_order,
+      can_see_all_order:agent?.can_see_all_order,
+      can_see_invoice:agent?.can_see_invoice,
+      can_see_assigned_order:agent?.can_see_assigned_order,
+      can_see_pricing:agent?.can_see_pricing,
+      can_add_new_agent:agent?.can_add_new_agent,
     })) || [];
 
   const handleEdit = (record) => {
     setSelectedCategory(record);
     setOpenAddModal1(true);
   };
+
+   {/* place_an_order: boolean;
+  can_see_all_Order: boolean;
+  can_see_invoice: boolean;
+  can_see_assigned_order: boolean;
+  can_see_pricing: boolean;
+  can_add_new_agent: boolean; */}
 
   const handleDelete = (id) => {
  

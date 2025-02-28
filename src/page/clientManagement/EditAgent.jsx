@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, Form, Input, message, Modal, Spin, Upload } from "antd";
+import {
+  Avatar,
+  Checkbox,
+  Form,
+  Input,
+  message,
+  Modal,
+  Spin,
+  Upload,
+} from "antd";
 import { IoCameraOutline } from "react-icons/io5";
 import { imageUrl } from "../redux/api/baseApi";
 import { useUpdateAgentManagementMutation } from "../redux/api/clientManageApi";
@@ -9,6 +18,7 @@ export const EditAgent = ({
   setOpenAddModal,
   selectAgentManagement,
 }) => {
+  console.log(selectAgentManagement);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [updateAgent] = useUpdateAgentManagementMutation();
@@ -21,6 +31,12 @@ export const EditAgent = ({
         email: selectAgentManagement?.email,
         address: selectAgentManagement?.address,
         phone: selectAgentManagement?.phone,
+        place_an_order: selectAgentManagement?.place_an_order,
+        can_see_pricing: selectAgentManagement?.can_see_pricing,
+        can_see_assigned_order: selectAgentManagement?.can_see_assigned_order,
+        can_see_all_order: selectAgentManagement?.can_see_all_order,
+        can_add_new_agent: selectAgentManagement?.can_add_new_agent,
+        can_see_invoice: selectAgentManagement?.can_see_invoice,
       });
       setProfilePic(selectAgentManagement?.profile_image || null);
     }
@@ -45,6 +61,12 @@ export const EditAgent = ({
     formData.append("name", values.name);
     formData.append("phone_number", values.phone);
     formData.append("address", values.address);
+    formData.append("place_an_order", values.place_an_order);
+    formData.append("can_see_pricing", values.can_see_pricing);
+    formData.append("can_see_assigned_order", values.can_see_assigned_order);
+    formData.append("can_see_all_order", values.can_see_all_order);
+    formData.append("can_add_new_agent", values.can_add_new_agent);
+    formData.append("can_see_invoice", values.can_see_invoice);
 
     if (profilePic instanceof File) {
       formData.append("profile_image", profilePic);
@@ -134,6 +156,57 @@ export const EditAgent = ({
             ]}
           >
             <Input className="py-3" placeholder="Input here" />
+          </Form.Item>
+          <Form.Item label="Give Access To">
+            <div className="flex flex-col gap-3">
+              <Form.Item
+                name="place_an_order"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Place an orders</Checkbox>
+              </Form.Item>
+
+              <Form.Item
+                name="can_see_pricing"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Can see the pricing</Checkbox>
+              </Form.Item>
+
+              <Form.Item
+                name="can_see_assigned_order"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Can see only their order assigned to</Checkbox>
+              </Form.Item>
+
+              <Form.Item
+                name="can_see_all_order"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Can see all orders</Checkbox>
+              </Form.Item>
+
+              <Form.Item
+                name="can_add_new_agent"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Can add new agents</Checkbox>
+              </Form.Item>
+
+              <Form.Item
+                name="can_see_invoice"
+                valuePropName="checked"
+                initialValue={false}
+              >
+                <Checkbox>Can see invoicing</Checkbox>
+              </Form.Item>
+            </div>
           </Form.Item>
 
           <div className="flex gap-3 mt-4">
