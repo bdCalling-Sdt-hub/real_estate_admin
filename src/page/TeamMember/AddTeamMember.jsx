@@ -27,6 +27,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
     seePricing: false,
     editOrders: false,
     isAdmin: false,
+    can_manage_teammembers: false,
   });
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -47,6 +48,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       // productionWork: isChecked ? true : access.productionWork,
       seePricing: isChecked ? true : access.seePricing,
       editOrders: isChecked ? true : access.editOrders,
+      can_manage_teammembers: isChecked ? true : access.can_manage_teammembers,
       isAdmin: isChecked,
     });
   };
@@ -56,9 +58,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
     setAccess({ ...access, [key]: e.target.checked });
   };
 
-  const handleServiceChange = (value) => {
-    
-  };
+  const handleServiceChange = (value) => {};
 
   const handleFinish = async (values) => {
     try {
@@ -96,6 +96,8 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       // );
       formData.append("see_the_pricing", access.seePricing ? "true" : "false");
       formData.append("edit_order", access.editOrders ? "true" : "false");
+      formData.append("can_manage_teammembers", access.can_manage_teammembers ? "true" : "false");
+      formData.append("view_all_order", "true");
       formData.append("is_admin", access.isAdmin ? "true" : "false");
       if (values.services?.length) {
         values.services.forEach((serviceId) => {
@@ -104,13 +106,12 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       }
       setLoading(true);
       const response = await addTeamMember(formData);
-      
+
       if (response?.error) {
-        message.error(response.error.data.message );
-        
+        message.error(response.error.data.message);
+
         setLoading(false);
         console.error(response.error);
-
       } else {
         message.success(response?.data?.message);
         form.resetFields();
@@ -120,8 +121,8 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
       message.error(error?.data?.data?.message);
       console.error("Add Team Member Error:", error);
     }
-  
-      setLoading(false);
+
+    setLoading(false);
   };
 
   const handleCancel = () => {
@@ -229,9 +230,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
                 { value: "EnergyLabelAdvisor", label: "Energy Label Advisor" },
                 { value: "Manager", label: "Manager" },
               ]}
-              onChange={(value) => {
-                
-              }}
+              onChange={(value) => {}}
             />
           </Form.Item>
 
@@ -296,11 +295,11 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
                 Can view assigned orders
               </Checkbox>
               <Checkbox
-                checked={access.viewAllOrders}
+                checked={access.can_manage_teammembers}
                 disabled={access.isAdmin}
-                onChange={handleCheckboxChange("viewAllOrders")}
+                onChange={handleCheckboxChange("can_manage_teammembers")}
               >
-                Can view all orders
+                Manage team members
               </Checkbox>
               <Checkbox
                 checked={access.placeOrder}
@@ -338,7 +337,7 @@ export const AddTeamMember = ({ openAddModal, setOpenAddModal }) => {
 
           {/* Buttons */}
           <div className="flex gap-3 mt-4">
-          <button
+            <button
               type="button"
               className="px-4 py-3 w-full border text-[#2A216D] rounded-md"
               onClick={handleCancel} // Cancel action

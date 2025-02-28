@@ -48,6 +48,7 @@ export const EditTeamMember = ({
         services:
           selectedTeamMember?.servicesId?.map((service) => service?._id) || [],
         viewAssignedOrders: selectedTeamMember?.view_assigned_order,
+        can_manage_teammembers: selectedTeamMember?.can_manage_teammembers,
         viewAllOrders: selectedTeamMember?.view_all_order,
         placeOnOrderForClient: selectedTeamMember?.place_on_order_for_client,
         // doProductionWork: selectedTeamMember.do_production_work,
@@ -102,7 +103,8 @@ export const EditTeamMember = ({
       });
 
       formData.append("view_assigned_order", values.viewAssignedOrders);
-      formData.append("view_all_order", values.viewAllOrders);
+      formData.append("can_manage_teammembers", values.can_manage_teammembers);
+      formData.append("view_all_order", true);
       formData.append(
         "place_on_order_for_client",
         values.placeOnOrderForClient
@@ -142,6 +144,7 @@ export const EditTeamMember = ({
       // If isAdmin is unchecked, reset all other checkboxes to false
       form.setFieldsValue({
         viewAssignedOrders: false,
+        can_manage_teammembers: false,
         viewAllOrders: false,
         placeOnOrderForClient: false,
         // doProductionWork: false,
@@ -299,8 +302,8 @@ export const EditTeamMember = ({
               <Form.Item name="viewAssignedOrders" valuePropName="checked">
                 <Checkbox disabled={isAdmin}>Can view assigned orders</Checkbox>
               </Form.Item>
-              <Form.Item name="viewAllOrders" valuePropName="checked">
-                <Checkbox disabled={isAdmin}>Can view all orders</Checkbox>
+              <Form.Item name="can_manage_teammembers" valuePropName="checked">
+                <Checkbox disabled={isAdmin}>Manage team members</Checkbox>
               </Form.Item>
               <Form.Item name="placeOnOrderForClient" valuePropName="checked">
                 <Checkbox disabled={isAdmin}>
