@@ -24,6 +24,8 @@ import handleFileUpload from "../../utils/handleFileUpload";
 import { useSelector } from "react-redux";
 import { formatAddress } from "../../utils/formatAddress";
 import { useGetProfileQuery } from "../redux/api/userApi";
+import { ToDoAdd } from "./ToDoAdd";
+
 export const TaskManagementPage = () => {
   const [modal2Open, setModal2Open] = useState(false);
   const [assignedTasksPage, setAssignedTasksPage] = useState(1);
@@ -145,17 +147,7 @@ export const TaskManagementPage = () => {
           refetchTasks={refetchTasks}
         />
       </div>
-      <div className="p-4 bg-white ">
-        <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
-          Todo List
-        </h3>
-        <div className="overflow-y-auto" style={{ maxHeight: "300px" }}></div>
-        <AssignModal
-          setModal2Open={setModal2Open}
-          modal2Open={modal2Open}
-          refetchTasks={refetchTasks}
-        />
-      </div>
+      <TodoList />
       <UploadSourceFiles newTasks={newTasks} refetchTasks={refetchTasks} />
     </div>
   );
@@ -322,6 +314,56 @@ const AssignedToMe = ({
         refetchTasks={refetchTasks}
       />
     </div>
+  );
+};
+
+const TodoList = () => {
+  const [open, setOpen] = useState(false);
+  const toDoList = [
+    { date: "16/05/24", description: "Empty the SD card" },
+    { date: "12/04/24", description: "Empty the SD card" },
+    { date: "07/04/24", description: "Empty the SD card" },
+    { date: "15/03/24", description: "Empty the SD card" },
+  ];
+  return (
+    <>
+      {/* To Do List Section */}
+      <div className="p-4 rounded-lg bg-white">
+        <h3 className="flex items-center justify-center gap-2 font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 ">
+          Todo List
+          <button
+            onClick={() => setOpen(true)}
+            className="bg-[#F38E0A] w-8 h-8 rounded text-lg text-white "
+          >
+            +
+          </button>
+        </h3>
+        <div
+          className="overflow-y-auto border py-5"
+          style={{ maxHeight: "300px" }}
+        >
+          {toDoList.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center mb-2  pb-2"
+            >
+              <p>{item.date}</p>
+              <p className="flex-1 text-center">{item.description}</p>
+              <div className="flex items-center gap-2">
+                <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
+                  <CheckOutlined />
+                </button>
+                <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
+                  <EyeOutlined />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <ToDoAdd setOpen={setOpen} open={open} />
+    </>
   );
 };
 

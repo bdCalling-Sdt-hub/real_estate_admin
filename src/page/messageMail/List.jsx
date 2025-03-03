@@ -123,7 +123,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
         types: isFavorite ? "remove" : "add",
       });
       const msgs = [
-        ...messages.filter((x) => x._id != id),
+        ...messages?.filter((x) => x._id != id),
         {
           ...messages.find((x) => x._id === id),
           favorite: isFavorite ? [] : [authId],
@@ -131,7 +131,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
       ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       setMessages(msgs);
-      setFavMessages((prev) => prev.filter((msg) => msg._id != id));
+      setFavMessages((prev) => prev?.filter((msg) => msg._id != id));
       refetchFavs();
       message.success(`${isFavorite ? "Removed from" : "Added to"} favorites`);
     } catch (error) {
