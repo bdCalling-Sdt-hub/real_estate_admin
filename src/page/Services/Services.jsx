@@ -62,7 +62,7 @@ export const Services = () => {
 
       <div className="flex justify-between">
         {/* Category Selection */}
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {isLoading ? (
             <p>Loading categories...</p>
           ) : (
