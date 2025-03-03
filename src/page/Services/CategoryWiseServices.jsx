@@ -142,12 +142,14 @@ export const CategoryWiseServices = ({ category, searchTerm }) => {
   return (
     <div>
       <Table
-        dataSource={data}
-        columns={columns}
-        loading={isLoading}
-        pagination={false}
-        style={{ marginTop: "20px" }}
-      />
+  dataSource={data}
+  columns={columns}
+  loading={isLoading}
+  pagination={false}
+  style={{ marginTop: "20px" }}
+  scroll={{ x: "max-content" }} 
+/>
+
 
       <div className="mt-4 flex justify-end">
         <Pagination

@@ -183,6 +183,8 @@ export const Packeges = () => {
             total={packageData?.data?.meta?.total || 0}
             onChange={handlePageChange}
             showSizeChanger={false}
+            style={{ marginTop: "20px" }}
+            scroll={{ x: "max-content" }} 
           />
         </div>
       </div>

@@ -154,7 +154,7 @@ const Header = () => {
   const options = AllSearch?.data?.map(item => ({
     value: `${item.address.streetName} - ${item.taskIds?.map(task => task.serviceId?.title).join(", ")}`,
     key: item._id,  // Store the _id as a key
-    label: `${item.address.streetName} - ${item.taskIds?.map(task => task.serviceId?.title).join(", ")}`, // Used for display
+    label: `${item.address.streetName} - ${item.taskIds?.map(task => task.serviceId?.title).join(", ")}`, 
   })) || [];
 
   const [open, setOpen] = useState(false);
