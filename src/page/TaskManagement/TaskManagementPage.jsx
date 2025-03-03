@@ -76,80 +76,86 @@ export const TaskManagementPage = () => {
   const { data: profile } = useGetProfileQuery();
   const role = profile?.data?.role;
   return (
-    <div className="p-6 bg-white">
-      <div className="grid grid-cols-2 gap-6">
-        <AssignedToMe
-          assignedTasks={assignedTasks}
-          setAssignedTasks={setAssignedTasks}
-          page={assignedTasksPage}
-          setPage={setAssignedTasksPage}
-          refetchTasks={refetchTasks}
-          loading={assignedTasksLoading}
-        />
+    <div className="p-6 bg-white grid grid-cols-1 gap-4 md:grid-cols-2">
+      <AssignedToMe
+        assignedTasks={assignedTasks}
+        setAssignedTasks={setAssignedTasks}
+        page={assignedTasksPage}
+        setPage={setAssignedTasksPage}
+        refetchTasks={refetchTasks}
+        loading={assignedTasksLoading}
+      />
 
-        {/* Open Production Work Section */}
-        <div className="p-4  bg-white ">
-          <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
-            Open Production Work
-          </h3>
-          <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
-            {openProductionWork?.data?.length > 0 &&
-              openProductionWork?.data?.map((task) => (
-                <div key={task._id} className="border py-5">
-                  <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                    {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
-                  </div>
-                  <div className=" p-3 ">
-                    {task.tasks.map((item) => (
-                      <div
-                        key={item?._id}
-                        className="flex justify-between items-center mb-2 pb-2"
-                      >
-                        <div>
-                          <p className="font-semibold">
-                            {item?.service?.title}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {formatAddress(item?.order?.address)}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleTakeTask(item?._id)}
-                            className="bg-[#9B3C7B] text-white px-4 py-2 rounded"
-                          >
-                            Take
-                          </button>
-                          <Link
-                            to={`/dashboard/task-management/all-Services/project-file/${item?._id}`}
-                          >
-                            <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
-                              <EyeOutlined />
-                            </button>
-                          </Link>
-                          {role !== "MEMBER" && (
-                            <button
-                              onClick={() => setModal2Open(item?._id)}
-                              className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"
-                            >
-                              <FaArrowRight />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+      {/* Open Production Work Section */}
+      <div className="p-4 bg-white ">
+        <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
+          Open Production Work
+        </h3>
+        <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
+          {openProductionWork?.data?.length > 0 &&
+            openProductionWork?.data?.map((task) => (
+              <div key={task._id} className="border py-5">
+                <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
+                  {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
                 </div>
-              ))}
-          </div>
-          <AssignModal
-            setModal2Open={setModal2Open}
-            modal2Open={modal2Open}
-            refetchTasks={refetchTasks}
-          />
+                <div className=" p-3 ">
+                  {task.tasks.map((item) => (
+                    <div
+                      key={item?._id}
+                      className="flex justify-between items-center mb-2 pb-2"
+                    >
+                      <div>
+                        <p className="font-semibold">{item?.service?.title}</p>
+                        <p className="text-sm text-gray-600">
+                          {formatAddress(item?.order?.address)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleTakeTask(item?._id)}
+                          className="bg-[#9B3C7B] text-white px-4 py-2 rounded"
+                        >
+                          Take
+                        </button>
+                        <Link
+                          to={`/dashboard/task-management/all-Services/project-file/${item?._id}`}
+                        >
+                          <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
+                            <EyeOutlined />
+                          </button>
+                        </Link>
+                        {role !== "MEMBER" && (
+                          <button
+                            onClick={() => setModal2Open(item?._id)}
+                            className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded text-2xl"
+                          >
+                            <FaArrowRight />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
+        <AssignModal
+          setModal2Open={setModal2Open}
+          modal2Open={modal2Open}
+          refetchTasks={refetchTasks}
+        />
       </div>
-
+      <div className="p-4 bg-white ">
+        <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
+          Todo List
+        </h3>
+        <div className="overflow-y-auto" style={{ maxHeight: "300px" }}></div>
+        <AssignModal
+          setModal2Open={setModal2Open}
+          modal2Open={modal2Open}
+          refetchTasks={refetchTasks}
+        />
+      </div>
       <UploadSourceFiles newTasks={newTasks} refetchTasks={refetchTasks} />
     </div>
   );
@@ -370,70 +376,68 @@ const UploadSourceFiles = ({ newTasks, refetchTasks }) => {
     }
   };
   return (
-    <div className="mt-6">
-      <div className="p-4  bg-white ">
-        <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
-          Upload Source Files
-        </h3>
-        <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
-          {newTasks?.data?.data?.length > 0 &&
-            newTasks?.data?.data?.map((task, index) => (
-              <div key={index} className="mb-4 border py-5">
-                <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
-                  {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
-                </div>
-                <div className=" p-3">
-                  {task.tasks.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex justify-between items-center mb-2 pb-2"
-                    >
-                      <div>
-                        <p className="font-semibold">{item?.service?.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {formatAddress(item?.order?.address)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() =>
-                            handleUpdateTaskStatus({
-                              id: item?._id,
-                              status: item?.status,
-                            })
-                          }
-                          className={`${
-                            item?.status === "Submitted"
-                              ? "bg-[#009D2A]"
-                              : "bg-[#F38E0A]"
-                          } text-white p-2 w-10 h-10 rounded`}
-                        >
-                          {updateTaskLoading === item?._id ? (
-                            <Spin />
-                          ) : item?.status === "Submitted" ? (
-                            <CheckOutlined />
-                          ) : (
-                            <ScheduleOutlined />
-                          )}
-                        </button>
-                        <Upload {...uploadProps(item)}>
-                          {uploadLoading === item?._id ? (
-                            <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
-                              <Spin />
-                            </button>
-                          ) : (
-                            <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
-                              <UploadOutlined />
-                            </button>
-                          )}
-                        </Upload>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+    <div className="p-4 bg-white ">
+      <h3 className="text-center font-semibold text-[#9B3C7B] border border-[#9B3C7B] p-3 mb-3">
+        Upload Source Files
+      </h3>
+      <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
+        {newTasks?.data?.data?.length > 0 &&
+          newTasks?.data?.data?.map((task, index) => (
+            <div key={index} className="mb-4 border py-5">
+              <div className="bg-[#F38E0A] text-white text-center  w-[400px] m-auto rounded-full py-2 font-semibold">
+                {dayjs(task._id).format("dddd, DD MMMM, YYYY")}{" "}
               </div>
-            ))}
-        </div>
+              <div className=" p-3">
+                {task.tasks.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center mb-2 pb-2"
+                  >
+                    <div>
+                      <p className="font-semibold">{item?.service?.title}</p>
+                      <p className="text-sm text-gray-600">
+                        {formatAddress(item?.order?.address)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          handleUpdateTaskStatus({
+                            id: item?._id,
+                            status: item?.status,
+                          })
+                        }
+                        className={`${
+                          item?.status === "Submitted"
+                            ? "bg-[#009D2A]"
+                            : "bg-[#F38E0A]"
+                        } text-white p-2 w-10 h-10 rounded`}
+                      >
+                        {updateTaskLoading === item?._id ? (
+                          <Spin />
+                        ) : item?.status === "Submitted" ? (
+                          <CheckOutlined />
+                        ) : (
+                          <ScheduleOutlined />
+                        )}
+                      </button>
+                      <Upload {...uploadProps(item)}>
+                        {uploadLoading === item?._id ? (
+                          <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
+                            <Spin />
+                          </button>
+                        ) : (
+                          <button className="bg-[#F38E0A] text-white w-10 h-10 text-2xl rounded">
+                            <UploadOutlined />
+                          </button>
+                        )}
+                      </Upload>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   );
