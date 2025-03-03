@@ -12,7 +12,7 @@ import { LiaUsersSolid } from "react-icons/lia";
 import { IoBagOutline, IoSettingsOutline } from "react-icons/io5";
 import { logout } from "../../page/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { VscNotebook } from "react-icons/vsc";
+import { VscFileMedia, VscNotebook } from "react-icons/vsc";
 import { useGetProfileQuery } from "../../page/redux/api/userApi";
 
 const items = [
@@ -40,25 +40,6 @@ const items = [
     icon: <FaJediOrder />,
     link: "/dashboard/order-management/all",
   },
-  // {
-  //   key: "categoriesManagement",
-  //   label: "Categories Management",
-  //   icon: categorie,
-  //   link: "/dashboard/CategoriesManagement/Categories",
-  //   children: [
-  //     {
-  //       key: "categoriesManagement",
-  //       label: "Categories",
-  //       link: "/dashboard/CategoriesManagement/Categories",
-  //     },
-  //     {
-  //       key: "subcategory",
-  //       label: "Subcategory",
-  //       link: "/dashboard/CategoriesManagement/Subcategory",
-  //     },
-  //   ],
-  // },
-
   {
     key: "Services",
     label: "Services",
@@ -96,6 +77,12 @@ const items = [
     label: "Team-Member",
     icon: <LiaUsersSolid />,
     link: "/dashboard/team-member",
+  },
+  {
+    key: "media-settings",
+    label: "Media Settings",
+    icon: <VscFileMedia />,
+    link: "/dashboard/media",
   },
   {
     key: "report",
