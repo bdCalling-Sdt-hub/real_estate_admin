@@ -17,6 +17,8 @@ import {
   useGetNewTaskQuery,
   useUpdateTaskStatusMutation,
   useToggleTaskStatusMutation,
+  useGetTodoListQuery,
+  useUpdateTodoMutation,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
 import { message, Spin, Upload } from "antd";
@@ -319,12 +321,23 @@ const AssignedToMe = ({
 
 const TodoList = () => {
   const [open, setOpen] = useState(false);
-  const toDoList = [
-    { date: "16/05/24", description: "Empty the SD card" },
-    { date: "12/04/24", description: "Empty the SD card" },
-    { date: "07/04/24", description: "Empty the SD card" },
-    { date: "15/03/24", description: "Empty the SD card" },
-  ];
+  const { data: todos, refetch } = useGetTodoListQuery();
+  const [updateTodo] = useUpdateTodoMutation();
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  const handleUpdate = async (id) => {
+    setUpdateLoading(id);
+    try {
+      await updateTodo(id);
+      message.success("Todo updated successfully");
+    } catch (error) {
+      console.log(error);
+      message.error("Todo update failed");
+    } finally {
+      refetch();
+      setUpdateLoading(false);
+    }
+  };
   return (
     <>
       {/* To Do List Section */}
@@ -342,27 +355,44 @@ const TodoList = () => {
           className="overflow-y-auto border py-5"
           style={{ maxHeight: "300px" }}
         >
-          {toDoList.map((item, index) => (
+          {todos?.data?.map((item, index) => (
             <div
               key={index}
-              className="flex justify-between items-center mb-2  pb-2"
+              className="flex justify-between items-center mb-2 pb-2 px-4"
             >
-              <p>{item.date}</p>
-              <p className="flex-1 text-center">{item.description}</p>
+              <p>{dayjs(item.dueDate).format("DD/MM/YYYY")}</p>
+              <p className="text-center">{item.description}</p>
               <div className="flex items-center gap-2">
-                <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
-                  <CheckOutlined />
-                </button>
-                <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
-                  <EyeOutlined />
-                </button>
+                {item?.status === "Pending" ? (
+                  <button
+                    onClick={() => handleUpdate(item?._id)}
+                    className="bg-[#F38E0A] text-white p-2 w-10 h-10 rounded"
+                  >
+                    {updateLoading === item?._id ? (
+                      <Spin />
+                    ) : (
+                      <ScheduleOutlined />
+                    )}
+                  </button>
+                ) : (
+                  <button className="bg-[#009D2A] text-white p-2 w-10 h-10 rounded">
+                    <CheckOutlined />
+                  </button>
+                )}
+                <Link
+                  to={`/dashboard/task-management/all-Services/project-file/${item.task}`}
+                >
+                  <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
+                    <EyeOutlined />
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <ToDoAdd setOpen={setOpen} open={open} />
+      <ToDoAdd setOpen={setOpen} open={open} refetch={refetch} />
     </>
   );
 };
