@@ -1,7 +1,6 @@
 import { Avatar, Button } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { DeleteOutlined, StarOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -84,7 +83,7 @@ const Body = () => {
     setContent("");
   };
   return (
-    <main className="p-9 bg-white overflow-y-auto h-[80vh]">
+    <main className="md:p-9 bg-white overflow-y-auto h-[80vh]">
       <header>
         <Button
           icon={<ArrowLeft />}
@@ -146,7 +145,7 @@ const Body = () => {
           <Button
             onClick={handleReply}
             type="primary"
-            className="bg-[#2A216D] text-white absolute right-4 bottom-4"
+            className="bg-[#2A216D] text-white absolute right-4 bottom-4 z-[999999]"
             size="large"
             icon={
               <svg

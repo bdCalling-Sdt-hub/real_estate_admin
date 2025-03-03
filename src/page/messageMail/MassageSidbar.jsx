@@ -51,8 +51,8 @@ export const MassageSidbar = () => {
     };
   }, []);
   return (
-    <div className="flex gap-4">
-      <div className="bg-white h-[84vh] p-4 w-[20%]">
+    <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-white md:h-[84vh] p-4 md:w-[20%] overflow-y-auto">
         <Button
           onClick={() => setComposeModalOpen(true)}
           type="primary"
@@ -132,7 +132,7 @@ export const MassageSidbar = () => {
           </div>
         </div>
       </div>
-      <div className="w-[80%]">
+      <div className="md:w-[80%]">
         <MainMassage
           tab={selectedTab}
           favContacts={favContacts}

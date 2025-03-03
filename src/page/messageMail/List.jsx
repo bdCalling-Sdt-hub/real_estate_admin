@@ -71,7 +71,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
         if (!record.messages.length) return "No Subject";
         const message = record.messages[0];
         return (
-          <div>
+          <div className="truncate">
             <strong>{message.subject}</strong> -{" "}
             {message?.message?.replace(/<\/?[^>]+(>|$)/g, "")}
           </div>
@@ -84,8 +84,11 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
       dataIndex: "time",
       key: "time",
       align: "right",
-      render: (_, record) =>
-        dayjs(record.createdAt).format("MMM D, YYYY h:mm A"),
+      render: (_, record) => (
+        <p className="text-nowrap">
+          {dayjs(record.createdAt).format("MMM D, YYYY h:mm A")}
+        </p>
+      ),
       width: "15%",
     },
   ];
