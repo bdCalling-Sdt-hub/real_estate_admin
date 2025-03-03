@@ -95,9 +95,9 @@ const Header = () => {
           <Pill key={key} {...pills[key]} />
         ))}
       </div>
-      <div className="flex w-full md:justify-end justify-between items-center gap-4">
+      <div className="flex w-full justify-end items-center gap-4">
         <AutoComplete
-          className="flex-1 max-w-md w-full"
+          className="hidden md:block flex-1 max-w-md w-full "
           options={options}
           placeholder="Search for orders..."
           filterOption={(inputValue, option) =>
