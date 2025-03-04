@@ -1,10 +1,6 @@
 import { Modal } from "antd";
 
-const DeleteModal = ({ open, setOpen }) => {
-  const handleDelete = () => {
-    console.log({ open });
-    setOpen(false);
-  };
+const DeleteModal = ({ open, setOpen, handleDelete, text }) => {
   return (
     <Modal
       centered
@@ -15,9 +11,7 @@ const DeleteModal = ({ open, setOpen }) => {
       title="Delete Message"
       okButtonProps={{ style: { backgroundColor: "red" } }}
     >
-      <p>
-        Are you sure you want to <strong>delete</strong> this message?
-      </p>
+      <p>{text}</p>
     </Modal>
   );
 };
