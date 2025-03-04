@@ -15,7 +15,6 @@ export const AssignModal = ({ setModal2Open, modal2Open, refetchTasks }) => {
       message.success("Task assigned successfully");
       refetchTasks();
     } catch (error) {
-     
       message.error("Task assignment failed");
       refetchTasks();
     }

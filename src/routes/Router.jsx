@@ -34,6 +34,7 @@ import { Report } from "../page/Report/Report";
 import { TaskManagementPage } from "../page/TaskManagement/TaskManagementPage";
 import Settings from "../page/Settings/Settings";
 import ProtectedRoute from "../protectedRoute/ProtectedRoute";
+import Media from "../page/Media/Media";
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/pricing-group/edit-pricing-group/:id",
         element: <EditPricingPage></EditPricingPage>,
+      },
+      {
+        path: "/dashboard/media",
+        element: <Media />,
       },
       {
         path: "/dashboard/report",

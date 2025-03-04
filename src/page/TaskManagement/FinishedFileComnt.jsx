@@ -25,7 +25,7 @@ export const FinishedFileComnt = ({ fileId }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(`http://10.0.60.118:5000?id=${authId}`);
+    const newSocket = io(`${import.meta.env.VITE_API_URL}?id=${authId}`);
     setSocket(newSocket);
 
     return () => {
@@ -83,7 +83,6 @@ export const FinishedFileComnt = ({ fileId }) => {
       message.success("Comment added successfully");
       refetch();
     } catch (error) {
-    
       message.error("Failed to add comment");
     }
   };
@@ -108,10 +107,15 @@ export const FinishedFileComnt = ({ fileId }) => {
 
     socket.emit(
       "revision-messages",
-      { taskId: id, fileId: fileId, text: comment },
+      {
+        taskId: id,
+        fileId: fileId ? fileId : null,
+        text: comment,
+        types: fileId ? null : "all-revisions",
+      },
       callback
     );
-  };  
+  };
   return (
     <div>
       {/* Right Comments Section */}
@@ -129,14 +133,12 @@ export const FinishedFileComnt = ({ fileId }) => {
               rows={4}
             />
             <div className="absolute flex gap-3 bottom-6 right-[5px]">
-              {fileId && (
-                <button
-                  onClick={() => handleRequestRevision()}
-                  className="border px-3 rounded"
-                >
-                  Request for revision
-                </button>
-              )}
+              <button
+                onClick={() => handleRequestRevision()}
+                className="border px-3 rounded"
+              >
+                Request for revision
+              </button>
               {isPosting && !isReply ? (
                 <button className="absolute flex gap-3 bottom-6 right-[5px] bg-[#2A216D] text-white px-4 py-2 rounded-md hover:bg-purple-600">
                   <Spin />
@@ -172,7 +174,7 @@ export const FinishedFileComnt = ({ fileId }) => {
                     <img
                       src={
                         comment?.comment?.userId?.profile_image
-                          ? `${import.meta.env.VITE_BASE_URL}/${
+                          ? `${import.meta.env.VITE_API_URL}/${
                               comment?.comment?.userId?.profile_image
                             }`
                           : `https://ui-avatars.com/api/?name=${comment?.comment?.userId?.name}`
@@ -276,7 +278,7 @@ const RevisionComponent = ({
             <img
               src={
                 comment?.comment?.userId?.profile_image
-                  ? `${import.meta.env.VITE_BASE_URL}/${
+                  ? `${import.meta.env.VITE_API_URL}${
                       comment?.comment?.userId?.profile_image
                     }`
                   : `https://ui-avatars.com/api/?name=${comment?.comment?.userId?.name}`

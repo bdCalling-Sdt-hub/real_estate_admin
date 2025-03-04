@@ -11,9 +11,6 @@ const taskApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
-    getAllTeamMembers: builder.query({
-      query: () => "/member/get-all-member",
-    }),
     assignTask: builder.mutation({
       query: ({ taskId, memberId }) => ({
         url: `/task/assign-team-member`,
@@ -82,6 +79,32 @@ const taskApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
+    getAllTeamMembers: builder.query({
+      query: ({ searchTerm }) => {
+        const param = new URLSearchParams();
+        if (searchTerm) param.append("searchTerm", searchTerm);
+        return `/member/get-all-member?${param.toString()}`;
+      },
+    }),
+    getTodoList: builder.query({
+      query: () => "/task/get-todo-list",
+    }),
+    updateTodo: builder.mutation({
+      query: (id) => ({
+        url: `/task/update-to-do-list/${id}`,
+        method: "PATCH",
+      }),
+    }),
+    getTaskList: builder.query({
+      query: () => "/task/get-task-list",
+    }),
+    createTodo: builder.mutation({
+      query: (data) => ({
+        url: "/task/create-to-do-list",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -99,4 +122,8 @@ export const {
   useGetNewTaskQuery,
   useUpdateTaskStatusMutation,
   useToggleTaskStatusMutation,
+  useGetTodoListQuery,
+  useUpdateTodoMutation,
+  useGetTaskListQuery,
+  useCreateTodoMutation,
 } = taskApi;

@@ -174,7 +174,7 @@ const RevisionMessage = ({ msg, authId }) => {
           <img
             src={
               msg?.senderId?.profile_image
-                ? `${import.meta.env.VITE_BASE_URL}/${
+                ? `${import.meta.env.VITE_API_URL}/${
                     msg?.senderId?.profile_image
                   }`
                 : `https://ui-avatars.com/api/?name=${msg?.senderId?.name}`

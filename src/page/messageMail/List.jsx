@@ -71,7 +71,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
         if (!record.messages.length) return "No Subject";
         const message = record.messages[0];
         return (
-          <div>
+          <div className="truncate">
             <strong>{message.subject}</strong> -{" "}
             {message?.message?.replace(/<\/?[^>]+(>|$)/g, "")}
           </div>
@@ -84,8 +84,11 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
       dataIndex: "time",
       key: "time",
       align: "right",
-      render: (_, record) =>
-        dayjs(record.createdAt).format("MMM D, YYYY h:mm A"),
+      render: (_, record) => (
+        <p className="text-nowrap">
+          {dayjs(record.createdAt).format("MMM D, YYYY h:mm A")}
+        </p>
+      ),
       width: "15%",
     },
   ];
@@ -120,7 +123,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
         types: isFavorite ? "remove" : "add",
       });
       const msgs = [
-        ...messages.filter((x) => x._id != id),
+        ...messages?.filter((x) => x._id != id),
         {
           ...messages.find((x) => x._id === id),
           favorite: isFavorite ? [] : [authId],
@@ -128,7 +131,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
       ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       setMessages(msgs);
-      setFavMessages((prev) => prev.filter((msg) => msg._id != id));
+      setFavMessages((prev) => prev?.filter((msg) => msg._id != id));
       refetchFavs();
       message.success(`${isFavorite ? "Removed from" : "Added to"} favorites`);
     } catch (error) {
