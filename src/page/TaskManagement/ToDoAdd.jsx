@@ -7,6 +7,7 @@ import {
 import dayjs from "dayjs";
 
 export const ToDoAdd = ({ open, setOpen, refetch }) => {
+  const [form] = Form.useForm();
   const { data: teamMembers } = useGetAllTeamMembersQuery({ searchTerm: "" });
   const { data: fetchedTasks } = useGetTasksQuery();
   const tasks = [];
@@ -24,7 +25,7 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
   const handleFinish = async (values) => {
     try {
       await createTodo({
-        teamMember: [values.teamMember],
+        member: values.teamMember,
         description: values.description,
         task: values.task,
         dueDate: dayjs(values.dueDate.toString()).format("MM-DD-YY"),
@@ -32,10 +33,11 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
 
       setOpen(false);
       message.success("To Do added successfully");
-      refetch();
+      form.resetFields();
     } catch (error) {
       console.log(error);
       message.error("Failed to add To Do");
+    } finally {
       refetch();
     }
   };
@@ -64,7 +66,7 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
         </Button>,
       ]}
     >
-      <Form layout="vertical" id="todoForm" onFinish={handleFinish}>
+      <Form layout="vertical" id="todoForm" onFinish={handleFinish} form={form}>
         <Form.Item
           name="teamMember"
           label="Select Team Member"
@@ -76,6 +78,7 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
               value: member._id,
             }))}
             placeholder="Search for team members..."
+            mode="multiple"
           />
         </Form.Item>
 
@@ -97,7 +100,8 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
 
         <Form.Item
           name="dueDate"
-          label="Select Due Date (Or as soon as possible)"
+          label="Select A Due Date"
+          rules={[{ required: true, message: "Please select a due date" }]}
         >
           <DatePicker className="w-full" />
         </Form.Item>
