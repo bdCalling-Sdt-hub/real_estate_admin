@@ -34,14 +34,16 @@ const Media = () => {
           </button>
           <span className="text-lg font-semibold">Media Settings</span>
         </h1>
-        <Button
-          onClick={() => setUploadModal(true)}
-          icon={<Plus />}
-          type="primary"
-          className="bg-[#2A216D] text-white rounded focus:ring-2 focus:ring-gray-500"
-        >
-          Upload
-        </Button>
+        {!data?.data?.image && (
+          <Button
+            onClick={() => setUploadModal(true)}
+            icon={<Plus />}
+            type="primary"
+            className="bg-[#2A216D] text-white rounded focus:ring-2 focus:ring-gray-500"
+          >
+            Upload
+          </Button>
+        )}
       </div>
       {data?.data?.image ? (
         <MediaUploader
@@ -169,6 +171,7 @@ const MediaUploader = ({ id, image, url, refetch }) => {
   const [imagePreview, setImagePreview] = useState(
     `${import.meta.env.VITE_API_URL}/${image}`
   );
+  const [imgUrl, setImgUrl] = useState(url);
   const [isEditing, setIsEditing] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [updateMedia] = useUpdateMediaMutation();
@@ -195,6 +198,8 @@ const MediaUploader = ({ id, image, url, refetch }) => {
       await deleteMedia({ id });
       setDeleteModal(false);
       message.success("Media deleted successfully");
+      setImagePreview(null);
+      setImgUrl(null);
     } catch (error) {
       console.log(error);
       message.error("Failed to delete media");
@@ -248,7 +253,7 @@ const MediaUploader = ({ id, image, url, refetch }) => {
                 name="url"
                 label="Media Target URL"
                 rules={[{ type: "url", message: "Invalid URL" }]}
-                initialValue={url}
+                initialValue={imgUrl}
               >
                 <Input type="url" placeholder="Enter URL here" />
               </Form.Item>
@@ -266,7 +271,7 @@ const MediaUploader = ({ id, image, url, refetch }) => {
             </Form>
           ) : (
             <div className="flex flex-col items-center space-y-3">
-              <p className="text-blue-400 font-medium break-words">{url}</p>
+              <p className="text-blue-400 font-medium break-words">{imgUrl}</p>
               <div className="flex gap-2">
                 <Button
                   type="primary"
