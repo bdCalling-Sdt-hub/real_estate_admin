@@ -215,6 +215,7 @@ export const ClientManagement = () => {
         dataSource={data}
         columns={columns}
         pagination={false}  
+        scroll={{ x: "max-content" }} 
       />
       <div className="mt-4 flex justify-end">
         <Pagination

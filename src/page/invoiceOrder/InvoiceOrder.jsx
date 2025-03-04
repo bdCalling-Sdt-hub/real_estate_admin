@@ -162,7 +162,7 @@ export const InvoiceOrder = () => {
       </div>
 
       <div className="">
-        <Table dataSource={invoiceOrder} columns={columns} pagination={false} />
+        <Table dataSource={invoiceOrder} columns={columns} pagination={false} scroll={{ x: "max-content" }} />
         <div className="mt-4 flex justify-end">
           <Pagination
             current={currentPage}

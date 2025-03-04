@@ -175,7 +175,13 @@ export const Packeges = () => {
       </div>
 
       <div className="pt-5">
-        <Table dataSource={tableData} columns={columns} pagination={false} />
+      <Table
+  dataSource={tableData}
+  columns={columns}
+  pagination={false}
+  scroll={{ x: "max-content" }} 
+/>
+
         <div className="mt-4 flex justify-end">
           <Pagination
             current={currentPage}
@@ -183,8 +189,7 @@ export const Packeges = () => {
             total={packageData?.data?.meta?.total || 0}
             onChange={handlePageChange}
             showSizeChanger={false}
-            style={{ marginTop: "20px" }}
-            scroll={{ x: "max-content" }} 
+            
           />
         </div>
       </div>
