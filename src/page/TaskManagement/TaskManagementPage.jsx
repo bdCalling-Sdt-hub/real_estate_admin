@@ -62,7 +62,7 @@ export const TaskManagementPage = () => {
   const [takeTask] = useTakeTaskMutation();
 
   const refetchTasks = () => {
-    refetchAssignedTasks();
+    refetchAssignedTasks().then((data) => setAssignedTasks(data?.data));
     refetchOpenProductionWork();
     refetchNewTasks();
   };
@@ -196,6 +196,7 @@ const AssignedToMe = ({
       message.error("Task status update failed");
     } finally {
       setToggleTaskLoading(false);
+      refetchTasks();
     }
   };
 
@@ -224,9 +225,8 @@ const AssignedToMe = ({
     };
   }, [loading, setPage]);
 
-  // Append new data when assignedTasks updates
   useEffect(() => {
-    if (page === 1) return; // Prevent overriding initial data
+    if (page === 1) return;
 
     setAssignedTasks((prevTasks) => {
       if (!prevTasks?.data?.tasksByDate) return assignedTasks;
