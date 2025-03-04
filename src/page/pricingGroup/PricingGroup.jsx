@@ -131,6 +131,7 @@ export const PricingGroup = () => {
           dataSource={pricingGroups} // Use dynamic data from API
           columns={columns}
           pagination={false}
+          scroll={{ x: "max-content" }} 
         />
         <div className="mt-4 flex justify-end">
         <Pagination

@@ -1,48 +1,42 @@
-// import React, { useEffect } from "react";
-// import { Navigate, useLocation, useNavigate } from "react-router-dom";
-// import { Skeleton } from "antd";
-
-// import { useGetSuperAdminQuery } from "../page/redux/api/userApi";
-
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
+import { logout } from '../page/redux/features/auth/authSlice';
+
 
 const ProtectedRoute = ({ children }) => {
-  // const location = useLocation();
-  // const navigate = useNavigate(); // Added useNavigate
-  // const accessToken = localStorage.getItem("accessToken");
+    const dispatch = useDispatch();
+    const { token } = useSelector((state) => state.logInUser);
+    const { pathname } = useLocation();
 
-  // if (!accessToken) {
-  //   return <Navigate to={"/login"} state={{ from: location }} replace />;
-  // }
+    if (!token) {
+        return <Navigate to="/login" state={{ path: pathname }} />;
+    }
 
-  // const { data: getUserInfo, isError, isLoading, isSuccess } = useGetSuperAdminQuery(undefined, {
-  //   refetchOnMountOrArgChange: true,
-  // });
+    function decodeJWT(token) {
+        try {
+            const parts = token.split('.');
+            if (parts.length !== 3) {
+                throw new Error("Invalid JWT format");
+            }
 
-  // useEffect(() => {
-  //   if (isError || (!isLoading && !isSuccess) || !getUserInfo?.data || !["admin", "super_admin"].includes(getUserInfo.data.role)) {
-  //     navigate("/login", { state: { from: location }, replace: true });
-  //   }
-  // }, [isError, isLoading, isSuccess, getUserInfo, navigate, location]);
+            const payload = JSON.parse(atob(parts[1]));
+            if (payload.exp && Date.now() >= payload.exp * 1000) {
+                dispatch(logout()); 
+                return null;
+            }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <Skeleton active />
-  //     </div>
-  //   );
-  // }
+            console.log(payload)
+            return payload;
+            
+        } catch (error) {
+            console.error("JWT Error:", error.message);
+            dispatch(logout());
+            return null;
+        }
+    }
+    decodeJWT(token);
 
-  // return children;
-  
-  const {token} = useSelector((state) => state.logInUser)
-  const { pathname } = useLocation();
-
-  if (!token) {
-      return <Navigate to="/login" state={{ path: pathname }}></Navigate>;
-  }
-  return children;
+    return children;
 };
 
 export default ProtectedRoute;

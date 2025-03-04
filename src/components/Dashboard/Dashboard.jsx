@@ -98,10 +98,10 @@ const Dashboard = () => {
           <OrderTrends />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-        <div className="bg-white">
+      <div className=" mt-5">
+        {/* <div className="bg-white">
           <UnreadMessage />
-        </div>
+        </div> */}
         <div className="bg-white">
           <RecentOrder />
         </div>

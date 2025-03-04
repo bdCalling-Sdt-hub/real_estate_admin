@@ -22,7 +22,7 @@ import { GoPackage } from "react-icons/go";
 import { PiClockUserLight, PiInvoice } from "react-icons/pi";
 import { LiaUsersSolid } from "react-icons/lia";
 import logo from "../../assets/header/logo1.png";
-
+import './head.css'
 const Header = () => {
   const { data: getProfile } = useGetProfileQuery();
   const { data: AllSearch } = useGetSearchQuery();

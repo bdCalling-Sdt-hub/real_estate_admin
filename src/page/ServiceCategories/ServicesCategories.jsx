@@ -118,6 +118,7 @@ const handleDelete = async (record) => {
           loading={isLoading}
           pagination={false}
           style={{ marginTop: "20px" }}
+          scroll={{ x: "max-content" }} 
         />
       </div>
       
