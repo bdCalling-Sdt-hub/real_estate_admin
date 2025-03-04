@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Select } from "antd";
+import { Modal, Form, Input, Button, Select, message } from "antd";
 import { useGetAllEmailsQuery } from "../redux/api/messageApi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -9,14 +9,8 @@ import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { data: emails } = useGetAllEmailsQuery({ searchTerm });
+  const { data: emails } = useGetAllEmailsQuery({ searchTerm: "" });
   const [content, setContent] = useState("");
-
-  const emailOptions = emails?.data?.map((e) => ({
-    label: e.email,
-    value: e._id,
-  }));
 
   const quillConfig = {
     formats: [
@@ -61,11 +55,18 @@ export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
   }, []);
 
   const handleFinish = async ({ body, subject, to }) => {
+    const receiverId = emails?.data?.find((email) => email.email === to)?._id;
+
+    if (!receiverId) {
+      message.error("Recipient email not found");
+      return;
+    }
+
     const payload = {
-      receiverId: to,
+      receiverId,
       text: body,
       subject,
-      email: emailOptions.find((e) => e.value === to).label,
+      email: to,
     };
 
     socket.emit("new-email-message", payload);
@@ -98,13 +99,7 @@ export const ComposeModal = ({ composeModalOpen, setComposeModalOpen }) => {
           label="To"
           rules={[{ required: true, message: "Recipient is required" }]}
         >
-          <Select
-            showSearch
-            placeholder="Enter recipient email"
-            onSearch={(val) => setSearchTerm(val)}
-            options={emailOptions}
-            optionFilterProp="label"
-          />
+          <Input placeholder="Enter recipient email" />
         </Form.Item>
 
         <Form.Item
