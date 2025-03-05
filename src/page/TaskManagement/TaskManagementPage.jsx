@@ -21,7 +21,7 @@ import {
   useUpdateTodoMutation,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
-import { message, Spin, Upload } from "antd";
+import { Button, message, Modal, Spin, Upload } from "antd";
 import handleFileUpload from "../../utils/handleFileUpload";
 import { useSelector } from "react-redux";
 import { formatAddress } from "../../utils/formatAddress";
@@ -324,6 +324,7 @@ const TodoList = () => {
   const { data: todos, refetch } = useGetTodoListQuery();
   const [updateTodo] = useUpdateTodoMutation();
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [detailsModal, setDetailsModal] = useState(false);
 
   const handleUpdate = async (id) => {
     setUpdateLoading(id);
@@ -379,21 +380,52 @@ const TodoList = () => {
                     <CheckOutlined />
                   </button>
                 )}
-                <Link
-                  to={`/dashboard/task-management/all-Services/project-file/${item.task}`}
+                <button
+                  onClick={() => setDetailsModal(item)}
+                  className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded"
                 >
-                  <button className="bg-[#2A216D] text-white p-2 w-10 h-10 rounded">
-                    <EyeOutlined />
-                  </button>
-                </Link>
+                  <EyeOutlined />
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
-
+      <DetailsModal open={detailsModal} setOpen={setDetailsModal} />
       <ToDoAdd setOpen={setOpen} open={open} refetch={refetch} />
     </>
+  );
+};
+
+const DetailsModal = ({ open, setOpen }) => {
+  console.log(open);
+
+  return (
+    <Modal
+      title="Todo Details"
+      centered
+      open={open}
+      onCancel={() => setOpen(false)}
+      footer={[
+        <Button key="cancel" onClick={() => setOpen(false)}>
+          Close
+        </Button>,
+      ]}
+    >
+      <div>
+        <p>
+          <span className="font-semibold">Description:</span>{" "}
+          {open?.description}
+        </p>
+        <p>
+          <span className="font-semibold">Due Date:</span>{" "}
+          {dayjs(open?.dueDate).format("DD/MM/YYYY")}
+        </p>
+        <p>
+          <span className="font-semibold">Status:</span> {open?.status}
+        </p>
+      </div>
+    </Modal>
   );
 };
 
