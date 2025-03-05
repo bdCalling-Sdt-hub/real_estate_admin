@@ -115,7 +115,7 @@ const CreateServices = () => {
       contactOwner: formData.contactAgent === "false" ? true : false,
       address: formData.address,
       contactInfo: formData.contactInfo,
-      linkedAgents: [formData.linkedAgents._id],
+      linkedAgents: formData?.linkedAgents?._id ? [formData?.linkedAgents?._id] : [],
       locations: {
         lat: formData.address.lat,
         lng: formData.address.lng,

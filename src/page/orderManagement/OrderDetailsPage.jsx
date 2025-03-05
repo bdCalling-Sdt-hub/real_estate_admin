@@ -218,7 +218,7 @@ export const OrderDetailsPage = () => {
                   </div>
                 </>
               )}
-              {data?.data?.contactAgent && (
+              {data?.data?.linkedAgents?.length > 0 && (
                 <div className="mt-4">
                   <p>
                     <strong>Real Estate Agent:</strong>
