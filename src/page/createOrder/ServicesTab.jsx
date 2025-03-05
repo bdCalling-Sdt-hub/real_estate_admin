@@ -23,7 +23,7 @@ export const ServicesTab = ({ formData, setFormData }) => {
   return (
     <div className="mt-5">
       <div className="flex justify-between">
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <div
             onClick={() => setSelectedTab(null)}
             className={`px-11 py-1  cursor-pointer ${
@@ -40,7 +40,7 @@ export const ServicesTab = ({ formData, setFormData }) => {
               onClick={() => setSelectedTab(category._id)}
               className={`px-11 py-1  cursor-pointer ${
                 selectedTab === category._id
-                  ? "bg-[#2A216D] text-[white] rounded-full"
+                  ? "bg-[#2A216D] text-[white]  rounded-full"
                   : "border border-[#2A216D] text-[#2A216D] rounded-full "
               }`}
             >

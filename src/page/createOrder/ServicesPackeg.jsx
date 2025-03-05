@@ -38,7 +38,7 @@ export const ServicesPackeg = ({
         >
           Showing {packages?.meta?.total || services?.meta?.total} result
         </h2>
-        <div className="grid grid-cols-4 gap-5">
+        <div className="md:grid lg:grid-cols-4 md:grid-cols-2 gap-5">
           {popularPackages &&
             popularPackages?.map((_package) => (
               <CreateCard
