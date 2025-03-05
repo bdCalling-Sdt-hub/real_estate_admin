@@ -186,19 +186,20 @@ const RevisionMessage = ({ msg, authId }) => {
         </div>
       </div>
       <div className="max-w-[200px] my-2">
-        {msg?.message_img?.includes("video") ? (
-          <video
-            src={msg?.message_img}
-            controls
-            className="rounded-md mb-2 border border-[#9d99bc]"
-          />
-        ) : (
-          <img
-            src={msg?.message_img}
-            alt={msg?.senderId?.name}
-            className="rounded-md mb-2 border border-[#9d99bc]"
-          />
-        )}
+        {msg?.message_img &&
+          (msg?.message_img?.includes("video") ? (
+            <video
+              src={msg?.message_img}
+              controls
+              className="rounded-md mb-2 border border-[#9d99bc]"
+            />
+          ) : (
+            <img
+              src={msg?.message_img}
+              alt={msg?.senderId?.name}
+              className="rounded-md mb-2 border border-[#9d99bc]"
+            />
+          ))}
         <p
           className={`text-gray-600 text-sm pl-1 max-h-[100px] overflow-hidden ${
             showMore ? "max-h-full" : "max-h-[60px]"
