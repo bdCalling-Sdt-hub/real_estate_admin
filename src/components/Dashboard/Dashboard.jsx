@@ -65,7 +65,7 @@ const Dashboard = () => {
                 <img
                   className="bg-slate-100 rounded-full w-[50px] md:w-[70px]"
                   src={order}
-                  alt="Order"
+                  alt="Order"   
                 />
               </div>
               <p className="text-xl md:text-2xl font-bold">
