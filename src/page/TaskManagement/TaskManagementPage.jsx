@@ -11,7 +11,6 @@ import { AssignModal } from "./AssignModal";
 import { LiaFileExcel } from "react-icons/lia";
 import { FaArrowRight } from "react-icons/fa";
 import {
-  useGetTasksQuery,
   useTakeTaskMutation,
   useGetAssignedTasksQuery,
   useGetNewTaskQuery,
@@ -19,6 +18,7 @@ import {
   useToggleTaskStatusMutation,
   useGetTodoListQuery,
   useUpdateTodoMutation,
+  useGetProductionTasksQuery,
 } from "../redux/api/taskApi";
 import dayjs from "dayjs";
 import { Button, message, Modal, Spin, Upload } from "antd";
@@ -33,7 +33,7 @@ export const TaskManagementPage = () => {
   const [assignedTasksPage, setAssignedTasksPage] = useState(1);
 
   const tasks = {
-    productionTasks: useGetTasksQuery(),
+    productionTasks: useGetProductionTasksQuery(),
     assignedTasks: useGetAssignedTasksQuery({ page: assignedTasksPage }),
     newTasks: useGetNewTaskQuery(),
   };

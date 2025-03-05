@@ -2,8 +2,11 @@ import { baseApi } from "./baseApi";
 
 const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTasks: builder.query({
+    getProductionTasks: builder.query({
       query: () => "/task/get-all",
+    }),
+    getTasks: builder.query({
+      query: () => "/task/get-task-list",
     }),
     takeTask: builder.mutation({
       query: (id) => ({
@@ -109,6 +112,7 @@ const taskApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetProductionTasksQuery,
   useGetTasksQuery,
   useTakeTaskMutation,
   useGetAllTeamMembersQuery,

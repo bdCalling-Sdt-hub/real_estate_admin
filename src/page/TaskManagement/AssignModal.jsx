@@ -5,7 +5,7 @@ import {
 } from "../redux/api/taskApi";
 
 export const AssignModal = ({ setModal2Open, modal2Open, refetchTasks }) => {
-  const { data: teamMembers } = useGetAllTeamMembersQuery();
+  const { data: teamMembers } = useGetAllTeamMembersQuery({ searchTerm: "" });
   const [assignTask, { isLoading }] = useAssignTaskMutation();
 
   const handleFinish = async ({ member }) => {

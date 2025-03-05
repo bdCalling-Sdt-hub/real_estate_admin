@@ -9,16 +9,7 @@ import dayjs from "dayjs";
 export const ToDoAdd = ({ open, setOpen, refetch }) => {
   const [form] = Form.useForm();
   const { data: teamMembers } = useGetAllTeamMembersQuery({ searchTerm: "" });
-  const { data: fetchedTasks } = useGetTasksQuery();
-  const tasks = [];
-  fetchedTasks?.data?.forEach((date) => {
-    date?.tasks?.forEach((task) => {
-      tasks.push({
-        label: task.service?.title,
-        value: task._id,
-      });
-    });
-  });
+  const { data: tasks } = useGetTasksQuery();
 
   const [createTodo] = useCreateTodoMutation();
 
@@ -95,7 +86,13 @@ export const ToDoAdd = ({ open, setOpen, refetch }) => {
         </Form.Item>
 
         <Form.Item name="task" label="Select Task (Not Required)">
-          <Select placeholder="Select" options={tasks} />
+          <Select
+            placeholder="Select"
+            options={tasks?.data?.data?.map((task) => ({
+              label: task.serviceId,
+              value: task._id,
+            }))}
+          />
         </Form.Item>
 
         <Form.Item
