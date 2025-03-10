@@ -69,7 +69,7 @@ const List = ({ tab, handleRowClick, favContacts, refetchFavs }) => {
       key: "subject",
       render: (_, record) => {
         if (!record.messages.length) return "No Subject";
-        const message = record.messages[0];
+        const message = record.messages[record.messages.length - 1];
         return (
           <div className="truncate">
             <strong>{message.subject}</strong> -{" "}
